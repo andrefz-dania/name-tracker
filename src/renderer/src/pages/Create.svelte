@@ -4,7 +4,7 @@
   import { Heading1 } from '../components/Headings.svelte'
   import TextAreaInput from '../components/TextAreaInput.svelte'
   import TextInput from '../components/TextInput.svelte'
-  import { SkullIcon, SproutIcon } from '@lucide/svelte'
+  import { ChevronLeft, SkullIcon, SproutIcon } from '@lucide/svelte'
 
   let name = $state('')
   let status = $state('Alive') // Default to Alive
@@ -37,6 +37,10 @@
 
   // let {id} = $props();
 </script>
+
+<div class="fixed w-full">
+      <a class="bg-primary text-white font-bold pr-4 flex gap-2 w-fit p-2 rounded-md" href="#/"><ChevronLeft/>Back</a>
+</div>
 
 <Header>
   {@render Heading1('Create new character')}

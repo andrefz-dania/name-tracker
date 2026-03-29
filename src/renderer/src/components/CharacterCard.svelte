@@ -69,9 +69,9 @@
       <dialog id={dialogId} class="bg-transparent text-white max-w-xl mx-auto my-auto">
         <div class="flex flex-col bg-layer1 gap-4 p-8 border-primary border rounded-md shadow-xl">
           {@render Heading2(`Delete ${character.name}?`)}
-          <p>This change cannot be undone, as the author has not yet made an undo feature.</p>
+          <p class="mb-4">This change cannot be undone, as the author has not yet made an undo feature.</p>
 
-          <div class="flex gap-2 place-content-between">
+          <div class="flex gap-4 place-content-between">
             <button class="w-full bg-destructive-muted/50 border border-destructive text-destructive rounded-md text-lg font-bold px-4 py-2 hover:text-destructive-highlight hover:border-destructive-highlight hover:bg-destructive-muted" commandfor={dialogId} onclick={handleDelete} command="close">Delete</button>
             <button class="w-full bg-layer2 text-white rounded-md text-lg font-bold px-4 py-2 hover:bg-layer3" commandfor={dialogId} command="close">Cancel</button>
 

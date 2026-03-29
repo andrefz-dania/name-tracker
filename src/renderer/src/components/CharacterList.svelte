@@ -1,6 +1,6 @@
 <script lang="ts">
   // import dummy data to an array
-  import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, Search, XIcon } from '@lucide/svelte'
+  import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, ChevronLeft, CirclePlus, CogIcon, PlusCircle, PlusCircleIcon, Search, XIcon } from '@lucide/svelte'
   import CharacterCard from './CharacterCard.svelte'
   import { Heading1 } from './Headings.svelte'
   import Header from './Header.svelte'
@@ -34,6 +34,17 @@
 
   getCharacters();
 </script>
+
+<div class="fixed flex w-full place-content-between pr-8">
+<div>
+
+</div>
+<div class="flex gap-2">
+  <a class="bg-primary text-white font-bold pr-4 flex gap-2 p-2 rounded-md items-center" href="#/create"><CirclePlus/>New Character</a>
+  <a class="hover:bg-layer1 flex items-center px-4 rounded-md" href="#/settings"><CogIcon/></a>
+
+</div>
+</div>
 
 <Header>
   {@render Heading1('Characters')}
