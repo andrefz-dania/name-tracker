@@ -1,8 +1,15 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  createChar: (character: CharacterData) => ipcRenderer.invoke('createChar', character),
+
+  deleteChar: (id: number) => ipcRenderer.invoke('deleteChar', id),
+
+  readAllChars: () => ipcRenderer.invoke('readAllChars')
+
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

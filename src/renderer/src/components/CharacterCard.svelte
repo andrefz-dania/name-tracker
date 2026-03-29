@@ -2,6 +2,7 @@
   // import dummy data to an array
   import { truncateString } from '../lib/truncateString'
   import type { CharacterType } from '../../../types/types'
+  import { SkullIcon, SproutIcon } from '@lucide/svelte'
   let { character }: { character: CharacterType } = $props()
 </script>
 
@@ -13,16 +14,20 @@
   {/if}
 {/snippet}
 
-<li class="grid grid-cols-6 gap-x-4 p-4 place-content-between bg-layer1 hover:bg-layer2 rounded-xl">
+<li class="grid grid-cols-6 gap-x-4 px-4 py-2 place-content-between items-center bg-layer1 hover:bg-layer2 rounded-sm">
   <h3 class="font-bold text-lg">{character.name}</h3>
   {@render Field(character.species)}
   {@render Field(character.gender)}
   {@render Field(character.occupation)}
   {@render Field(character.location)}
-  {@render Field(character.dead ? 'Dead' : 'Alive')}
+  {#if (character.dead === 1)}
+  <p class="h-min text-destructive flex flex-row gap-2 bg-destructive-muted/50 w-min px-2 py-1 place-self-end rounded-full"><SkullIcon></SkullIcon></p>
+  {:else}
+  <p class="h-min text-positive flex flex-row gap-2 bg-positive-muted/50 w-min px-2 py-1 place-self-end rounded-full"><SproutIcon></SproutIcon></p>
+  {/if}
 
-  {#if character.shortDesc}
-    <p class="col-span-6 opacity-50">{truncateString(character.shortDesc, 120)}</p>
+  {#if character.desc}
+    <p class="col-span-6 opacity-50">{truncateString(character.desc, 120)}</p>
   {:else}
     <p class="h-0 col-span-6"></p>
   {/if}

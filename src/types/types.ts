@@ -1,9 +1,8 @@
 export type CharacterType = {
-  id: number
+  id?: number
   name: string
-  shortDesc?: string
   desc?: string
-  dead: boolean
+  dead: number
   age?: number
   gender?: string
   location?: string

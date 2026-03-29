@@ -15,7 +15,6 @@ class CharacterDb {
     const setupCharactersSql = `CREATE TABLE IF NOT EXISTS characters (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        shortDesc TEXT,
         desc TEXT,
         dead BOOLEAN DEFAULT 0,
         age INTEGER,
@@ -29,19 +28,18 @@ class CharacterDb {
     console.log('Database setup complete')
   }
 
-  createChar(name, shortDesc, desc, dead, age, gender, location, occupation, species) {
-    const insertQuery = `INSERT INTO characters (name, shortDesc, desc, dead, age, gender, location, occupation, species) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  createChar(character) {
+    const insertQuery = `INSERT INTO characters (name, desc, dead, age, gender, location, occupation, species) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     const stmt = this.db.prepare(insertQuery)
     const response = stmt.run(
-      name,
-      shortDesc,
-      desc,
-      dead,
-      age,
-      gender,
-      location,
-      occupation,
-      species
+      character.name,
+      character.desc,
+      character.dead,
+      character.age,
+      character.gender,
+      character.location,
+      character.occupation,
+      character.species
     )
     console.log(response)
     return {
@@ -64,9 +62,30 @@ class CharacterDb {
   readAllChars() {
     const selectAllQuery = `SELECT * FROM characters ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)
-    const results = stmt.all()
-    console.log(results)
-    return results
+    const response = stmt.all()
+    console.log(response)
+    return response
+  }
+
+  searchChars(query) {
+    const selectQuery = `SELECT * FROM characters WHERE name LIKE ?`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all(`%${query}%`)
+    console.log(response)
+    return response;
+  }
+
+  deepSearchChars(query) {
+    const selectQuery = `SELECT * FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
+    console.log(response)
+    return response;
+  }
+
+  close() {
+    this.db.close();
+    console.log('Database closed');
   }
 }
 

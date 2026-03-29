@@ -5,8 +5,10 @@
   --color-primary-highlight: #C0B8A5;
   --color-primary-muted: #675C44;
 
-  --color-positive: #00FF7F;
-  --color-destructive: #FF007F;
+  --color-positive: #3DCC84;
+    --color-positive-muted: #2B5942;
+  --color-destructive: #CD4087;
+  --color-destructive-muted: #67364E;
 
   --color-layer0: #050507;
   --color-layer1: #212228;

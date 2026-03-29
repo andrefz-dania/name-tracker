@@ -10,19 +10,30 @@
   let sortReverse: Boolean = $state(false);
   let searchTerm: String = $state('');
 
+  let characters = $state([]);
+
   $effect(()=> {
     console.log(searchTerm);
   })
 
+  $effect(() => {
+
+    console.log(characters)
+  })
+  async function getCharacters() {
+    characters = await window.api.readAllChars();
+  }
+  
+  getCharacters();
 </script>
 
 <Header>
   {@render Heading1('Characters')}
   <!-- search bar -->
-  <div class="max-w-6xl flex flex-row w-full mx-auto gap-2 mb-4 mt-8">
+  <div class="max-w-7xl flex flex-row w-full mx-auto gap-2 mb-4 mt-8">
   <form class="flex flex-row w-full gap-3" action="">
     <input
-      class="p-4 rounded-lg bg-layer1/50 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
+      class="p-4 rounded-md bg-layer1/50 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
       type="text"
       bind:value={searchTerm}
       placeholder="search..."
@@ -31,7 +42,7 @@
     <button class="rounded-md bg-layer1 p-3 hover:bg-layer2" type='reset'><XIcon></XIcon></button>
     </div>
 
-    <button class="md:px-12 px-6 bg-primary rounded-lg"><Search></Search></button>
+    <button class="md:px-12 px-6 bg-primary rounded-md"><Search></Search></button>
     </form>
   </div>
 </Header>
@@ -65,7 +76,7 @@
   {/if}
 {/snippet}
 
-<div class="grid grid-cols-6 pr-4 w-full rounded-xl place-items-between max-w-6xl mx-auto">
+<div class="grid grid-cols-6 pr-4 w-full rounded-md place-items-between max-w-7xl mx-auto">
   <!-- table header -->
   {@render ColumnLabel('name')}
   {@render ColumnLabel('species')}
@@ -78,8 +89,8 @@
   </div> -->
 </div>
 
-<ul class="flex flex-col gap-2 w-full rounded-xl max-w-6xl mx-auto h-full overflow-y-scroll">
-  {#each dummyChars as char}
+<ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
+  {#each characters as char}
     <CharacterCard character={char} />
   {/each}
 </ul>
