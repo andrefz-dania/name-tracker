@@ -8,7 +8,7 @@
 
   let route = $derived.by(() => {
     const parts = currentRoute.split('/')
-    return parts[1];
+    return parts[1]
   })
 
   let id = $derived.by(() => {
@@ -23,9 +23,9 @@
   $effect(() => {
     const handler = () => {
       currentRoute = window.location.hash.slice(1) || '/'
-      console.log('route', currentRoute);
-      console.log('core route', route);
-      console.log('id', id);
+      console.log('route', currentRoute)
+      console.log('core route', route)
+      console.log('id', id)
     }
     window.addEventListener('hashchange', handler)
     return () => window.removeEventListener('hashchange', handler)
@@ -38,31 +38,27 @@
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 </script>
 
-
-
 <main class="flex flex-col gap-2 p-4 max-h-screen">
-<nav>
-  <a href="#/">List</a>
-  <a href="#/other">Other page</a>
-  <a href="#/create">Create page</a>
-  <a href="#/character/1">character 1</a>
-    <a href="#/character/2">character 2</a>
-</nav>
-  <p>{currentRoute}</p>
+  <nav class="fixed flex flex-row gap-8">
+    <a class="hover:bg-layer1" href="#/">List</a>
+    <a class="hover:bg-layer1" href="#/other">Other page</a>
+    <a class="hover:bg-layer1" href="#/create">Create page</a>
+    <a class="hover:bg-layer1" href="#/character/1">character 1</a>
+    <a class="hover:bg-layer1" href="#/character/2">character 2</a>
+  </nav>
+  <p class="fixed mt-8">{currentRoute}</p>
   {#if currentRoute === '/'}
     <CharacterList />
   {:else if currentRoute === '/other'}
     <Other />
   {:else if route === 'character'}
-    <Character id={id} />
+    <Character {id} />
   {:else if route === 'create'}
-    <Create/>
+    <Create />
   {:else}
     <h2>404 Not Found</h2>
   {/if}
   <div>
-  <button onclick={ipcHandle}>Send IPC</button>
-</div>
-
+    <button onclick={ipcHandle}>Send IPC</button>
+  </div>
 </main>
-

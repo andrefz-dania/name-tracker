@@ -1,11 +1,16 @@
 <script lang="ts">
+  import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
+  const HandleIpcCreate = (): string => window.electron.ipcRenderer.send('createCharacter')
 
   // let {id} = $props();
 </script>
 
 <div>
+<Header>
   {@render Heading1('Create new character')}
+</Header>
+
   <form action="" class="max-w-6xl mx-auto flex flex-col gap-4">
     <div>
       <label for="name">Name:</label>

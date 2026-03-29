@@ -58,6 +58,12 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  ipcMain.on('createCharacter', (event, args) => {
+    console.log(event);
+    console.log(args);
+    return ("e");
+  })
+
   createWindow()
 
   app.on('activate', function () {

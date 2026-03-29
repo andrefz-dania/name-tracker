@@ -1,14 +1,17 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary: #659CA9;
-  --color-primary-highlight: #9DE3F3;
-  --color-primary-muted: #4F6267;
+  --color-primary: #9E9174;
+  --color-primary-highlight: #C0B8A5;
+  --color-primary-muted: #675C44;
 
-  --color-layer0: #1a1a1a;
-  --color-layer1: #272727;
-  --color-layer2: #424242;
-  --color-layer3: #686868;
+  --color-positive: #00FF7F;
+  --color-destructive: #FF007F;
+
+  --color-layer0: #050507;
+  --color-layer1: #212228;
+  --color-layer2: #3C3E49;
+  --color-layer3: #797E8D;
 
 }
 
@@ -56,7 +59,8 @@ ul {
 body {
   min-height: 100vh;
   max-height: 100vh;
-  background-image: linear-gradient(to bottom, #1a1a1aff 50%, #1a1a1aee);
+  background-color: var(--color-layer0);
+  /* background-image: linear-gradient(to bottom, #050507ee 10%, #050507ff 30%, #050507ff); */
   color: var(--color-text);
   line-height: 1.6;
   font-family:
@@ -77,3 +81,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.header-external {
+      background-size: cover;
+      background-image: url('paper-bw-tr.webp');
+    background-blend-mode: soft-light;
+
+}
+
+.header-internal {
+
+  background-image: linear-gradient(to bottom, #050507ea, #050507ff);
+  /* background-image: radial-gradient(circle at top, #050507ee, #050507ff); */
+}
