@@ -1,16 +1,32 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-primary: #659CA9;
+  --color-primary-glow: #222;
+  --color-primary-muted: #4F6267;
+
+  --color-layer0: #1a1a1a;
+  --color-layer1: #272727;
+  --color-layer2: #424242
+
+}
+
 html {
-  background-color: black;
+  background-size: cover;
+  background-image: url('paper-bw-tr.webp');
+  background-blend-mode: soft-light;
+    max-height: 100vh;
   @apply text-white;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  margin:0;
-  padding: 0;
   font-weight: normal;
 }
 
@@ -20,8 +36,9 @@ ul {
 
 body {
   min-height: 100vh;
+  max-height: 100vh;
+  background-image: linear-gradient(to bottom, #1a1a1aff 50%, #1a1a1aee);
   color: var(--color-text);
-  background: var(--color-background);
   line-height: 1.6;
   font-family:
     Inter,

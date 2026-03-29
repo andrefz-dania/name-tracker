@@ -37,14 +37,15 @@
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 </script>
 
+
+
+<main class="flex flex-col gap-2 p-4 max-h-screen">
 <nav>
   <a href="#/">List</a>
   <a href="#/other">Other page</a>
   <a href="#/character/1">character 1</a>
     <a href="#/character/2">character 2</a>
 </nav>
-
-<main class="flex flex-col gap-2">
   <p>{currentRoute}</p>
   {#if currentRoute === '/'}
     <CharacterList />
@@ -55,8 +56,9 @@
   {:else}
     <h2>404 Not Found</h2>
   {/if}
-</main>
-
-<div>
+  <div>
   <button onclick={ipcHandle}>Send IPC</button>
 </div>
+
+</main>
+

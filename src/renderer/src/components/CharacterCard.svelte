@@ -6,7 +6,7 @@
 </script>
 
       <li
-        class="grid grid-cols-6 gap-x-4 p-2 place-content-between bg-gray-700 hover:bg-gray-600 rounded-xl"
+        class="grid grid-cols-6 gap-x-4 p-4 place-content-between bg-layer1 hover:bg-layer2 rounded-xl"
       >
         <h3 class="font-bold text-lg">{character.name}</h3>
                 <p>{character.species}</p>
