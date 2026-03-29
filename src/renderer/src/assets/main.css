@@ -8,10 +8,11 @@
   --color-positive: #3DCC84;
     --color-positive-muted: #2B5942;
   --color-destructive: #CD4087;
+  --color-destructive-highlight: #FF89C4;
   --color-destructive-muted: #67364E;
 
   --color-layer0: #050507;
-  --color-layer1: #212228;
+  --color-layer1: #1C1D22;
   --color-layer2: #3C3E49;
   --color-layer3: #797E8D;
 
@@ -94,4 +95,9 @@ body {
 
   background-image: linear-gradient(to bottom, #050507ea, #050507ff);
   /* background-image: radial-gradient(circle at top, #050507ee, #050507ff); */
+}
+
+dialog::backdrop {
+  background-color: #00000088;
+
 }

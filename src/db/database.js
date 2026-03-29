@@ -53,9 +53,16 @@ class CharacterDb {
     const stmt = this.db.prepare(deleteQuery)
     const response = stmt.run(id)
     console.log(response)
-    return {
-      id: response.lastInsertRowid,
-      success: response.success
+    if (response.changes == 1) {
+      return {
+        id: id,
+        success: true
+      }
+    } else {
+      return {
+        id: id,
+        success: false
+      }
     }
   }
 
@@ -72,7 +79,7 @@ class CharacterDb {
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`)
     console.log(response)
-    return response;
+    return response
   }
 
   deepSearchChars(query) {
@@ -80,12 +87,12 @@ class CharacterDb {
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
     console.log(response)
-    return response;
+    return response
   }
 
   close() {
-    this.db.close();
-    console.log('Database closed');
+    this.db.close()
+    console.log('Database closed')
   }
 }
 

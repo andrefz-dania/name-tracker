@@ -16,4 +16,8 @@ export default function setupHandlers(db) {
     ipcMain.handle('searchChars', (_, searchQuery: string) => {
         return db.searchChars(searchQuery);
     });
+
+    ipcMain.handle('deepSearchChars', (_, searchQuery: string) => {
+        return db.searchChars(searchQuery);
+    });
 }

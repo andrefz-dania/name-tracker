@@ -12,22 +12,32 @@
   let characters = $state([]);
 
   $effect(()=> {
-    console.log(searchTerm);
+    console.log('searching for', searchTerm);
+    search();
   })
 
-  $effect(() => {
-
-    console.log(characters)
-  })
   async function getCharacters() {
     characters = await window.api.readAllChars();
   }
-  
+
+  async function search() {
+    characters = await window.api.searchChars(searchTerm);
+  }
+
+  const refresh = () => {
+    if (searchTerm.length > 0) {
+      search();
+    } else {
+      getCharacters();
+    }
+  }
+
   getCharacters();
 </script>
 
 <Header>
   {@render Heading1('Characters')}
+
   <!-- search bar -->
   <div class="max-w-7xl flex flex-row w-full mx-auto gap-2 mb-4 mt-8">
   <form class="flex flex-row w-full gap-3" action="">
@@ -44,6 +54,7 @@
     <button class="md:px-12 px-6 bg-primary rounded-md"><Search></Search></button>
     </form>
   </div>
+
 </Header>
 
 {#snippet ColumnIcon()}
@@ -90,6 +101,6 @@
 
 <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
   {#each characters as char}
-    <CharacterCard character={char} />
+    <CharacterCard character={char} refresh={refresh}/>
   {/each}
 </ul>

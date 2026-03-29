@@ -7,7 +7,9 @@ const api = {
 
   deleteChar: (id: number) => ipcRenderer.invoke('deleteChar', id),
 
-  readAllChars: () => ipcRenderer.invoke('readAllChars')
+  readAllChars: () => ipcRenderer.invoke('readAllChars'),
+
+  searchChars: (term: string) => ipcRenderer.invoke('searchChars', term)
 
 }
 
