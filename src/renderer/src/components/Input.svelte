@@ -1,0 +1,1 @@
+<input class="p-2 rounded-lg bg-layer1 w-full focus-within:outline-0 focus-within:bg-layer2" type="text" placeholder="a" />

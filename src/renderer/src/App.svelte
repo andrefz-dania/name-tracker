@@ -1,6 +1,7 @@
 <script lang="ts">
   import CharacterList from './components/CharacterList.svelte'
   import Character from './pages/Character.svelte'
+  import Create from './pages/Create.svelte'
   import Other from './pages/Other.svelte'
 
   let currentRoute = $state(window.location.hash.slice(1) || '/')
@@ -43,6 +44,7 @@
 <nav>
   <a href="#/">List</a>
   <a href="#/other">Other page</a>
+  <a href="#/create">Create page</a>
   <a href="#/character/1">character 1</a>
     <a href="#/character/2">character 2</a>
 </nav>
@@ -53,6 +55,8 @@
     <Other />
   {:else if route === 'character'}
     <Character id={id} />
+  {:else if route === 'create'}
+    <Create/>
   {:else}
     <h2>404 Not Found</h2>
   {/if}

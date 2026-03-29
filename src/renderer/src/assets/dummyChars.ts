@@ -1,5 +1,7 @@
 import type { CharacterType } from "../../../types/types";
 
+// Placeholder characters are made with AI - any resemblance is coincidental
+
 export const dummyChars: CharacterType[] = [
   {
     id: 0,
@@ -97,5 +99,11 @@ export const dummyChars: CharacterType[] = [
     location: 'Moon\'s Peak',
     occupation: 'Oracle',
     species: 'Human'
+  },
+  {
+    id: 8,
+    name: "Bob",
+    dead: true
+
   }
 ]
