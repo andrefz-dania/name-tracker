@@ -1,7 +1,6 @@
 <script lang="ts">
   // import dummy data to an array
   import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, Search, XIcon } from '@lucide/svelte'
-  import { dummyChars } from '../assets/dummyChars'
   import CharacterCard from './CharacterCard.svelte'
   import { Heading1 } from './Headings.svelte'
   import Header from './Header.svelte'
