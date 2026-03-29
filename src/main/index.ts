@@ -2,6 +2,9 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import CharacterDb from '../db/database.js'
+
+let db;
 
 function createWindow(): void {
   // Create the browser window.
@@ -48,6 +51,9 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
+
+  // connect to database
+  db = new CharacterDb();
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))

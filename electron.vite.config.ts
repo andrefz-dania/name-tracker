@@ -7,5 +7,5 @@ export default defineConfig({
   preload: {},
   renderer: {
     plugins: [svelte(), tailwindcss()]
-  }
+  },
 })

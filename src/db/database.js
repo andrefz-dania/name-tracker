@@ -4,7 +4,7 @@ const Database = require('better-sqlite3');
 
 const options = {}
 
-class StorageDatabase {
+class CharacterDb {
     constructor() {
         const storagePath = path.join(app.getPath('userData'), 'name-tracker.sqlite');
         this.db = new Database(storagePath, options);
@@ -26,8 +26,9 @@ class StorageDatabase {
         )`
 
         this.db.exec(setupCharactersSql);
+        console.log('Database setup complete')
     }
 
 }
 
-export default StorageDatabase;
+export default CharacterDb;
