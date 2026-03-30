@@ -30,7 +30,6 @@
 
   const saveCharacter = async () => {
     const newCharacter = {...character}
-    console.log(newCharacter)
     const response = await window.api.updateChar(newCharacter)
     if (response.success) {
       isUpdatable = false;
