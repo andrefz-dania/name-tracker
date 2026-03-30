@@ -1,5 +1,4 @@
 <script lang="ts">
-  // import dummy data to an array
   import {
     ArrowDownWideNarrow,
     ArrowUpDown,
@@ -13,6 +12,7 @@
   import Header from './Header.svelte'
   import ButtonDecorated from './ButtonDecorated.svelte'
   import Navigation from './Navigation.svelte'
+  import { debounce } from '../utils/debounce'
 
   let sortColumn: String = $state('name')
   let sortReverse: Boolean = $state(false)
@@ -22,20 +22,20 @@
 
   $effect(() => {
     console.log('searching for', searchTerm)
-    search()
+    debounce(search, 200)(searchTerm)
   })
 
   async function getCharacters() {
     characters = await window.api.readAllChars()
   }
 
-  async function search() {
-    characters = await window.api.searchChars(searchTerm)
+  async function search(term: string) {
+    characters = await window.api.searchChars(term)
   }
 
   const refresh = () => {
     if (searchTerm.length > 0) {
-      search()
+      search(searchTerm)
     } else {
       getCharacters()
     }
@@ -64,11 +64,10 @@
       <div class="w-16 -ml-18 flex items-center place-content-center">
         {#if searchTerm.length > 0}
           <ButtonDecorated style="simple" type="reset"><XIcon></XIcon></ButtonDecorated>
+        {:else}
+          <Search/>
         {/if}
-      </div>
-
-      <div class="max-w-xs flex min-w-16 md:min-w-20">
-        <ButtonDecorated><Search></Search></ButtonDecorated>
+        
       </div>
     </form>
   </div>
@@ -124,3 +123,4 @@
     <CharacterCard character={char} {refresh} />
   {/each}
 </ul>
+

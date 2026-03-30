@@ -1,6 +1,6 @@
 <script lang="ts">
   // import dummy data to an array
-  import { truncateString } from '../lib/truncateString'
+  import { truncateString } from '../utils/truncateString'
   import type { CharacterType } from '../../../types/types'
   import { SkullIcon, SproutIcon, SquarePen, TrashIcon } from '@lucide/svelte'
   import { Heading2 } from './Headings.svelte'
