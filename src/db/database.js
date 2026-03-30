@@ -126,7 +126,6 @@ class CharacterDb {
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`)
     console.log(`Found ${response.length} characters matching query: ${query} ordered by ${protectedColumn} ${direction}`)
-    console.log(response);
     return response
   }
 
