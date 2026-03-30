@@ -1,5 +1,4 @@
 <script lang="ts">
-  // import dummy data to an array
   import {
     ArrowDownWideNarrow,
     ArrowUpDown,

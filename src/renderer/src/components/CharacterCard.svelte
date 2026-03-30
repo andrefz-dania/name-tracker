@@ -1,7 +1,7 @@
 <script lang="ts">
   import { truncateString } from '../utils/truncateString'
   import type { CharacterType } from '../../../types/types'
-  import { SkullIcon, SproutIcon, SquarePen, TrashIcon } from '@lucide/svelte'
+  import { SkullIcon, SproutIcon, TrashIcon } from '@lucide/svelte'
   import { Heading2 } from './Headings.svelte'
   let { character, refresh }: { character: CharacterType; refresh: () => void } = $props()
 
@@ -57,11 +57,6 @@
       </p>
     {/if}
     <div class="flex gap-2">
-      <button
-        class="p-1 rounded-md text-primary hover:text-primary-highlight hover:bg-layer3"
-        ><SquarePen />
-      </button>
-
       <button
         command="show-modal"
         commandfor={dialogId}
