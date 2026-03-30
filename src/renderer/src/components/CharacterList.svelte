@@ -20,7 +20,7 @@
 
   let characters = $state([])
 
-   const debouncedSearch = $derived(debounce(search, 300))
+  const debouncedSearch = $derived(debounce(search, 300))
 
   $effect(() => {
     // instantly re-fetch the full list when the field is cleared
@@ -120,9 +120,6 @@
   {@render ColumnLabel('occupation')}
   {@render ColumnLabel('location')}
   {@render ColumnLabel('status')}
-  <!-- <div class="w-fit p-2">
-    <p class="text-primary">Actions</p>
-  </div> -->
 </div>
 
 <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">

@@ -8,9 +8,6 @@
     Hourglass,
     MapPin,
     Pencil,
-    SkullIcon,
-    SproutIcon,
-
     VenusAndMars
 
   } from '@lucide/svelte'
@@ -19,6 +16,7 @@
   import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import ButtonToggle from '../components/ButtonToggle.svelte'
+  import StatusMarker from '../components/StatusMarker.svelte'
 
   let editing = $state(false)
   let character: CharacterType | null = $state(null)
@@ -68,20 +66,8 @@
       <div class="border-primary rounded-full border-2 p-0">
         <CircleUserRound size={178}></CircleUserRound>
       </div>
-      {#if character && character.dead}
-        <p
-          class="h-min font-bold text-destructive flex flex-row gap-2 bg-destructive-muted/50 w-min px-2 py-1 pr-4 rounded-full"
-        >
-          <SkullIcon></SkullIcon>
-          Dead
-        </p>
-      {:else}
-        <p
-          class="h-min font-bold text-positive flex flex-row gap-2 bg-positive-muted/50 w-min px-2 py-1 pr-4 rounded-full"
-        >
-          <SproutIcon></SproutIcon>
-          Alive
-        </p>
+      {#if character}
+          <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
       {/if}
 
       <div class="flex gap-2 items-center">
