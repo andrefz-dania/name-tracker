@@ -21,8 +21,8 @@ export default function setupHandlers(db) {
         return db.updateChar(character);
     });
 
-    ipcMain.handle('searchChars', (_, searchQuery: string) => {
-        return db.searchChars(searchQuery);
+    ipcMain.handle('searchChars', (_, searchQuery: string, column: string, reverse: boolean) => {
+        return db.searchChars(searchQuery, column, reverse);
     });
 
     ipcMain.handle('deepSearchChars', (_, searchQuery: string) => {

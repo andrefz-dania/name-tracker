@@ -110,11 +110,13 @@ class CharacterDb {
 
   }
 
-  searchChars(query) {
-    const selectQuery = `SELECT * FROM characters WHERE name LIKE ?`
+  searchChars(query, column, reverse) {
+    const sortDir = reverse ? 'DESC' : 'ASC'
+    const selectQuery = `SELECT * FROM characters WHERE name LIKE ? ORDER BY ${column} ${sortDir}`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`)
-    console.log(`Found ${response.length} characters matching query: ${query}`)
+    console.log(`Found ${response.length} characters matching query: ${query} ordered by ${column} ${sortDir}`)
+    console.log(response);
     return response
   }
 
@@ -133,3 +135,4 @@ class CharacterDb {
 }
 
 export default CharacterDb
+

@@ -20,8 +20,8 @@
   import Navigation from './Navigation.svelte'
   import { debounce } from '../utils/debounce'
 
-  let sortColumn: String = $state('name')
-  let sortReverse: Boolean = $state(false)
+  let sortColumn: string = $state('name')
+  let sortReverse: boolean = $state(false)
   let searchTerm: string = $state('')
 
   let characters = $state([])
@@ -43,7 +43,7 @@
   }
 
   async function search() {
-    characters = await window.api.searchChars(searchTerm);
+    characters = await window.api.searchChars(searchTerm, sortColumn, sortReverse);
     console.log('searching for', searchTerm)
   }
 
@@ -108,7 +108,7 @@
   {/if}
 {/snippet}
 
-{#snippet ColumnLabel(name: String)}
+{#snippet ColumnLabel(name: string)}
   {#if sortColumn == name}
     <button
       class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-white relative"
