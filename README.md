@@ -1,10 +1,29 @@
-# name-tracker
+# CaraBace
 
-An Electron application with Svelte and TypeScript
+This is Electron application made with Svelte and TypeScript. It is aimed at fantasy/scifi writers, tabletop gamemasters, and other similar creative worldbuilding. The goal is to create an application that lets you track and manage a large list of characters, while keeping everything local.
 
-## Recommended IDE Setup
+This application is still in very early development, with only the basics implemented
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
+## Implemented Features
+- quickly search though all your characters
+- add characters to the list, and enter their details, such as location, occupation, species, and more.
+- multiplatform support (untested)
+
+## Planned features
+- edit characters
+- sort by column
+- favourites
+- quickly swap character status from the search list
+- persist search and scroll location between screens
+- add images to each character
+- character tags
+- character relationships
+- timeline / events for each character
+- custom time system
+- multiple worlds
+- distribution / installers
+- flathub package
+
 
 ## Project Setup
 
