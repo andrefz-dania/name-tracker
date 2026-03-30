@@ -2,11 +2,15 @@
   import {
     BookOpenText,
     Cat,
+    Check,
     CircleUserRound,
     Hammer,
     Hourglass,
     MapPin,
-    VenusAndMars
+    VenusAndMars,
+
+    XIcon
+
   } from '@lucide/svelte'
   import { blankCharacter, type CharacterType } from '../../../types/types'
   import Header from '../components/Header.svelte'
@@ -16,47 +20,69 @@
   import EditableField from '../components/EditableField.svelte'
   import EditableArea from '../components/EditableArea.svelte'
   import EditableTitle from '../components/EditableTitle.svelte'
+  import ButtonDecorated from '../components/ButtonDecorated.svelte'
 
   let character: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
   let isUpdatable: boolean = $state(false)
-  
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
   }
 
   const saveCharacter = async () => {
-    const newCharacter = {...character}
+    const newCharacter = { ...character }
     const response = await window.api.updateChar(newCharacter)
     if (response.success) {
-      isUpdatable = false;
+      isUpdatable = false
     }
   }
 
-  const invertDeadState = ()=>{
-    character.dead == 0 ? character.dead = 1 : character.dead = 0;
-    isUpdatable = true;
+  const discardChanges = () => {
+    getCharacter();
+    isUpdatable = false;
+  }
+
+  const invertDeadState = () => {
+    character.dead == 0 ? (character.dead = 1) : (character.dead = 0)
+    isUpdatable = true
   }
 
   getCharacter()
-
 </script>
 
-<Navigation></Navigation>
+<Navigation>
+  <div>
+    <ButtonDecorated style="outline" disabled={!isUpdatable} onclick={discardChanges}
+      ><XIcon></XIcon>Discard changes</ButtonDecorated
+    >
+  </div>
+  <div>
+    <ButtonDecorated
+      style={isUpdatable ? 'normal-static' : 'outline'}
+      disabled={!isUpdatable}
+      onclick={saveCharacter}><Check></Check>Save changes</ButtonDecorated
+    >
+  </div>
+</Navigation>
 
 <Header>
   {#if !character}
     {@render Heading1('Loading data...')}
   {:else}
-    <EditableTitle id="name" name="name" bind:value={character.name} placeholder='Name'></EditableTitle>
-  {/if}
-  {#if isUpdatable}
-  <button onclick={saveCharacter}>save</button>
+    <form onchange={() => (isUpdatable = true)}>
+      <EditableTitle
+        id="name"
+        name="name"
+        bind:value={character.name}
+        defaultvalue={character.name}
+        placeholder="Name"
+      ></EditableTitle>
+    </form>
   {/if}
 </Header>
 
-<form class="overflow-y-scroll" onchange={()=>isUpdatable=true}>
+<form class="overflow-y-scroll" onchange={() => (isUpdatable = true)}>
   {#if !character}
     <p>Loading...</p>
   {:else}
@@ -66,7 +92,6 @@
           <CircleUserRound size={178}></CircleUserRound>
         </div>
         <button class="cursor-pointer" onclick={invertDeadState} type="button">
-
           <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
         </button>
 
@@ -155,4 +180,4 @@
       </section>
     </div>
   {/if}
-  </form>
+</form>

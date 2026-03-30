@@ -14,7 +14,7 @@
 {#if style == 'no-back'}
   <nav class="fixed flex w-full place-content-between pr-8">
     <div></div>
-    <div class="flex gap-2">
+    <div class="flex gap-4">
       {@render children?.()}
       <a href="#/settings"
         ><ButtonDecorated style="outline" type="button"><Settings /></ButtonDecorated></a
@@ -26,7 +26,7 @@
     <div>
       <a href="#/"><ButtonDecorated style="outline"><ChevronLeft />Back</ButtonDecorated></a>
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-4">
       {@render children?.()}
       <a href="#/settings"
         ><ButtonDecorated style="outline" type="button"><Settings /></ButtonDecorated></a
