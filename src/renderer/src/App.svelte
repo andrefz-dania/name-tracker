@@ -3,6 +3,7 @@
   import Character from './pages/Character.svelte'
   import Create from './pages/Create.svelte'
   import Other from './pages/Other.svelte'
+  import Settings from './pages/Settings.svelte'
 
   let currentRoute = $state(window.location.hash.slice(1) || '/')
 
@@ -41,6 +42,9 @@
     <Character {id} />
   {:else if route === 'create'}
     <Create />
+
+  {:else if route === 'settings'}
+    <Settings></Settings>
   {:else}
     <h2>404 Not Found</h2>
   {/if}

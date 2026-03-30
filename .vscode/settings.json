@@ -16,5 +16,6 @@
     "javascript",
     "javascriptreact",
     "svelte"
-  ]
+  ],
+  "prettier.tabWidth": 6
 }
