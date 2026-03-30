@@ -3,11 +3,9 @@
     BookOpenText,
     Cat,
     CircleUserRound,
-    Eye,
     Hammer,
     Hourglass,
     MapPin,
-    Pencil,
     VenusAndMars
 
   } from '@lucide/svelte'
@@ -15,18 +13,30 @@
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
-  import ButtonToggle from '../components/ButtonToggle.svelte'
   import StatusMarker from '../components/StatusMarker.svelte'
+  import TextAreaInput from '../components/TextAreaInput.svelte'
 
-  let editing = $state(false)
+  let editing: Boolean = $state(false)
+  let field: String | null = $state(null)
   let character: CharacterType | null = $state(null)
+  let editedCharater: CharacterType | null = $state(null)
   let { id }: { id: number } = $props()
+
+  let rows = $derived(Math.ceil(character.desc.length / 80) + 2)
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
   }
 
-  getCharacter()
+  function startEditing(fieldToEdit) {
+    editing = true;
+    field = fieldToEdit;
+  }
+
+  getCharacter().then(()=>{
+    editedCharater=character;
+  }
+  )
 </script>
 
 <Navigation></Navigation>
@@ -39,42 +49,24 @@
   {/if}
 </Header>
 
-  <div class="max-w-lg flex flex-row gap-4 mx-auto w-full mt-4 mb-4">
-    {#if editing}
-      <ButtonToggle style="inactive" onclick={() => (editing = false)}><Eye></Eye>View</ButtonToggle
-      >
-      <ButtonToggle style="active" onclick={() => (editing = true)}
-        ><Pencil></Pencil>Edit</ButtonToggle
-      >
-    {:else}
-      <ButtonToggle style="active" onclick={() => (editing = false)}><Eye></Eye>View</ButtonToggle>
-      <ButtonToggle style="inactive" onclick={() => (editing = true)}
-        ><Pencil></Pencil>Edit</ButtonToggle
-      >
-    {/if}
-  </div>
-
 <div class="overflow-y-scroll">
   {#if !character}
     <p>Loading...</p>
-  {/if}
+  {:else}
 
+<div class="flex flex-row gap-2 mx-auto w-full max-w-6xl">
 
-
-  <div class="flex flex-row gap-2 mx-auto w-full max-w-6xl">
     <section class="rounded-md p-4 flex flex-col items-center gap-4">
       <div class="border-primary rounded-full border-2 p-0">
         <CircleUserRound size={178}></CircleUserRound>
       </div>
-      {#if character}
           <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
-      {/if}
 
       <div class="flex gap-2 items-center">
         <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
           <Hourglass />Age:
         </h2>
-        {#if character && character.age}
+        {#if character.age}
           <p class="text-white">{character.age}</p>
         {:else}
           <p class="text-white/75">Unknown</p>
@@ -85,7 +77,7 @@
         <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
           <VenusAndMars />Gender:
         </h2>
-        {#if character && character.gender}
+        {#if character.gender}
           <p class="text-white">{character.gender}</p>
         {:else}
           <p class="text-white/75">Unknown</p>
@@ -96,7 +88,7 @@
         <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
           <Cat />Species:
         </h2>
-        {#if character && character.species}
+        {#if character.species}
           <p class="text-white">{character.species}</p>
         {:else}
           <p class="text-white/75">Unknown</p>
@@ -104,13 +96,13 @@
       </div>
     </section>
 
-    <section class="bg-layer1 rounded-md p-4 flex flex-col gap-2 w-full">
-      <div class="flex gap-2 mb-4">
+    <section class="mt-2flex flex-col gap-8 w-full">
+      <div class="flex gap-2 mb-4 bg-layer1 p-4 rounded-md">
         <div class="w-full text-center">
           <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
             <Hammer />Occupation
           </h2>
-          {#if character && character.occupation}
+          {#if character.occupation}
             <p class="text-white/75">{character.occupation}</p>
           {:else}
             <p class="text-white/50">Unknown</p>
@@ -122,7 +114,7 @@
             <MapPin />Location
           </h2>
 
-          {#if character && character.location}
+          {#if character.location}
             <p class="text-white/75">{character.location}</p>
           {:else}
             <p class="text-white/50">Unknown</p>
@@ -130,14 +122,30 @@
         </div>
       </div>
 
+      <div class="bg-layer1 p-4 px-8 flex gap-2 flex-col">
       <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
         <BookOpenText />Description
       </h2>
-      {#if character && character.desc}
-        <p class="text-white/75 whitespace-pre-wrap">{character.desc}</p>
+
+      {#if editing}
+        <TextAreaInput name="desc" bind:value={editedCharater.desc} rows={rows}></TextAreaInput>
+        {:else}
+              {#if character.desc}
+        <p class="text-white/75 whitespace-pre-wrap" onclick={()=>startEditing('desc')}>{character.desc}</p>
       {:else}
-        <p class="text-white/50 whitespace-pre-wrap">No description available.</p>
+        <p class="text-white/50 whitespace-pre-wrap">No description provided.</p>
       {/if}
+      {/if}
+
+
+      </div>
+
+
     </section>
   </div>
+  {/if}
+
+
+
+  
 </div>

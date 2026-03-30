@@ -76,6 +76,8 @@
       <div class="w-16 -ml-18 flex items-center place-content-center">
         {#if searchTerm.length > 0}
           <ButtonDecorated style="simple" type="reset"><XIcon></XIcon></ButtonDecorated>
+        {:else}
+          <ButtonDecorated style="transparent" type="submit"><Search></Search></ButtonDecorated>
         {/if}
       </div>
     </form>
