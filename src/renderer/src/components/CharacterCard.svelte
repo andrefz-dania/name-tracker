@@ -24,7 +24,7 @@
 
 {#snippet Field(string?: String)}
   {#if string && string.length > 0}
-    <p class="text-sm">{string}</p>
+    <p class="text-sm capitalize">{string}</p>
   {:else}
     <p class="opacity-50 text-sm">Unknown</p>
   {/if}

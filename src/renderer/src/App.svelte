@@ -32,7 +32,7 @@
 </script>
 
 <main class="flex flex-col gap-2 p-4 max-h-screen">
-  <p class="fixed mt-8 bottom-0 bg-black text-white">DEBUG ROUTE: {currentRoute}</p>
+  <!-- <p class="fixed mt-8 bottom-0 bg-black text-white">DEBUG ROUTE: {currentRoute}</p> -->
   {#if currentRoute === '/'}
     <CharacterList />
   {:else if currentRoute === '/other'}

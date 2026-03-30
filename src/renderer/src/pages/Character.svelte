@@ -8,9 +8,7 @@
     Hourglass,
     MapPin,
     VenusAndMars,
-
     XIcon
-
   } from '@lucide/svelte'
   import { blankCharacter, type CharacterType } from '../../../types/types'
   import Header from '../components/Header.svelte'
@@ -21,6 +19,7 @@
   import EditableArea from '../components/EditableArea.svelte'
   import EditableTitle from '../components/EditableTitle.svelte'
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
+  import { formatCharacter } from '../utils/formatCharacter'
 
   let character: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
@@ -31,7 +30,7 @@
   }
 
   const saveCharacter = async () => {
-    const newCharacter = { ...character }
+    const newCharacter = formatCharacter(character)
     const response = await window.api.updateChar(newCharacter)
     if (response.success) {
       isUpdatable = false
@@ -39,8 +38,8 @@
   }
 
   const discardChanges = () => {
-    getCharacter();
-    isUpdatable = false;
+    getCharacter()
+    isUpdatable = false
   }
 
   const invertDeadState = () => {

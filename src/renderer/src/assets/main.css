@@ -25,6 +25,7 @@ html {
   background-blend-mode: soft-light;
     max-height: 100vh;
   @apply text-white;
+  overflow: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -94,7 +95,7 @@ body {
 
 .header-internal {
 
-  background-image: linear-gradient(to bottom, #050507ea, #050507ff);
+  background-image: linear-gradient(to bottom, #050507ea, var(--color-layer0));
   /* background-image: radial-gradient(circle at top, #050507ee, #050507ff); */
 }
 

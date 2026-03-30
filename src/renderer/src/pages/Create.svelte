@@ -7,6 +7,7 @@
   import TextAreaInput from '../components/TextAreaInput.svelte'
   import TextInput from '../components/TextInput.svelte'
   import { Check, SkullIcon, SproutIcon, XIcon } from '@lucide/svelte'
+  import { capitalizeAll, capitalizeFirst, decapitalizeAll } from '../utils/capitalize'
 
   let name = $state('')
   let status = $state('Alive') // Default to Alive
@@ -22,14 +23,14 @@
   const handleAddCharacter = async () => {
 
     const character: CharacterType = {
-      name,
+      name: capitalizeAll(name),
       dead,
       desc,
       age: age ? parseInt(age) : undefined,
-      gender,
-      location,
-      occupation,
-      species
+      gender: decapitalizeAll(gender),
+      location: capitalizeFirst(location),
+      occupation: capitalizeFirst(occupation),
+      species: decapitalizeAll(species)
     }
 
     await window.api.createChar(character)
