@@ -13,6 +13,7 @@
   import Header from './Header.svelte'
   import ButtonDecorated from './ButtonDecorated.svelte'
   import Navigation from './Navigation.svelte'
+  import { debounce } from '../utils/debounce'
 
   let sortColumn: String = $state('name')
   let sortReverse: Boolean = $state(false)
@@ -20,9 +21,16 @@
 
   let characters = $state([])
 
+   const debouncedSearch = $derived(debounce(search, 300))
+
   $effect(() => {
-    console.log('searching for', searchTerm)
-    search()
+    // instantly re-fetch the full list when the field is cleared
+    // also makes searchTerm a dependency of the effect, making it work correctly.
+    if (searchTerm.length == 0) {
+      search();
+    } else {
+      debouncedSearch();
+    }
   })
 
   async function getCharacters() {
@@ -30,7 +38,8 @@
   }
 
   async function search() {
-    characters = await window.api.searchChars(searchTerm)
+    characters = await window.api.searchChars(searchTerm);
+    console.log('searching for', searchTerm)
   }
 
   const refresh = () => {
@@ -40,8 +49,6 @@
       getCharacters()
     }
   }
-
-  getCharacters()
 </script>
 
 <Navigation style='no-back'>
