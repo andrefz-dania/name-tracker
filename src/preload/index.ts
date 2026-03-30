@@ -9,6 +9,8 @@ const api = {
 
   readAllChars: () => ipcRenderer.invoke('readAllChars'),
 
+  readOneChar: (id: number) => ipcRenderer.invoke('readOneChar', id),
+
   searchChars: (term: string) => ipcRenderer.invoke('searchChars', term)
 
 }

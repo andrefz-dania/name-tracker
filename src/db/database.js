@@ -74,6 +74,44 @@ class CharacterDb {
     return response
   }
 
+  readOneChar(id) {
+    const selectQuery = `SELECT * FROM characters WHERE id = ?`;
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.get(id)
+    console.log(response)
+    return response
+  }
+
+  updateChar(id, character) {
+    const updateQuery = `UPDATE characters SET name=?, desc=?, dead=?, age=?, gender=?, location=?, occupation=?, species=? WHERE id=? RETURNING *`
+    const stmt = this.db.prepare(updateQuery)
+    const response = stmt.run(
+      character.name,
+      character.desc,
+      character.dead,
+      character.age,
+      character.gender,
+      character.location,
+      character.occupation,
+      character.species,
+    );
+
+    // TO DO: HANDLE RETURNING PROPERLY
+    console.log(response)
+     if (response.changes == 1) {
+      return {
+        id: id,
+        success: true
+      }
+    } else {
+      return {
+        id: id,
+        success: false
+      }
+    }
+
+  }
+
   searchChars(query) {
     const selectQuery = `SELECT * FROM characters WHERE name LIKE ?`
     const stmt = this.db.prepare(selectQuery)

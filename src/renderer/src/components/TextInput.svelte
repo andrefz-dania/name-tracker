@@ -8,7 +8,7 @@
     {label}
   </label>
   <input
-    class="p-2 rounded-md bg-layer1 w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
+    class="whitespace-pre p-2 rounded-md bg-layer1 w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
     type={type}
     name={name}
     bind:value={value}

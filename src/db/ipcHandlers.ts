@@ -13,6 +13,14 @@ export default function setupHandlers(db) {
         return db.readAllChars();
     });
 
+    ipcMain.handle('readOneChar', (_, id: number) => {
+        return db.readOneChar(id);
+    });
+
+    ipcMain.handle('updateChar', (_, id: number, character: CharacterData) => {
+        return db.updateChar(id, character);
+    });
+
     ipcMain.handle('searchChars', (_, searchQuery: string) => {
         return db.searchChars(searchQuery);
     });

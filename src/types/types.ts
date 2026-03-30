@@ -14,5 +14,7 @@ export type ApiTypes = {
       createChar(character: CharacterType): Promise<CharacterType>;
       deleteChar(id: number): Promise<{id: number, success: boolean}>;
       readAllChars(): Promise<CharacterType[]>;
+      readOneChar(id: number): Promise<CharacterType>;
+      updateChar(id: number, character: CharacterType): Promise<CharacterType>;
       searchChars(term: string): Promise<CharacterType[]>;
     };
