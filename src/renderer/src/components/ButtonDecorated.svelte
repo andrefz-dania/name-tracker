@@ -18,7 +18,7 @@
 {#if (style == 'positive')}
 <button class="cursor-pointer items-center flex place-content-center gap-2 text-positive bg-positive-muted/50 rounded-md p-2 px-2 w-full hover:bg-positive-muted hover:text-positive-highlight hover:outline border-positive-highlight" {type} {onclick} {disabled}>{@render children()}</button>
 {:else if (style == 'outline')}
-<button class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-1 rounded-md p-2 px-2 w-full hover:bg-layer3/10 hover:outline-primary-highlight hover:text-primary-highlight " {type} {onclick} {disabled}>{@render children()}</button>
+<button class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-1 rounded-md p-2 px-2 w-full hover:bg-layer3/20 hover:outline-primary-highlight hover:text-primary-highlight " {type} {onclick} {disabled}>{@render children()}</button>
 {:else if (style == 'destructive')}
 <button class="cursor-pointer items-center flex place-content-center gap-2 text-destructive bg-destructive-muted/50 rounded-md p-2 px-2 w-full hover:bg-destructive-muted hover:text-destructive-highlight hover:outline border-destructive-highlight " {type} {onclick} {disabled}>{@render children()}</button>
 {:else if (style == 'simple')}

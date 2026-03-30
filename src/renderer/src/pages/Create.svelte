@@ -3,9 +3,10 @@
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
+  import Navigation from '../components/Navigation.svelte'
   import TextAreaInput from '../components/TextAreaInput.svelte'
   import TextInput from '../components/TextInput.svelte'
-  import { Check, ChevronLeft, SkullIcon, SproutIcon, XIcon } from '@lucide/svelte'
+  import { Check, SkullIcon, SproutIcon, XIcon } from '@lucide/svelte'
 
   let name = $state('')
   let status = $state('Alive') // Default to Alive
@@ -38,9 +39,7 @@
   // let {id} = $props();
 </script>
 
-<div class="fixed">
-      <a href="#/"><ButtonDecorated style="outline"><ChevronLeft/>Back</ButtonDecorated></a>
-</div>
+<Navigation></Navigation>
 
 <Header>
   {@render Heading1('Create new character')}

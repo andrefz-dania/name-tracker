@@ -12,10 +12,10 @@
   --color-destructive-highlight: #FF89AB;
   --color-destructive-muted: #673644;
 
-  --color-layer0: #050507;
-  --color-layer1: #1C1D22;
-  --color-layer2: #3C3E49;
-  --color-layer3: #797E8D;
+  --color-layer0: hsl(231, 15%, 3%);
+  --color-layer1: hsl(231, 15%, 11%);
+  --color-layer2: hsl(231, 15%, 20%);
+  --color-layer3: hsl(231, 15%, 30%);
 
 }
 

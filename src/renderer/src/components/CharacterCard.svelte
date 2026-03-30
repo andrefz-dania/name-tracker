@@ -8,8 +8,8 @@
 
   async function deleteCharacter() {
     const result = await window.api.deleteChar(character.id)
+    // refresh character list once character is successfully deleted
     if (result.success === true) {
-      // refresh character list
       refresh()
     }
     console.log(result)
@@ -21,6 +21,8 @@
 
   const dialogId = $derived('deleteDialog' + character.id);
 
+  const link = $derived('#/character/' + character.id);
+
 </script>
 
 {#snippet Field(string?: String)}
@@ -31,6 +33,8 @@
   {/if}
 {/snippet}
 
+
+<a href={link}>
 <li
   class="grid grid-cols-6 gap-x-4 px-4 py-2 place-content-between items-center bg-layer1 hover:bg-layer2 rounded-sm"
 >
@@ -55,14 +59,14 @@
     {/if}
     <div class="flex gap-2">
       <button
-        class="bg-layer2 p-1 rounded-md text-primary border border-transparent hover:text-primary-highlight hover:border-primary"
+        class="p-1 rounded-md text-primary hover:text-primary-highlight hover:bg-layer3"
         ><SquarePen />
       </button>
 
       <button
         command="show-modal"
         commandfor={dialogId}
-        class="bg-layer2 p-1 rounded-md text-primary border border-transparent hover:text-primary-highlight hover:border-primary"
+        class="p-1 rounded-md text-primary hover:text-primary-highlight hover:bg-layer3"
         ><TrashIcon />
       </button>
 
@@ -88,3 +92,4 @@
     <p class="h-0 col-span-6"></p>
   {/if}
 </li>
+</a>
