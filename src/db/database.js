@@ -111,11 +111,21 @@ class CharacterDb {
   }
 
   searchChars(query, column, reverse) {
-    const sortDir = reverse ? 'DESC' : 'ASC'
-    const selectQuery = `SELECT * FROM characters WHERE name LIKE ? ORDER BY ${column} ${sortDir}`
+    const direction = reverse ? 'DESC' : 'ASC'
+    function  evaluateColumn(column) {
+      if (column == 'species' || column == 'gender' || column == 'location' || column == 'occupation') {
+        return column
+      } else if (column == 'status') {
+        return 'dead'
+      } else {
+        return 'name'
+      }
+    }
+    const protectedColumn = evaluateColumn(column);
+    const selectQuery = `SELECT * FROM characters WHERE name LIKE ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`)
-    console.log(`Found ${response.length} characters matching query: ${query} ordered by ${column} ${sortDir}`)
+    console.log(`Found ${response.length} characters matching query: ${query} ordered by ${protectedColumn} ${direction}`)
     console.log(response);
     return response
   }
