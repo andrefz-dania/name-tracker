@@ -3,7 +3,7 @@
   let error = $state('');
 </script>
 
-<div class="flex flex-col gap-1">
+<div class="flex flex-col gap-1 w-full">
   <label for={id || name}>
     {label}
   </label>

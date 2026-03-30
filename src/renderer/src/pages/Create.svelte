@@ -1,14 +1,15 @@
 <script lang="ts">
   import type { CharacterType } from '../../../types/types'
+  import ButtonDecorated from '../components/ButtonDecorated.svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
   import TextAreaInput from '../components/TextAreaInput.svelte'
   import TextInput from '../components/TextInput.svelte'
-  import { ChevronLeft, SkullIcon, SproutIcon } from '@lucide/svelte'
+  import { Check, ChevronLeft, SkullIcon, SproutIcon, XIcon } from '@lucide/svelte'
 
   let name = $state('')
   let status = $state('Alive') // Default to Alive
-  let dead = $derived(status == 'Dead' ? 1 : 0)
+  let dead = $derived(status == 'Dead' ? 1 : 0)  //sqlite cannot handle booleans
 
   let desc = $state('')
   let age = $state('')
@@ -17,8 +18,7 @@
   let occupation = $state('')
   let species = $state('')
 
-  const handleAddCharacter = async (e: Event) => {
-    e.preventDefault()
+  const handleAddCharacter = async () => {
 
     const character: CharacterType = {
       name,
@@ -38,17 +38,19 @@
   // let {id} = $props();
 </script>
 
-<div class="fixed w-full">
-      <a class="bg-primary text-white font-bold pr-4 flex gap-2 w-fit p-2 rounded-md" href="#/"><ChevronLeft/>Back</a>
+<div class="fixed">
+      <a href="#/"><ButtonDecorated style="outline"><ChevronLeft/>Back</ButtonDecorated></a>
 </div>
 
 <Header>
   {@render Heading1('Create new character')}
 </Header>
+<div class="overflow-y-scroll">
+
 
 <form
   onsubmit={handleAddCharacter}
-  class="max-w-xl w-full mx-auto flex flex-col gap-4 overflow-y-scroll"
+  class="max-w-2xl w-full mx-auto flex flex-col gap-4"
 >
   <TextInput label="Name" id="nameInput" name="name" bind:value={name} placeholder="Name" />
 
@@ -136,12 +138,12 @@
     rows={5}
   />
 
-  <div class="flex flex-row gap-2">
+  <div class="flex flex-row mx-auto gap-4">
     <TextInput label="Age" id="ageInput" name="age" bind:value={age} placeholder="Age" type="number" />
     <TextInput label="Gender" id="genderInput" name="gender" bind:value={gender} placeholder="Gender" />
   </div>
 
-  <div class="flex flex-row gap-2">
+  <div class="flex flex-row mx-auto gap-4">
     <TextInput
       label="Species"
       id="speciesInput"
@@ -158,5 +160,12 @@
     />
   </div>
 
-  <button class="bg-primary rounded-md p-4 font-bold mx-auto" type="submit">Submit</button>
+  <div class="flex gap-4 mb-2 mt-8">
+    <ButtonDecorated type='submit'><Check></Check>Create</ButtonDecorated>
+    <ButtonDecorated style='outline' type='reset'><XIcon></XIcon>Reset</ButtonDecorated>
+
+  </div>
+
 </form>
+
+</div>

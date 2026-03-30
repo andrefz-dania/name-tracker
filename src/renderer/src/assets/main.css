@@ -6,7 +6,8 @@
   --color-primary-muted: #675C44;
 
   --color-positive: #3DCC84;
-    --color-positive-muted: #2B5942;
+  --color-positive-muted: #2B5942;
+  --color-positive-highlight: #65F3AB;
   --color-destructive: #CD4068;
   --color-destructive-highlight: #FF89AB;
   --color-destructive-muted: #673644;
@@ -100,4 +101,20 @@ body {
 dialog::backdrop {
   background-color: #00000088;
 
+}
+
+.corner-scoop {
+  corner-shape: scoop;
+}
+
+.corner-notch {
+  corner-shape: notch;
+}
+
+.corner-bevel {
+  corner-shape: bevel;
+}
+
+.corner-squircle {
+  corner-shape: squircle;
 }

@@ -1,13 +1,14 @@
 <script lang="ts">
   // import dummy data to an array
-  import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, ChevronLeft, CirclePlus, CogIcon, PlusCircle, PlusCircleIcon, Search, XIcon } from '@lucide/svelte'
+  import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, CirclePlus, Search, Settings, XIcon } from '@lucide/svelte'
   import CharacterCard from './CharacterCard.svelte'
   import { Heading1 } from './Headings.svelte'
   import Header from './Header.svelte'
+  import ButtonDecorated from './ButtonDecorated.svelte'
 
   let sortColumn: String = $state('name');
   let sortReverse: Boolean = $state(false);
-  let searchTerm: String = $state('');
+  let searchTerm: string = $state('');
 
   let characters = $state([]);
 
@@ -40,8 +41,8 @@
 
 </div>
 <div class="flex gap-2">
-  <a class="bg-primary text-white font-bold pr-4 flex gap-2 p-2 rounded-md items-center" href="#/create"><CirclePlus/>New Character</a>
-  <a class="hover:bg-layer1 flex items-center px-4 rounded-md" href="#/settings"><CogIcon/></a>
+  <a href="#/create"><ButtonDecorated type="button"><CirclePlus/>New Character</ButtonDecorated></a>
+  <a href="#/settings"><ButtonDecorated style="outline" type="button"><Settings/></ButtonDecorated></a>
 
 </div>
 </div>
@@ -50,7 +51,7 @@
   {@render Heading1('Characters')}
 
   <!-- search bar -->
-  <div class="max-w-7xl flex flex-row w-full mx-auto gap-2 mb-4 mt-8">
+  <div class="max-w-2xl flex flex-row w-full mx-auto gap-4 mb-4 mt-8">
   <form class="flex flex-row w-full gap-3" action="">
     <input
       class="p-4 rounded-md bg-layer1/50 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
@@ -59,10 +60,15 @@
       placeholder="search..."
     />
     <div class="w-16 -ml-18 flex items-center place-content-center">
-    <button class="rounded-md bg-layer1 p-3 hover:bg-layer2" type='reset'><XIcon></XIcon></button>
+    {#if searchTerm.length > 0}
+    <ButtonDecorated style='simple' type="reset"><XIcon></XIcon></ButtonDecorated>
+    {/if}
     </div>
 
-    <button class="md:px-12 px-6 bg-primary rounded-md"><Search></Search></button>
+    <div class="max-w-xs flex min-w-16 md:min-w-20">
+      <ButtonDecorated><Search></Search></ButtonDecorated>
+    </div>
+
     </form>
   </div>
 
