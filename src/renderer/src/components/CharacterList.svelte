@@ -20,8 +20,8 @@
   import Navigation from './Navigation.svelte'
   import { debounce } from '../utils/debounce'
 
-  let sortColumn: string = $state('name')
-  let sortReverse: boolean = $state(false)
+  let sortColumn: String = $state('name')
+  let sortReverse: Boolean = $state(false)
   let searchTerm: string = $state('')
 
   let characters = $state([])
@@ -54,23 +54,6 @@
       getCharacters()
     }
   }
-
-  let sortedCharacters = $derived.by(()=>{
-    const sorted = (arr, getter, reverse) => 
-  [...arr].sort( // Spreads array to avoid mutation
-    reverse === true
-      ? (a, b) => getter(b).localeCompare(getter(a))
-      : (a, b) => getter(a).localeCompare(getter(b))
-  );
-
-  if (sortColumn == 'status') {
-    return characters;
-  }
-
-  return sorted(characters, (c) => c[sortColumn], sortReverse)
-  })
-
-
 </script>
 
 <Navigation style='no-back'>
@@ -125,7 +108,7 @@
   {/if}
 {/snippet}
 
-{#snippet ColumnLabel(name: string)}
+{#snippet ColumnLabel(name: String)}
   {#if sortColumn == name}
     <button
       class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-white relative"
@@ -167,8 +150,7 @@
 </div>
 
 <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
-  {#each sortedCharacters as char}
+  {#each characters as char}
     <CharacterCard character={char} {refresh} />
   {/each}
 </ul>
-
