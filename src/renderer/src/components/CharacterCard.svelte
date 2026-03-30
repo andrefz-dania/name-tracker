@@ -41,7 +41,12 @@
     {@render Field(character.occupation)}
     {@render Field(character.location)}
     <div class="flex gap-2 place-content-between">
+    <div class="sr-only lg:not-sr-only">
+      <StatusMarker dead={character.dead ? true : false} showText></StatusMarker>
+    </div>
+        <div class="not-sr-only lg:sr-only">
       <StatusMarker dead={character.dead ? true : false}></StatusMarker>
+    </div>
       <div class="flex gap-2">
         <button
           command="show-modal"

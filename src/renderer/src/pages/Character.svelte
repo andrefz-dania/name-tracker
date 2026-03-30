@@ -18,14 +18,12 @@
   import EditableTitle from '../components/EditableTitle.svelte'
 
   let character: CharacterType = $state(blankCharacter)
-  let prev: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
   let isUpdatable: boolean = $state(false)
   
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
-    prev = character;
   }
 
   const saveCharacter = async () => {
@@ -34,6 +32,11 @@
     if (response.success) {
       isUpdatable = false;
     }
+  }
+
+  const invertDeadState = ()=>{
+    character.dead == 0 ? character.dead = 1 : character.dead = 0;
+    isUpdatable = true;
   }
 
   getCharacter()
@@ -62,7 +65,10 @@
         <div class="border-primary rounded-full border-2 p-0">
           <CircleUserRound size={178}></CircleUserRound>
         </div>
-        <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
+        <button class="cursor-pointer" onclick={invertDeadState} type="button">
+
+          <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
+        </button>
 
         <div class="flex flex-col items-center mt-4">
           <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">

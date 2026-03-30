@@ -118,8 +118,8 @@
       }}
     >
       {@render ColumnIcon()}
-      <p class="capitalize font-bold sr-only md:not-sr-only">{name}</p>
-            <div class="not-sr-only md:sr-only">
+      <p class="capitalize font-bold sr-only lg:not-sr-only">{name}</p>
+            <div class="not-sr-only lg:sr-only">
       {@render ColumnLabelIcon(name)}
       </div>
     </button>
@@ -129,8 +129,8 @@
       onclick={() => (sortColumn = name)}
     >
       <ArrowUpDown class="scale-75" />
-      <p class="capitalize sr-only md:not-sr-only">{name}</p>
-      <div class="not-sr-only md:sr-only">
+      <p class="capitalize sr-only lg:not-sr-only">{name}</p>
+      <div class="not-sr-only lg:sr-only">
       {@render ColumnLabelIcon(name)}
       </div>
     </button>
