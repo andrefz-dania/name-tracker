@@ -1,7 +1,7 @@
 <script lang="ts">
   import { truncateString } from '../utils/truncateString'
   import type { CharacterType } from '../../../types/types'
-  import { TrashIcon } from '@lucide/svelte'
+  import { TrashIcon, UserIcon } from '@lucide/svelte'
   import { Heading2 } from './Headings.svelte'
   import StatusMarker from './StatusMarker.svelte'
   let { character, refresh }: { character: CharacterType; refresh: () => void } = $props()
@@ -34,9 +34,11 @@
 
 <a href={link}>
   <li
-    class="grid grid-cols-6 gap-x-4 px-4 py-2 place-content-between items-center bg-layer1 hover:bg-layer2 rounded-sm"
-  >
-    <h3 class="font-bold text-lg">{character.name}</h3>
+    class="grid grid-cols-7 gap-x-4 px-4 py-2 place-content-between items-center bg-layer1 hover:bg-layer2 rounded-sm"
+  ><div class="col-span-2 w-full flex gap-2">
+  <UserIcon></UserIcon>
+    <h3 class="font-bold col-span-2">{character.name}</h3>
+  </div>
     {@render Field(character.species)}
     {@render Field(character.gender)}
     {@render Field(character.occupation)}
@@ -77,9 +79,9 @@
     </div>
 
     {#if character.desc}
-      <p class="col-span-6 opacity-50">{truncateString(character.desc, 120)}</p>
+      <p class="col-span-7 opacity-50">{truncateString(character.desc, 220)}</p>
     {:else}
-      <p class="h-0 col-span-6"></p>
+      <p class="h-0 col-span-7"></p>
     {/if}
   </li>
 </a>

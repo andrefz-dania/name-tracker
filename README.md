@@ -12,6 +12,8 @@ This application is still in very early development, with only the basics implem
 ## Planned features
 - edit characters
 - sort by column
+- toggle columns
+- deep search
 - favourites
 - quickly swap character status from the search list
 - persist search and scroll location between screens

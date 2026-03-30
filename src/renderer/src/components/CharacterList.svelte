@@ -3,8 +3,14 @@
     ArrowDownWideNarrow,
     ArrowUpDown,
     ArrowUpNarrowWide,
+    CaseUpper,
+    Cat,
     CirclePlus,
+    Hammer,
+    Info,
+    MapPin,
     Search,
+    VenusAndMars,
     XIcon
   } from '@lucide/svelte'
   import CharacterCard from './CharacterCard.svelte'
@@ -88,36 +94,59 @@
   {/if}
 {/snippet}
 
+{#snippet ColumnLabelIcon(name: String)}
+  {#if name == 'species'}
+  <Cat></Cat>
+  {:else if name == 'name'}
+  <CaseUpper></CaseUpper>
+  {:else if name == 'occupation'}
+  <Hammer></Hammer>
+  {:else if name == 'location'}
+  <MapPin></MapPin>
+  {:else if name == 'gender'}
+  <VenusAndMars></VenusAndMars>
+  {:else if name == 'status'}
+  <Info></Info>
+  {/if}
+{/snippet}
+
 {#snippet ColumnLabel(name: String)}
   {#if sortColumn == name}
     <button
-      class="flex flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-white relative"
+      class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-white relative"
       onclick={() => {
         sortColumn = name
         sortReverse = !sortReverse
       }}
     >
       {@render ColumnIcon()}
-      <p class="capitalize font-bold">{name}</p>
-      <!-- <div class="bg-linear-to-r from-transparent via-primary to-transparent h-0.5 w-full absolute bottom-0"></div> -->
+      <p class="capitalize font-bold sr-only md:not-sr-only">{name}</p>
+            <div class="not-sr-only md:sr-only">
+      {@render ColumnLabelIcon(name)}
+      </div>
     </button>
   {:else}
     <button
-      class="flex flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary hover:text-primary-highlight"
+      class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary hover:text-primary-highlight"
       onclick={() => (sortColumn = name)}
     >
       <ArrowUpDown class="scale-75" />
-      <p class="capitalize">{name}</p>
+      <p class="capitalize sr-only md:not-sr-only">{name}</p>
+      <div class="not-sr-only md:sr-only">
+      {@render ColumnLabelIcon(name)}
+      </div>
     </button>
   {/if}
 {/snippet}
 
-<div class="grid grid-cols-6 pr-4 w-full rounded-md place-items-between max-w-7xl mx-auto">
+<div class="grid grid-cols-7 pr-4 w-full rounded-md place-items-between max-w-7xl mx-auto">
   <!-- table header -->
-  {@render ColumnLabel('name')}
+   <div class="col-span-2 w-full">
+    {@render ColumnLabel('name')}
+   </div>
   {@render ColumnLabel('species')}
   {@render ColumnLabel('gender')}
-  {@render ColumnLabel('occupation')}
+    {@render ColumnLabel('occupation')}
   {@render ColumnLabel('location')}
   {@render ColumnLabel('status')}
 </div>
