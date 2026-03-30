@@ -82,7 +82,7 @@ class CharacterDb {
     return response
   }
 
-  updateChar(id, character) {
+  updateChar(character) {
     const updateQuery = `UPDATE characters SET name=?, desc=?, dead=?, age=?, gender=?, location=?, occupation=?, species=? WHERE id=? RETURNING *`
     const stmt = this.db.prepare(updateQuery)
     const response = stmt.run(
@@ -94,18 +94,17 @@ class CharacterDb {
       character.location,
       character.occupation,
       character.species,
+      character.id
     );
 
     // TO DO: HANDLE RETURNING PROPERLY
-    console.log(response)
+    console.log('DB RESPONSE', response)
      if (response.changes == 1) {
       return {
-        id: id,
         success: true
       }
     } else {
       return {
-        id: id,
         success: false
       }
     }

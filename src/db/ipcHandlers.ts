@@ -17,8 +17,8 @@ export default function setupHandlers(db) {
         return db.readOneChar(id);
     });
 
-    ipcMain.handle('updateChar', (_, id: number, character: CharacterData) => {
-        return db.updateChar(id, character);
+    ipcMain.handle('updateChar', (_, character: CharacterData) => {
+        return db.updateChar(character);
     });
 
     ipcMain.handle('searchChars', (_, searchQuery: string) => {

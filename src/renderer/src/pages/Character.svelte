@@ -7,36 +7,38 @@
     Hourglass,
     MapPin,
     VenusAndMars
-
   } from '@lucide/svelte'
-  import type { CharacterType } from '../../../types/types'
+  import { blankCharacter, type CharacterType } from '../../../types/types'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import StatusMarker from '../components/StatusMarker.svelte'
-  import TextAreaInput from '../components/TextAreaInput.svelte'
+  import EditableField from '../components/EditableField.svelte'
+  import EditableArea from '../components/EditableArea.svelte'
+  import EditableTitle from '../components/EditableTitle.svelte'
 
-  let editing: Boolean = $state(false)
-  let field: String | null = $state(null)
-  let character: CharacterType | null = $state(null)
-  let editedCharater: CharacterType | null = $state(null)
+  let character: CharacterType = $state(blankCharacter)
+  let prev: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
-
-  let rows = $derived(Math.ceil(character.desc.length / 80) + 2)
+  let isUpdatable: boolean = $state(false)
+  
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
+    prev = character;
   }
 
-  function startEditing(fieldToEdit) {
-    editing = true;
-    field = fieldToEdit;
+  const saveCharacter = async () => {
+    const newCharacter = {...character}
+    console.log(newCharacter)
+    const response = await window.api.updateChar(newCharacter)
+    if (response.success) {
+      isUpdatable = false;
+    }
   }
 
-  getCharacter().then(()=>{
-    editedCharater=character;
-  }
-  )
+  getCharacter()
+
 </script>
 
 <Navigation></Navigation>
@@ -45,107 +47,107 @@
   {#if !character}
     {@render Heading1('Loading data...')}
   {:else}
-    {@render Heading1(character.name)}
+    <EditableTitle id="name" name="name" bind:value={character.name} placeholder='Name'></EditableTitle>
+  {/if}
+  {#if isUpdatable}
+  <button onclick={saveCharacter}>save</button>
   {/if}
 </Header>
 
-<div class="overflow-y-scroll">
+<form class="overflow-y-scroll" onchange={()=>isUpdatable=true}>
   {#if !character}
     <p>Loading...</p>
   {:else}
-
-<div class="flex flex-row gap-2 mx-auto w-full max-w-6xl">
-
-    <section class="rounded-md p-4 flex flex-col items-center gap-4">
-      <div class="border-primary rounded-full border-2 p-0">
-        <CircleUserRound size={178}></CircleUserRound>
-      </div>
-          <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
-
-      <div class="flex gap-2 items-center">
-        <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
-          <Hourglass />Age:
-        </h2>
-        {#if character.age}
-          <p class="text-white">{character.age}</p>
-        {:else}
-          <p class="text-white/75">Unknown</p>
-        {/if}
-      </div>
-
-      <div class="flex gap-2 items-center">
-        <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
-          <VenusAndMars />Gender:
-        </h2>
-        {#if character.gender}
-          <p class="text-white">{character.gender}</p>
-        {:else}
-          <p class="text-white/75">Unknown</p>
-        {/if}
-      </div>
-
-      <div class="flex gap-2 items-center">
-        <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
-          <Cat />Species:
-        </h2>
-        {#if character.species}
-          <p class="text-white">{character.species}</p>
-        {:else}
-          <p class="text-white/75">Unknown</p>
-        {/if}
-      </div>
-    </section>
-
-    <section class="mt-2flex flex-col gap-8 w-full">
-      <div class="flex gap-2 mb-4 bg-layer1 p-4 rounded-md">
-        <div class="w-full text-center">
-          <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
-            <Hammer />Occupation
-          </h2>
-          {#if character.occupation}
-            <p class="text-white/75">{character.occupation}</p>
-          {:else}
-            <p class="text-white/50">Unknown</p>
-          {/if}
+    <div class="flex flex-row gap-2 mx-auto w-full max-w-6xl">
+      <section class="rounded-md p-4 flex flex-col items-center gap-4">
+        <div class="border-primary rounded-full border-2 p-0">
+          <CircleUserRound size={178}></CircleUserRound>
         </div>
+        <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
 
-        <div class="w-full text-center">
-          <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
-            <MapPin />Location
+        <div class="flex flex-col items-center mt-4">
+          <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
+            <Hourglass />Age
           </h2>
 
-          {#if character.location}
-            <p class="text-white/75">{character.location}</p>
-          {:else}
-            <p class="text-white/50">Unknown</p>
-          {/if}
+          <EditableField
+            bind:value={character.age}
+            defaultvalue={character.age}
+            name="age"
+            id="age"
+            placeholder="Unknown"
+            type="number"
+          ></EditableField>
         </div>
-      </div>
 
-      <div class="bg-layer1 p-4 px-8 flex gap-2 flex-col">
-      <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
-        <BookOpenText />Description
-      </h2>
+        <div class="flex flex-col items-center">
+          <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
+            <VenusAndMars />Gender
+          </h2>
+          <EditableField
+            bind:value={character.gender}
+            defaultvalue={character.gender}
+            name="gender"
+            id="gender"
+            placeholder="Unknown"
+          ></EditableField>
+        </div>
 
-      {#if editing}
-        <TextAreaInput name="desc" bind:value={editedCharater.desc} rows={rows}></TextAreaInput>
-        {:else}
-              {#if character.desc}
-        <p class="text-white/75 whitespace-pre-wrap" onclick={()=>startEditing('desc')}>{character.desc}</p>
-      {:else}
-        <p class="text-white/50 whitespace-pre-wrap">No description provided.</p>
-      {/if}
-      {/if}
+        <div class="flex flex-col items-center">
+          <h2 class="font-bold flex gap-2 items-center place-content-center text-primary">
+            <Cat />Species
+          </h2>
+          <EditableField
+            bind:value={character.species}
+            defaultvalue={character.species}
+            name="species"
+            id="species"
+            placeholder="Unknown"
+          ></EditableField>
+        </div>
+      </section>
 
+      <section class="flex flex-col gap-4 w-full">
+        <div class="flex gap-2 bg-layer1 p-4 rounded-md">
+          <div class="w-full text-center">
+            <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
+              <Hammer />Occupation
+            </h2>
+            <EditableField
+              bind:value={character.occupation}
+              defaultvalue={character.occupation}
+              name="occupation"
+              id="occupation"
+            ></EditableField>
+          </div>
 
-      </div>
+          <div class="w-full text-center">
+            <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
+              <MapPin />Location
+            </h2>
 
+            <EditableField
+              bind:value={character.location}
+              defaultvalue={character.location}
+              name="location"
+              id="location"
+            ></EditableField>
+          </div>
+        </div>
 
-    </section>
-  </div>
+        <div class="bg-layer1 p-4 px-8 flex gap-2 flex-col rounded-md">
+          <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
+            <BookOpenText />Description
+          </h2>
+
+          <EditableArea
+            bind:value={character.desc}
+            defaultvalue={character.desc}
+            name="desc"
+            id="desc"
+          ></EditableArea>
+        </div>
+      </section>
+    </div>
   {/if}
-
-
-
-  
-</div>
+  </form>

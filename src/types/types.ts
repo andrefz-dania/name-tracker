@@ -10,11 +10,22 @@ export type CharacterType = {
   species?: string
 }
 
+export const blankCharacter: CharacterType = {
+  name: '',
+  desc: '',
+  dead: 0,
+  age: undefined,
+  gender: '',
+  location: '',
+  occupation: '',
+  species: ''
+}
+
 export type ApiTypes = {
       createChar(character: CharacterType): Promise<CharacterType>;
       deleteChar(id: number): Promise<{id: number, success: boolean}>;
       readAllChars(): Promise<CharacterType[]>;
       readOneChar(id: number): Promise<CharacterType>;
-      updateChar(id: number, character: CharacterType): Promise<CharacterType>;
+      updateChar(character: CharacterType): Promise<{success: boolean}>;
       searchChars(term: string): Promise<CharacterType[]>;
     };

@@ -11,7 +11,9 @@ const api = {
 
   readOneChar: (id: number) => ipcRenderer.invoke('readOneChar', id),
 
-  searchChars: (term: string) => ipcRenderer.invoke('searchChars', term)
+  searchChars: (term: string) => ipcRenderer.invoke('searchChars', term),
+
+  updateChar: (character: CharacterData) => ipcRenderer.invoke('updateChar', character)
 
 }
 
