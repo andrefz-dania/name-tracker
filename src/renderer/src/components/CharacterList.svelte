@@ -78,10 +78,6 @@
           <ButtonDecorated style="simple" type="reset"><XIcon></XIcon></ButtonDecorated>
         {/if}
       </div>
-
-      <div class="max-w-xs flex min-w-16 md:min-w-20">
-        <ButtonDecorated><Search></Search></ButtonDecorated>
-      </div>
     </form>
   </div>
 </Header>
