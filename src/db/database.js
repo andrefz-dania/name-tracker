@@ -41,7 +41,8 @@ class CharacterDb {
       character.occupation,
       character.species
     )
-    console.log(response)
+    console.log(`Character with ID ${response.lastInsertRowid} created`
+    )
     return {
       id: response.lastInsertRowid,
       success: response.success
@@ -52,13 +53,14 @@ class CharacterDb {
     const deleteQuery = `DELETE FROM characters WHERE id = ?`
     const stmt = this.db.prepare(deleteQuery)
     const response = stmt.run(id)
-    console.log(response)
     if (response.changes == 1) {
+      console.log(`Character with ID ${id} deleted`)
       return {
         id: id,
         success: true
       }
     } else {
+      console.log(`An error occurred when deleting character with ID ${id}`)
       return {
         id: id,
         success: false
@@ -70,7 +72,6 @@ class CharacterDb {
     const selectAllQuery = `SELECT * FROM characters ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)
     const response = stmt.all()
-    console.log(response)
     return response
   }
 
@@ -78,7 +79,6 @@ class CharacterDb {
     const selectQuery = `SELECT * FROM characters WHERE id = ?`;
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.get(id)
-    console.log(response)
     return response
   }
 
@@ -96,14 +96,13 @@ class CharacterDb {
       character.species,
       character.id
     );
-
-    // TO DO: HANDLE RETURNING PROPERLY
-    console.log('DB RESPONSE', response)
      if (response.changes == 1) {
+      console.log(`Character with ID ${character.id} updated`)
       return {
         success: true
       }
     } else {
+      console.log(`An error occurred when updating character with ID ${character.id}`)
       return {
         success: false
       }
@@ -115,7 +114,7 @@ class CharacterDb {
     const selectQuery = `SELECT * FROM characters WHERE name LIKE ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`)
-    console.log(response)
+    console.log(`Found ${response.length} characters matching query: ${query}`)
     return response
   }
 
@@ -123,7 +122,7 @@ class CharacterDb {
     const selectQuery = `SELECT * FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
-    console.log(response)
+    console.log(`Found ${response.length} characters matching deep query: ${query}`)
     return response
   }
 

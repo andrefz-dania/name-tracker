@@ -12,7 +12,6 @@
     if (result.success === true) {
       refresh()
     }
-    console.log(result)
   }
 
   const handleDelete = () => {

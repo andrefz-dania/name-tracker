@@ -57,9 +57,6 @@ app.whenReady().then(() => {
   db = new CharacterDb();
   setupHandlers(db);
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
   createWindow()
 
   app.on('activate', function () {

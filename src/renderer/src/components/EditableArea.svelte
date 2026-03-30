@@ -19,8 +19,6 @@
     if (element) {
       scrollHeight = element.scrollHeight
     }
-
-    console.log(scrollHeight)
   })
 
   const resize = () => {
@@ -30,7 +28,6 @@
       scrollHeight = element.scrollHeight
       element.style.height = desiredHeigt
     }
-    console.log(scrollHeight)
   }
 
   // run the resize whenever text changes

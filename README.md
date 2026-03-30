@@ -8,9 +8,10 @@ This application is still in very early development, with only the basics implem
 - quickly search though all your characters
 - add characters to the list, and enter their details, such as location, occupation, species, and more.
 - multiplatform support (untested)
+- edit characters
 
 ## Planned features
-- edit characters
+- markdown editing
 - sort by column
 - toggle columns
 - deep search

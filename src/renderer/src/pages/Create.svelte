@@ -31,7 +31,6 @@
       occupation,
       species
     }
-    console.log(character)
 
     await window.api.createChar(character)
   }
