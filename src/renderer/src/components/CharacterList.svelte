@@ -19,6 +19,10 @@
   import ButtonDecorated from './ButtonDecorated.svelte'
   import Navigation from './Navigation.svelte'
   import { debounce } from '../utils/debounce'
+  import type { InterfaceConfig } from '../../../types/types'
+  import CharacterCardImage from './CharacterCardImage.svelte'
+
+  let {interfaceConfig}: {interfaceConfig: InterfaceConfig} = $props();
 
   let sortColumn: string = $state('name')
   let sortReverse: boolean = $state(false)
@@ -137,6 +141,25 @@
   {/if}
 {/snippet}
 
+{#if interfaceConfig.listStyle == 'large'}
+<div class="grid grid-cols-8 pr-4 w-full rounded-md place-items-between max-w-7xl mx-auto">
+  <!-- table header -->
+   <div></div>
+   <div class="col-span-2 w-full">
+    {@render ColumnLabel('name')}
+   </div>
+  {@render ColumnLabel('species')}
+  {@render ColumnLabel('gender')}
+    {@render ColumnLabel('occupation')}
+  {@render ColumnLabel('location')}
+  {@render ColumnLabel('status')}
+</div>
+<ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
+  {#each characters as char}
+    <CharacterCardImage character={char} {refresh} />
+  {/each}
+</ul>
+{:else}
 <div class="grid grid-cols-7 pr-4 w-full rounded-md place-items-between max-w-7xl mx-auto">
   <!-- table header -->
    <div class="col-span-2 w-full">
@@ -148,9 +171,11 @@
   {@render ColumnLabel('location')}
   {@render ColumnLabel('status')}
 </div>
-
 <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
   {#each characters as char}
     <CharacterCard character={char} {refresh} />
   {/each}
 </ul>
+{/if}
+
+

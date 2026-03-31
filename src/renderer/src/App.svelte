@@ -52,7 +52,7 @@
 <main class="flex flex-col gap-2 p-4 max-h-screen">
   <!-- <p class="fixed mt-8 bottom-0 bg-black text-textcol">DEBUG ROUTE: {currentRoute}</p> -->
   {#if currentRoute === '/'}
-    <CharacterList />
+    <CharacterList interfaceConfig={interfaceConfig}/>
   {:else if currentRoute === '/other'}
     <Other />
   {:else if route === 'character'}

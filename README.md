@@ -12,6 +12,7 @@ This application is still in very early development, with only the basics implem
 - multiplatform support (untested)
 - edit characters
 - sort by column
+- settings: toggle list style
 
 ## Planned features
 - markdown editing

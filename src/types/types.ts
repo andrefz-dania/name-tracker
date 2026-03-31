@@ -33,17 +33,25 @@ export type ApiTypes = {
 export type InterfaceConfig = {
   listStyle: 'small' | 'large';
   interfaceStyle: 'light' | 'dark';
+
+}
+
+export type SearchMemory = {
   lastSearch: string;
   lastSortColumn: string;
   lastSortReverse: boolean;
   lastScrollLocation: number;
 }
 
-export const defaultInterfaceConfig: InterfaceConfig = {
-  listStyle: 'small',
-  interfaceStyle: 'light',
+export const defaultSearchMemory = {
   lastSearch: '',
   lastSortColumn: '',
   lastSortReverse: false,
   lastScrollLocation: 0
+}
+
+export const defaultInterfaceConfig: InterfaceConfig = {
+  listStyle: 'small',
+  interfaceStyle: 'light',
+
 }

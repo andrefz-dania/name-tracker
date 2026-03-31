@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { truncateString } from '../utils/truncateString'
   import type { CharacterType } from '../../../types/types'
   import { TrashIcon, UserIcon } from '@lucide/svelte'
   import { Heading2 } from './Headings.svelte'
   import StatusMarker from './StatusMarker.svelte'
+  import { truncateString } from '../utils/truncateString'
   let { character, refresh }: { character: CharacterType; refresh: () => void } = $props()
 
   async function deleteCharacter() {
@@ -25,22 +25,21 @@
 
 {#snippet Field(string?: String)}
   {#if string && string.length > 0}
-    <p class="h-full">{string}</p>
+    <p class="text-sm capitalize">{string}</p>
   {:else}
-    <p class="opacity-50 h-full">Unknown</p>
+    <p class="opacity-50 text-sm">Unknown</p>
   {/if}
 {/snippet}
 
-<a href={link}>
+<a href={link} class="grid grid-cols-8 bg-layer1 rounded-md hover:bg-layer2">
+<div class="p-2">
+  <UserIcon size={96}></UserIcon>
+</div>
   <li
-    class="grid grid-cols-7 grid-rows-2 gap-x-4 px-4 py-2 place-content-between items-center bg-layer1 hover:bg-layer2 rounded-sm"
-  >
-    <div class="col-span-2 row-span-2 w-full h-full flex gap-2 items-start place-content-start place-items-start">
-      <UserIcon size={96} class="items-center"></UserIcon>
-      <div class="flex flex-col place-items-start h-full">
-        <h3 class="font-bold">{character.name}</h3>
-      </div>
-    </div>
+    class="grid grid-cols-7 col-span-7 gap-x-4 px-4 py-4 place-content-between items-start"
+  ><div class="col-span-2 w-full flex gap-2">
+    <h3 class="font-bold">{character.name}</h3>
+  </div>
     {@render Field(character.species)}
     {@render Field(character.gender)}
     {@render Field(character.occupation)}
@@ -77,13 +76,19 @@
             </div>
           </div>
         </dialog>
+
+
       </div>
+
+     
+    </div>
+    <div class="col-span-7 mt-4">
+     {#if character.desc}
+       <p class="text-textcol/60 text-sm whitespace-pre-line">{truncateString(character.desc, 400)}</p>
+       {:else}
+       <p class="opacity-50 text-sm">No description</p>
+       {/if}
     </div>
 
-    {#if character.desc}
-      <p class="col-span-7 opacity-50">{truncateString(character.desc, 220)}</p>
-    {:else}
-      <p class="h-0 col-span-7"></p>
-    {/if}
   </li>
 </a>
