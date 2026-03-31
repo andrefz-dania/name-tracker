@@ -52,7 +52,7 @@
   })
 </script>
 
-<main class="flex flex-col gap-2 p-4 max-h-screen {themeClass}">
+<main class="flex flex-col gap-2 p-4 min-h-screen max-h-screen {themeClass} text-textcol bg-layer0">
   <!-- <p class="fixed mt-8 bottom-0 bg-black text-textcol">DEBUG ROUTE: {currentRoute}</p> -->
   {#if currentRoute === '/'}
     <CharacterList {interfaceConfig} />

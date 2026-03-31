@@ -16,7 +16,7 @@
   }
 
   const handleListStyleChange = () => {
-    if (interfaceConfig.listStyle == 'small') {
+    if (interfaceConfig.listStyle == 'large') {
       changeSetting('listStyle', 'small')
     } else {
       changeSetting('listStyle', 'large')

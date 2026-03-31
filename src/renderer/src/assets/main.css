@@ -17,15 +17,22 @@
   --color-layer2: hsl(231, 15%, 20%);
   --color-layer3: hsl(231, 15%, 30%);
 
+  --color-faded-dark: hsla(231, 15%,3%, 0.9);
+
   --color-textcol: #ffffff;
 
-  --color-layer0-light: hsl(40, 20%, 96%);
-  --color-layer1-light: hsl(40, 20%, 100%);
-  --color-layer2-light: hsl(40, 20%, 92%);
-  --color-layer3-light: hsl(40, 20%, 85%);
-  --color-primary-light: #675c44;
-  --color-primary-highlight-light: #9e9174;
-  --color-textcol-light: hsl(231, 15%, 10%);
+  --color-layer0-light: hsl(40, 20%, 80%);
+  --color-layer1-light: hsl(40, 20%, 85%);
+  --color-layer2-light: hsl(40, 20%, 90%);
+  --color-layer3-light: hsl(40, 20%, 95%);
+
+  --color-faded-light: hsla(40, 20%, 85%, 0.9);
+
+
+  --color-primary-light: hsl(5, 45%, 25%);
+  --color-primary-highlight-light: hsl(5, 45%, 35%);
+    --color-primary-muted-light: hsl(5, 25%, 45%);
+  --color-textcol-light: #000000;
 }
 
 .theme-dark {
@@ -34,6 +41,7 @@
   --color-layer2: hsl(231, 15%, 20%);
   --color-layer3: hsl(231, 15%, 30%);
   --color-textcol: #ffffff;
+  --color-faded: var(--color-faded-dark);
 }
 
 .theme-light {
@@ -43,7 +51,10 @@
   --color-layer3: var(--color-layer3-light);
   --color-primary: var(--color-primary-light);
   --color-primary-highlight: var(--color-primary-highlight-light);
+  --color-primary-muted: var(--color-primary-muted-light);
+
   --color-textcol: var(--color-textcol-light);
+  --color-faded: var(--color-faded-light);
 }
 
 html {
@@ -120,7 +131,12 @@ body {
 }
 
 .header-internal {
-  background-image: linear-gradient(to bottom, #050507ea, var(--color-layer0));
+  background-image: linear-gradient(to bottom, var(--color-faded), var(--color-layer0) 95%);
+  /* background-image: radial-gradient(circle at top, #050507ee, #050507ff); */
+}
+
+.header-internal .theme-dark {
+  background-image: linear-gradient(to bottom, var(--color-faded), var(--color-layer0) 95%);
   /* background-image: radial-gradient(circle at top, #050507ee, #050507ff); */
 }
 
@@ -143,3 +159,4 @@ dialog::backdrop {
 .corner-squircle {
   corner-shape: squircle;
 }
+
