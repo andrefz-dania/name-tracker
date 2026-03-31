@@ -1,12 +1,15 @@
 <script lang="ts">
-  import { IdCard, Rows2, TableOfContents, Sun, Moon } from '@lucide/svelte'
+  import { IdCard, Rows2, TableOfContents, Sun, Moon, List } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1, Heading3 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import SettingInfo from '../components/SettingInfo.svelte'
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
+  import RangeSlider from '../components/RangeSlider.svelte'
 
   let { interfaceConfig = $bindable() } = $props()
+
+  let descLength = $state(interfaceConfig.descLength)
 
   function changeSetting(settingName: string, settingValue: string | number | undefined) {
     interfaceConfig = {
@@ -14,6 +17,7 @@
       [settingName]: settingValue
     }
   }
+
 
   const handleListStyleChange = () => {
     if (interfaceConfig.listStyle == 'large') {
@@ -29,6 +33,10 @@
     } else {
       changeSetting('interfaceStyle', 'dark')
     }
+  }
+
+  const handleDescLengthChange = () => {
+    changeSetting('descLength', descLength)
   }
 </script>
 
@@ -49,6 +57,27 @@
 
     <!-- main content -->
     <section class="mx-4 rounded-md w-full">
+
+            <SettingInfo
+        name="Interface Style"
+        description="Toggle between light and dark mode for the application"
+        ><Sun></Sun></SettingInfo
+      >
+
+      <div class="flex flex-row gap-4 p-4">
+        <ButtonToggleL2
+          style={interfaceConfig.interfaceStyle == 'dark' ? 'inactive' : 'active'}
+          onclick={handleInterfaceStyleChange}><Sun></Sun>Light</ButtonToggleL2
+        >
+        <ButtonToggleL2
+          style={interfaceConfig.interfaceStyle == 'dark' ? 'active' : 'inactive'}
+          onclick={handleInterfaceStyleChange}><Moon></Moon>Dark</ButtonToggleL2
+        >
+      </div>
+      
+      <hr class="text-primary my-4 opacity-50" />
+
+
       <SettingInfo
         name="List Style"
         description="Choose whether to show a compact list of characters, or an expanded field with a preview image and the first few lines of their description"
@@ -65,23 +94,16 @@
           onclick={handleListStyleChange}><Rows2></Rows2>Expanded</ButtonToggleL2
         >
       </div>
+
       <hr class="text-primary my-4 opacity-50" />
+
       <SettingInfo
-        name="Interface Style"
-        description="Toggle between light and dark mode for the application"
-        ><Sun></Sun></SettingInfo
+        name="Description Preview Length"
+        description="How many characters to display in the preview when the list style is set to Expanded"
+        ><List></List></SettingInfo
       >
 
-      <div class="flex flex-row gap-4 p-4">
-        <ButtonToggleL2
-          style={interfaceConfig.interfaceStyle == 'dark' ? 'inactive' : 'active'}
-          onclick={handleInterfaceStyleChange}><Sun></Sun>Light</ButtonToggleL2
-        >
-        <ButtonToggleL2
-          style={interfaceConfig.interfaceStyle == 'dark' ? 'active' : 'inactive'}
-          onclick={handleInterfaceStyleChange}><Moon></Moon>Dark</ButtonToggleL2
-        >
-      </div>
+      <RangeSlider min={50} max={500} bind:value={descLength}></RangeSlider> <button onclick={handleDescLengthChange} type="button">Apply</button>
 
       <hr class="text-primary my-4 opacity-50" />
       <div class="flex flex-col gap-2 opacity-50">

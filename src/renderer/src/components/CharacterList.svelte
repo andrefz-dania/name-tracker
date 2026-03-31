@@ -21,7 +21,6 @@
   import { debounce } from '../utils/debounce'
   import { defaultSearchMemory, type InterfaceConfig, type SearchMemory } from '../../../types/types'
   import CharacterCardImage from './CharacterCardImage.svelte'
-  import { untrack } from 'svelte'
 
   let {interfaceConfig}: {interfaceConfig: InterfaceConfig} = $props();
 

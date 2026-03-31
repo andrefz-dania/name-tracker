@@ -33,6 +33,7 @@ export type ApiTypes = {
 export type InterfaceConfig = {
   listStyle: 'small' | 'large';
   interfaceStyle: 'light' | 'dark';
+  descLength: number;
 
 }
 
@@ -53,5 +54,6 @@ export const defaultSearchMemory = {
 export const defaultInterfaceConfig: InterfaceConfig = {
   listStyle: 'small',
   interfaceStyle: 'light',
+  descLength: 200
 
 }
