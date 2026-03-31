@@ -6,6 +6,9 @@
   import { truncateString } from '../utils/truncateString'
   let { character, refresh }: { character: CharacterType; refresh: () => void } = $props()
 
+  const settings = JSON.parse(localStorage.getItem('interfaceConfig'))
+  const { descLength } = settings;
+
   async function deleteCharacter() {
     const result = await window.api.deleteChar(character.id)
     // refresh character list once character is successfully deleted
@@ -84,7 +87,7 @@
     </div>
     <div class="col-span-7 mt-4">
      {#if character.desc}
-       <p class="text-textcol/60 text-sm whitespace-pre-line">{truncateString(character.desc, 400)}</p>
+       <p class="text-textcol/60 text-sm whitespace-pre-line">{truncateString(character.desc, descLength)}</p>
        {:else}
        <p class="opacity-50 text-sm">No description</p>
        {/if}

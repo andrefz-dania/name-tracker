@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { IdCard, Rows2, TableOfContents, Sun, Moon, List } from '@lucide/svelte'
+  import { IdCard, Rows2, TableOfContents, Sun, Moon, List, Check } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1, Heading3 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import SettingInfo from '../components/SettingInfo.svelte'
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
   import RangeSlider from '../components/RangeSlider.svelte'
+  import ButtonDecorated from '../components/ButtonDecorated.svelte'
 
   let { interfaceConfig = $bindable() } = $props()
 
@@ -75,7 +76,7 @@
         >
       </div>
       
-      <hr class="text-primary my-4 opacity-50" />
+      <hr class="text-primary my-8 opacity-50" />
 
 
       <SettingInfo
@@ -95,17 +96,23 @@
         >
       </div>
 
-      <hr class="text-primary my-4 opacity-50" />
+      <hr class="text-primary my-8 opacity-50" />
 
       <SettingInfo
         name="Description Preview Length"
         description="How many characters to display in the preview when the list style is set to Expanded"
         ><List></List></SettingInfo
       >
+      <div class="flex flex-row w-full gap-4 md:gap-8">
 
-      <RangeSlider min={50} max={500} bind:value={descLength}></RangeSlider> <button onclick={handleDescLengthChange} type="button">Apply</button>
+        <RangeSlider min={100} max={1000} bind:value={descLength}></RangeSlider>
+        <div class="h-28 flex items-center">
 
-      <hr class="text-primary my-4 opacity-50" />
+          <ButtonDecorated onclick={handleDescLengthChange} type="button"><Check></Check>Apply</ButtonDecorated>
+        </div>
+      </div>
+
+      <hr class="text-primary my-8 opacity-50" />
       <div class="flex flex-col gap-2 opacity-50">
         {@render Heading3('Unimplemented settings:')}
         <h3>shown columns</h3>
