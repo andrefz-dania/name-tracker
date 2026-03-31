@@ -1,11 +1,13 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, nativeImage } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/logo.png?asset'
 import CharacterDb from '../db/database.js'
 import setupHandlers from '../db/ipcHandlers'
 
 let db;
+
+const appIcon = nativeImage.createFromPath('./resources/logo.png');
+console.log(appIcon.isEmpty());
 
 function createWindow(): void {
   // Create the browser window.
@@ -14,7 +16,9 @@ function createWindow(): void {
     height: 860,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: appIcon,
+    
+    // ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
