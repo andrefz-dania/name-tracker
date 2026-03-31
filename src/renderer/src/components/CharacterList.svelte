@@ -21,6 +21,7 @@
   import { debounce } from '../utils/debounce'
   import { defaultSearchMemory, type InterfaceConfig, type SearchMemory } from '../../../types/types'
   import CharacterCardImage from './CharacterCardImage.svelte'
+  import { untrack } from 'svelte'
 
   let {interfaceConfig}: {interfaceConfig: InterfaceConfig} = $props();
 
@@ -37,6 +38,7 @@
   const debouncedSearch = $derived(debounce(search, 300))
 
   $effect(() => {
+
     // instantly re-fetch the full list when the field is cleared
     // also makes searchTerm a dependency of the effect, making it work correctly.
     if (searchTerm.length == 0 || skipDebounce) {
@@ -45,9 +47,9 @@
       debouncedSearch();
     }
 
-    if (sortReverse && sortColumn) {
-      console.log("test");
-    }
+    // if (sortReverse && sortColumn) {
+    //   console.log("test");
+    // }
   })
 
   async function getCharacters() {
@@ -65,7 +67,6 @@
       lastScrollLocation: 0
     }
     localStorage.setItem('searchMemory', JSON.stringify(saved))
-    skipDebounce = false;
   }
 
   const refresh = () => {
@@ -87,12 +88,14 @@
 
   <!-- search bar -->
   <div class="max-w-2xl flex flex-row w-full mx-auto gap-4 mb-4 mt-8">
-    <form class="flex flex-row w-full gap-3" action="">
+    <form class="flex flex-row w-full gap-3" action="" >
       <input
         class="p-4 rounded-md bg-layer1/75 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
         type="text"
         bind:value={searchTerm}
         placeholder="search..."
+        onkeydown={()=>skipDebounce=false}
+        
       />
       <div class="w-16 -ml-18 flex items-center place-content-center">
         {#if searchTerm.length > 0}
@@ -132,11 +135,12 @@
 {#snippet ColumnLabel(name: string)}
   {#if sortColumn == name}
     <button
+    type="button"
       class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-textcol relative"
       onclick={() => {
+        skipDebounce = true
         sortColumn = name
         sortReverse = !sortReverse
-        skipDebounce = true
       }}
     >
       {@render ColumnIcon()}
@@ -147,8 +151,12 @@
     </button>
   {:else}
     <button
+    type="button"
       class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary hover:text-primary-highlight"
-      onclick={() => (sortColumn = name, skipDebounce = true)}
+      onclick={() => {
+        skipDebounce = true
+        sortColumn = name
+        }}
     >
       <ArrowUpDown class="scale-75" />
       <p class="capitalize sr-only lg:not-sr-only">{name}</p>

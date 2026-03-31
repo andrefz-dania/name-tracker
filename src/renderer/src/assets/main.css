@@ -1,16 +1,17 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary: #9e9174;
-  --color-primary-highlight: #c0b8a5;
-  --color-primary-muted: #675c44;
+  --color-primary: hsl(41, 18%, 54%);
+  --color-primary-highlight: hsl(42, 18%, 70%);
+  --color-primary-muted: hsl(41, 20%, 34%);
 
-  --color-positive: #3dcc84;
-  --color-positive-muted: #2b5942;
-  --color-positive-highlight: #65f3ab;
-  --color-destructive: #cd4068;
-  --color-destructive-highlight: #ff89ab;
-  --color-destructive-muted: #673644;
+  --color-positive: hsl(149.79 58.37% 51.96%);
+  --color-positive-muted: hsl(150 34.85% 25.88%);
+  --color-positive-highlight: hsl(149.58 85.54% 67.45%);
+
+  --color-destructive: hsl(342.98 58.51% 52.75%);
+  --color-destructive-highlight: hsl(342.71 100% 76.86%);
+  --color-destructive-muted: hsl(342.86 31.21% 30.78%);
 
   --color-layer0: hsl(231, 15%, 3%);
   --color-layer1: hsl(231, 15%, 11%);
@@ -31,7 +32,16 @@
 
   --color-primary-light: hsl(5, 45%, 25%);
   --color-primary-highlight-light: hsl(5, 45%, 35%);
-    --color-primary-muted-light: hsl(5, 25%, 45%);
+  --color-primary-muted-light: hsl(5, 25%, 45%);
+
+  --color-positive-light: hsl(149.79 58.37% 30%);
+  --color-positive-muted-light: hsl(150 34.85% 70%);
+  --color-positive-highlight-light: hsl(149.58 85.54% 40%);
+
+  --color-destructive-light: hsl(342.98 58.51% 30%);
+  --color-destructive-highlight-light: hsl(342.71 80% 40%);
+  --color-destructive-muted-light: hsl(342.86 31.21% 60%);
+
   --color-textcol-light: #000000;
 }
 
@@ -52,6 +62,15 @@
   --color-primary: var(--color-primary-light);
   --color-primary-highlight: var(--color-primary-highlight-light);
   --color-primary-muted: var(--color-primary-muted-light);
+
+  --color-positive: var(--color-positive-light);
+  --color-positive-muted: var(--color-positive-muted-light);
+  --color-positive-highlight: var(--color-positive-highlight-light);
+
+  --color-destructive-muted: var(--color-destructive-muted-light);
+  --color-destructive-highlight: var(--color-destructive-highlight-light);
+  --color-destructive: var(--color-destructive-light);
+  
 
   --color-textcol: var(--color-textcol-light);
   --color-faded: var(--color-faded-light);
