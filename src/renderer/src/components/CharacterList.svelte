@@ -30,6 +30,8 @@
   let sortReverse: boolean = $state(savedSearch.lastSortReverse || false)
   let searchTerm: string = $state(savedSearch.lastSearch || '')
 
+  let skipDebounce: boolean = $state(false);
+
   let characters = $state([])
 
   const debouncedSearch = $derived(debounce(search, 300))
@@ -37,10 +39,14 @@
   $effect(() => {
     // instantly re-fetch the full list when the field is cleared
     // also makes searchTerm a dependency of the effect, making it work correctly.
-    if (searchTerm.length == 0) {
+    if (searchTerm.length == 0 || skipDebounce) {
       search();
     } else {
       debouncedSearch();
+    }
+
+    if (sortReverse && sortColumn) {
+      console.log("test");
     }
   })
 
@@ -59,6 +65,7 @@
       lastScrollLocation: 0
     }
     localStorage.setItem('searchMemory', JSON.stringify(saved))
+    skipDebounce = false;
   }
 
   const refresh = () => {
@@ -129,6 +136,7 @@
       onclick={() => {
         sortColumn = name
         sortReverse = !sortReverse
+        skipDebounce = true
       }}
     >
       {@render ColumnIcon()}
@@ -140,7 +148,7 @@
   {:else}
     <button
       class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary hover:text-primary-highlight"
-      onclick={() => (sortColumn = name)}
+      onclick={() => (sortColumn = name, skipDebounce = true)}
     >
       <ArrowUpDown class="scale-75" />
       <p class="capitalize sr-only lg:not-sr-only">{name}</p>
