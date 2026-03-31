@@ -1,7 +1,28 @@
 <script lang="ts">
+  import ButtonDecorated from '../components/ButtonDecorated.svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
+
+
+  let { interfaceConfig = $bindable() } = $props()
+
+  function changeSetting(settingName: string, settingValue: string | number | undefined) {
+    interfaceConfig = {
+      ...interfaceConfig,
+      [settingName]: settingValue
+    }
+  }
+
+  const handleListStyleChange = () => {
+    if (interfaceConfig.listStyle == "large") {
+      changeSetting('listStyle', 'small');
+    } else {
+      changeSetting('listStyle', 'large');
+    }
+  }
+
+
 </script>
 
 <Navigation></Navigation>
@@ -21,6 +42,12 @@
       <section class="m-4 p-4 bg-layer1 rounded-md w-full">
         <h3>interface style</h3>
         <h3>list style</h3>
+        <ButtonDecorated onclick={handleListStyleChange}>swap list style</ButtonDecorated>
+        {#if interfaceConfig.listStyle == 'small'}
+          <p>smol</p>
+        {:else}
+        <p>big</p>
+        {/if}
         <h3>shown columns</h3>
         <h3>export all characters</h3>
         <h3>import characters</h3>
@@ -29,3 +56,4 @@
     </form>
   </div>
 </div>
+

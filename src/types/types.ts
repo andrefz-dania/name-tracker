@@ -29,3 +29,21 @@ export type ApiTypes = {
       updateChar(character: CharacterType): Promise<{success: boolean}>;
       searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>;
     };
+
+export type InterfaceConfig = {
+  listStyle: 'small' | 'large';
+  interfaceStyle: 'light' | 'dark';
+  lastSearch: string;
+  lastSortColumn: string;
+  lastSortReverse: boolean;
+  lastScrollLocation: number;
+}
+
+export const defaultInterfaceConfig: InterfaceConfig = {
+  listStyle: 'small',
+  interfaceStyle: 'light',
+  lastSearch: '',
+  lastSortColumn: '',
+  lastSortReverse: false,
+  lastScrollLocation: 0
+}
