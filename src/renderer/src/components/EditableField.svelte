@@ -21,5 +21,5 @@
     {placeholder}
     {defaultvalue}
     {size}
-    class="text-white/50 capitalize focus-within:text-white p-2 w-full rounded-md text-center min-w-fit focus-within:outline-0 border border-transparent focus-within:border-primary whitespace-pre-wrap"
+    class="text-textcol/50 capitalize focus-within:text-textcol p-2 w-full rounded-md text-center min-w-fit focus-within:outline-0 border border-transparent focus-within:border-primary whitespace-pre-wrap"
   />

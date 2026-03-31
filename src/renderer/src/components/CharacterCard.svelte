@@ -55,7 +55,7 @@
           ><TrashIcon />
         </button>
 
-        <dialog id={dialogId} class="bg-transparent text-white max-w-xl mx-auto my-auto">
+        <dialog id={dialogId} class="bg-transparent text-textcol max-w-xl mx-auto my-auto">
           <div class="flex flex-col bg-layer1 gap-4 p-8 border-primary border rounded-md shadow-xl">
             {@render Heading2(`Delete ${character.name}?`)}
             <p class="mb-4">
@@ -70,7 +70,7 @@
                 command="close">Delete</button
               >
               <button
-                class="w-full bg-layer2 text-white rounded-md text-lg font-bold px-4 py-2 hover:bg-layer3"
+                class="w-full bg-layer2 text-textcol rounded-md text-lg font-bold px-4 py-2 hover:bg-layer3"
                 commandfor={dialogId}
                 command="close">Cancel</button
               >

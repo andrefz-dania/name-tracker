@@ -111,7 +111,7 @@
 {#snippet ColumnLabel(name: string)}
   {#if sortColumn == name}
     <button
-      class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-white relative"
+      class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-textcol relative"
       onclick={() => {
         sortColumn = name
         sortReverse = !sortReverse

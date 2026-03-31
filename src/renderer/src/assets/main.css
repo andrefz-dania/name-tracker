@@ -17,6 +17,8 @@
   --color-layer2: hsl(231, 15%, 20%);
   --color-layer3: hsl(231, 15%, 30%);
 
+  --color-textcol: #FFFFFF;
+
 }
 
 html {
@@ -24,7 +26,7 @@ html {
   background-image: url('paper-bw-tr.webp');
   background-blend-mode: soft-light;
     max-height: 100vh;
-  @apply text-white;
+  @apply text-textcol;
   overflow: hidden;
 }
 

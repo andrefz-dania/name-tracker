@@ -45,6 +45,6 @@
   bind:value
   {placeholder}
   {defaultvalue}
-  class="text-white/50 focus-within:text-white p-4 rounded-md bg-layer1 w-full focus-within:outline-0 border border-transparent focus-within:border-primary whitespace-pre-wrap resize-none box-border"
+  class="text-textcol/50 focus-within:text-textcol p-4 rounded-md bg-layer1 w-full focus-within:outline-0 border border-transparent focus-within:border-primary whitespace-pre-wrap resize-none box-border"
 >
 </textarea>

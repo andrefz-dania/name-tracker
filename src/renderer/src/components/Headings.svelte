@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	export { Heading1, Heading2  };
+	export { Heading1, Heading2, Heading3  };
 </script>
 
 {#snippet Heading1(text: String)}
@@ -8,4 +8,9 @@
 
 {#snippet Heading2(text: String)}
     <h2 class="text-center text-primary font-bold text-xl">{text}</h2>
+{/snippet}
+
+
+{#snippet Heading3(text: String)}
+    <h2 class="text-primary font-bold text-xl">{text}</h2>
 {/snippet}
