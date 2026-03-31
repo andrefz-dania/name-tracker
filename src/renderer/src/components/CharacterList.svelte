@@ -19,14 +19,16 @@
   import ButtonDecorated from './ButtonDecorated.svelte'
   import Navigation from './Navigation.svelte'
   import { debounce } from '../utils/debounce'
-  import type { InterfaceConfig } from '../../../types/types'
+  import { defaultSearchMemory, type InterfaceConfig, type SearchMemory } from '../../../types/types'
   import CharacterCardImage from './CharacterCardImage.svelte'
 
   let {interfaceConfig}: {interfaceConfig: InterfaceConfig} = $props();
 
-  let sortColumn: string = $state('name')
-  let sortReverse: boolean = $state(false)
-  let searchTerm: string = $state('')
+  const savedSearch: SearchMemory = JSON.parse(localStorage.getItem('searchMemory')) || defaultSearchMemory
+
+  let sortColumn: string = $state(savedSearch.lastSortColumn || 'name')
+  let sortReverse: boolean = $state(savedSearch.lastSortReverse || false)
+  let searchTerm: string = $state(savedSearch.lastSearch || '')
 
   let characters = $state([])
 
@@ -49,6 +51,14 @@
   async function search() {
     characters = await window.api.searchChars(searchTerm, sortColumn, sortReverse);
     console.log('searching for', searchTerm)
+    // save search to localstorage
+    const saved: SearchMemory = {
+      lastSearch: searchTerm,
+      lastSortColumn: sortColumn,
+      lastSortReverse: sortReverse,
+      lastScrollLocation: 0
+    }
+    localStorage.setItem('searchMemory', JSON.stringify(saved))
   }
 
   const refresh = () => {

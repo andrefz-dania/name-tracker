@@ -7,7 +7,6 @@ import setupHandlers from '../db/ipcHandlers'
 let db;
 
 const appIcon = nativeImage.createFromPath('./resources/logo.png');
-console.log(appIcon.isEmpty());
 
 function createWindow(): void {
   // Create the browser window.
