@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IdCard, Rows2, TableOfContents } from '@lucide/svelte'
+  import { IdCard, Rows2, TableOfContents, Sun, Moon } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1, Heading3 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
@@ -16,10 +16,18 @@
   }
 
   const handleListStyleChange = () => {
-    if (interfaceConfig.listStyle == 'large') {
+    if (interfaceConfig.listStyle == 'small') {
       changeSetting('listStyle', 'small')
     } else {
       changeSetting('listStyle', 'large')
+    }
+  }
+
+  const handleInterfaceStyleChange = () => {
+    if (interfaceConfig.interfaceStyle === 'dark') {
+      changeSetting('interfaceStyle', 'light')
+    } else {
+      changeSetting('interfaceStyle', 'dark')
     }
   }
 </script>
@@ -32,7 +40,6 @@
 
 <div class="max-w-6xl w-full mx-auto overflow-y-scroll">
   <div class="flex flex-row gap-2 w-full">
-
     <!-- sidebar -->
     <section class="md:min-w-48 p-4 rounded-md flex flex-col gap-4 bg-layer1 h-min sticky top-0">
       <h2 class="text-xl font-bold text-primary">General</h2>
@@ -58,16 +65,32 @@
           onclick={handleListStyleChange}><Rows2></Rows2>Expanded</ButtonToggleL2
         >
       </div>
-      <hr class="text-primary my-4 opacity-50"/>
-      <div class="flex flex-col gap-2 opacity-50">
-      {@render Heading3('Unimplemented settings:')}
-      <h3>interface style</h3>
-      <h3>shown columns</h3>
-      <h3>export all characters</h3>
-      <h3>import characters</h3>
-      <h3>tags</h3>
+      <hr class="text-primary my-4 opacity-50" />
+      <SettingInfo
+        name="Interface Style"
+        description="Toggle between light and dark mode for the application"
+        ><Sun></Sun></SettingInfo
+      >
+
+      <div class="flex flex-row gap-4 p-4">
+        <ButtonToggleL2
+          style={interfaceConfig.interfaceStyle == 'dark' ? 'inactive' : 'active'}
+          onclick={handleInterfaceStyleChange}><Sun></Sun>Light</ButtonToggleL2
+        >
+        <ButtonToggleL2
+          style={interfaceConfig.interfaceStyle == 'dark' ? 'active' : 'inactive'}
+          onclick={handleInterfaceStyleChange}><Moon></Moon>Dark</ButtonToggleL2
+        >
       </div>
 
+      <hr class="text-primary my-4 opacity-50" />
+      <div class="flex flex-col gap-2 opacity-50">
+        {@render Heading3('Unimplemented settings:')}
+        <h3>shown columns</h3>
+        <h3>export all characters</h3>
+        <h3>import characters</h3>
+        <h3>tags</h3>
+      </div>
     </section>
   </div>
 </div>

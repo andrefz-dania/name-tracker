@@ -1,15 +1,15 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary: #9E9174;
-  --color-primary-highlight: #C0B8A5;
-  --color-primary-muted: #675C44;
+  --color-primary: #9e9174;
+  --color-primary-highlight: #c0b8a5;
+  --color-primary-muted: #675c44;
 
-  --color-positive: #3DCC84;
-  --color-positive-muted: #2B5942;
-  --color-positive-highlight: #65F3AB;
-  --color-destructive: #CD4068;
-  --color-destructive-highlight: #FF89AB;
+  --color-positive: #3dcc84;
+  --color-positive-muted: #2b5942;
+  --color-positive-highlight: #65f3ab;
+  --color-destructive: #cd4068;
+  --color-destructive-highlight: #ff89ab;
   --color-destructive-muted: #673644;
 
   --color-layer0: hsl(231, 15%, 3%);
@@ -17,12 +17,37 @@
   --color-layer2: hsl(231, 15%, 20%);
   --color-layer3: hsl(231, 15%, 30%);
 
-  --color-textcol: #FFFFFF;
+  --color-textcol: #ffffff;
 
+  --color-layer0-light: hsl(40, 20%, 96%);
+  --color-layer1-light: hsl(40, 20%, 100%);
+  --color-layer2-light: hsl(40, 20%, 92%);
+  --color-layer3-light: hsl(40, 20%, 85%);
+  --color-primary-light: #675c44;
+  --color-primary-highlight-light: #9e9174;
+  --color-textcol-light: hsl(231, 15%, 10%);
+}
+
+.theme-dark {
+  --color-layer0: hsl(231, 15%, 3%);
+  --color-layer1: hsl(231, 15%, 11%);
+  --color-layer2: hsl(231, 15%, 20%);
+  --color-layer3: hsl(231, 15%, 30%);
+  --color-textcol: #ffffff;
+}
+
+.theme-light {
+  --color-layer0: var(--color-layer0-light);
+  --color-layer1: var(--color-layer1-light);
+  --color-layer2: var(--color-layer2-light);
+  --color-layer3: var(--color-layer3-light);
+  --color-primary: var(--color-primary-light);
+  --color-primary-highlight: var(--color-primary-highlight-light);
+  --color-textcol: var(--color-textcol-light);
 }
 
 html {
-    max-height: 100vh;
+  max-height: 100vh;
   @apply text-textcol;
   overflow: hidden;
 }
@@ -30,11 +55,10 @@ html {
 ::-webkit-scrollbar {
   width: 1rem;
   height: 1rem;
-
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -46,8 +70,8 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-layer3);
-    background-clip: padding-box;
-    border: 2px solid transparent;
+  background-clip: padding-box;
+  border: 2px solid transparent;
 }
 
 ::-webkit-scrollbar-corner {
@@ -90,21 +114,18 @@ body {
 }
 
 .header-external {
-      background-size: cover;
-      background-image: url('paper-bg-trimmed.webp');
-    background-blend-mode: soft-light;
-
+  background-size: cover;
+  background-image: url('paper-bg-trimmed.webp');
+  background-blend-mode: soft-light;
 }
 
 .header-internal {
-
   background-image: linear-gradient(to bottom, #050507ea, var(--color-layer0));
   /* background-image: radial-gradient(circle at top, #050507ee, #050507ff); */
 }
 
 dialog::backdrop {
   background-color: #00000088;
-
 }
 
 .corner-scoop {

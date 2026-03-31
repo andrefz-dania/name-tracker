@@ -7,8 +7,11 @@
   import Settings from './pages/Settings.svelte'
   import { defaultInterfaceConfig, type InterfaceConfig } from '../../types/types'
 
-  // load settings from localStorage - create settings if it doesn't exist
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
+  let themeClass = $derived(
+    interfaceConfig.interfaceStyle === 'dark' ? 'theme-dark' : 'theme-light'
+  )
+
   onMount(() => {
     const loadedInteraceConfig = JSON.parse(localStorage.getItem('interfaceConfig'))
     if (!loadedInteraceConfig) {
@@ -18,7 +21,7 @@
     interfaceConfig = loadedInteraceConfig
   })
 
-  $effect(()=> {
+  $effect(() => {
     console.log('LOADED CONFIG', interfaceConfig)
     localStorage.setItem('interfaceConfig', JSON.stringify(interfaceConfig))
   })
@@ -49,10 +52,10 @@
   })
 </script>
 
-<main class="flex flex-col gap-2 p-4 max-h-screen">
+<main class="flex flex-col gap-2 p-4 max-h-screen {themeClass}">
   <!-- <p class="fixed mt-8 bottom-0 bg-black text-textcol">DEBUG ROUTE: {currentRoute}</p> -->
   {#if currentRoute === '/'}
-    <CharacterList interfaceConfig={interfaceConfig}/>
+    <CharacterList {interfaceConfig} />
   {:else if currentRoute === '/other'}
     <Other />
   {:else if route === 'character'}
@@ -60,7 +63,7 @@
   {:else if route === 'create'}
     <Create />
   {:else if route === 'settings'}
-    <Settings bind:interfaceConfig={interfaceConfig}></Settings>
+    <Settings bind:interfaceConfig></Settings>
   {:else}
     <h2>404 Not Found</h2>
   {/if}
