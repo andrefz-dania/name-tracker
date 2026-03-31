@@ -22,9 +22,6 @@
 }
 
 html {
-  background-size: cover;
-  background-image: url('paper-bw-tr.webp');
-  background-blend-mode: soft-light;
     max-height: 100vh;
   @apply text-textcol;
   overflow: hidden;
@@ -51,6 +48,10 @@ html {
   background: var(--color-layer3);
     background-clip: padding-box;
     border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-corner {
+  display: none;
 }
 
 *,
@@ -90,7 +91,7 @@ body {
 
 .header-external {
       background-size: cover;
-      background-image: url('paper-bw-tr.webp');
+      background-image: url('paper-bg-trimmed.webp');
     background-blend-mode: soft-light;
 
 }
