@@ -53,7 +53,7 @@ export const defaultSearchMemory = {
 
 export const defaultInterfaceConfig: InterfaceConfig = {
   listStyle: 'small',
-  interfaceStyle: 'light',
+  interfaceStyle: 'dark',
   descLength: 200
 
 }
