@@ -6,8 +6,6 @@ This is Electron application made with Svelte and TypeScript. It is aimed at fan
 
 This application is still in very early development, with only the basics implemented
 
-TODO: fix config init
-
 ## Implemented Features
 - quickly search though all your characters
 - add characters to the list, and enter their details, such as location, occupation, species, and more.
