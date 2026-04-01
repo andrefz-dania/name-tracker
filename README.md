@@ -15,6 +15,8 @@ This application is still in very early development, with only the basics implem
 - settings: toggle list style
 
 ## Planned features
+- HOTKEYS
+- ADD FONTS
 - markdown editing
 - toggle columns
 - deep search
@@ -23,6 +25,8 @@ This application is still in very early development, with only the basics implem
 - persist search and scroll location between screens
 - add images to each character
 - character tags
+- pinned lists/tags
+- factions
 - character relationships
 - timeline / events for each character
 - custom time system
