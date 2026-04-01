@@ -60,6 +60,8 @@
     src: url('./FacultyGlyphic-Regular.ttf');
   }
 
+
+
   h1, h2, h3, h4 {
     @apply font-display;
     @apply font-bold;
@@ -102,6 +104,15 @@ html {
   @apply text-textcol;
   overflow: hidden;
 }
+
+::selection {
+  background-color: var(--color-layer3);
+}
+
+  a:focus, button:focus {
+    outline: transparent;
+    border: transparent;
+  }
 
 ::-webkit-scrollbar {
   width: 1rem;

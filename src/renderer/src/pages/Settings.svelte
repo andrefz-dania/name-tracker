@@ -11,7 +11,7 @@
     ChevronRight
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
-  import { Heading1, Heading2, Heading3 } from '../components/Headings.svelte'
+  import { Heading1, Heading3 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import SettingInfo from '../components/SettingInfo.svelte'
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'

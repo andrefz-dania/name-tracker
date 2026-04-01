@@ -32,6 +32,8 @@
 
   let skipDebounce: boolean = $state(false);
 
+  let searchBar;
+
   let characters = $state([])
 
   const debouncedSearch = $derived(debounce(search, 300))
@@ -45,10 +47,25 @@
     } else {
       debouncedSearch();
     }
+  })
 
-    // if (sortReverse && sortColumn) {
-    //   console.log("test");
-    // }
+  function focusSearch() {
+    if (searchBar) {
+      // this part places cursor inside field
+      //searchBar.focus()
+      // this part selects all text in it, but also focuses the field, making the previous line unneeded. Kept for reference
+      searchBar.select()
+    }
+  }
+
+  $effect(()=> {
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      e.preventDefault();
+      focusSearch()
+      }
+
+    })
   })
 
   async function getCharacters() {
@@ -91,6 +108,7 @@
       <input
         class="p-4 rounded-md bg-layer1/75 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
         type="text"
+        bind:this={searchBar}
         bind:value={searchTerm}
         placeholder="search..."
         onkeydown={()=>skipDebounce=false}
