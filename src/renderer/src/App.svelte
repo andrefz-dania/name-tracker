@@ -9,22 +9,31 @@
   import Home from './pages/Home.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
+
+
   let themeClass = $derived(
     interfaceConfig.interfaceStyle === 'dark' ? 'theme-dark' : 'theme-light'
   )
 
   onMount(() => {
     const loadedInteraceConfig = JSON.parse(localStorage.getItem('interfaceConfig'))
-    if (!loadedInteraceConfig) {
-      localStorage.setItem('interfaceConfig', JSON.stringify(defaultInterfaceConfig))
+    if (!loadedInteraceConfig || loadedInteraceConfig.length < 1) {
+      setDefaultConfig();
+      window.location.reload();
     }
 
     interfaceConfig = loadedInteraceConfig
   })
 
+  function setDefaultConfig() {
+    localStorage.setItem('interfaceConfig', JSON.stringify(defaultInterfaceConfig))
+  }
+
   $effect(() => {
     console.log('LOADED CONFIG', interfaceConfig)
+    if (interfaceConfig?.listStyle) {
     localStorage.setItem('interfaceConfig', JSON.stringify(interfaceConfig))
+    }
   })
 
   let currentRoute = $state(window.location.hash.slice(1) || '/')
