@@ -171,7 +171,7 @@
   {#if sortColumn == name}
     <button
       type="button"
-      class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-textcol relative"
+      class="flex w-full border border-transparent flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary-highlight hover:text-textcol relative"
       onclick={() => {
         skipDebounce = true
         sortColumn = name
@@ -187,7 +187,7 @@
   {:else}
     <button
       type="button"
-      class="flex w-full flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary hover:text-primary-highlight"
+      class="flex w-full border border-transparent flex-row gap-2 hover:bg-layer1 p-2 px-2 rounded-md text-primary hover:text-primary-highlight"
       onclick={() => {
         skipDebounce = true
         sortColumn = name

@@ -12,12 +12,13 @@ This application is still in very early development, with only the basics implem
 - multiplatform support (untested)
 - edit characters
 - sort by column
-- settings: toggle list style
+- toggle list style
 - search hotkey
+- toggle columns
 
 ## Planned features
 - markdown editing
-- toggle columns
+
 - deep search
 - favourites
 - quickly swap character status from the search list
