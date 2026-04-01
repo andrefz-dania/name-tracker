@@ -13,6 +13,7 @@
       | 'positive'
       | 'simple'
       | 'transparent'
+      | 'menu'
     disabled?: boolean
     command?: string
     commandfor?: string
@@ -84,7 +85,16 @@
     {onclick}
     {disabled}>{@render children()}</button
   >
-{:else}
+{:else if style == 'menu'}
+  <button
+    class="cursor-pointer text-xl font-bold items-center flex place-content-between gap-2 text-primary bg-layer1 rounded-xl p-4 px-4 w-full hover:text-primary-highlight hover:bg-layer2"
+    {type}
+    {command}
+    {commandfor}
+    {onclick}
+    {disabled}>{@render children()}</button
+  >
+  {:else}
   <button
     class="cursor-pointer font-bold items-center flex place-content-center gap-2 text-white bg-primary rounded-md p-2 px-4 w-full hover:bg-primary-muted"
     {type}

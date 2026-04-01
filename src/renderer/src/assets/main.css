@@ -46,7 +46,7 @@
 
   --font-block: 'Faculty Glyphic';
   --font-display: 'Faculty Glyphic';
-  /* --font-display: 'Metamorphous'; */
+  --font-title: 'Metamorphous';
 }
 
     @font-face {
@@ -168,6 +168,18 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.logo-img {
+  background-size: cover;
+}
+
+.theme-light .logo-img {
+  background-image: url(logo-t-light.png)
+}
+
+.theme-dark .logo-img {
+  background-image: url(logo-t-dark.png)
 }
 
 .header-external {
