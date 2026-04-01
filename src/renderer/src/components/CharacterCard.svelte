@@ -1,9 +1,27 @@
 <script lang="ts">
-  import type { CharacterType } from '../../../types/types'
+  import type { CharacterType, InterfaceConfig } from '../../../types/types'
   import { TrashIcon } from '@lucide/svelte'
   import StatusMarker from './StatusMarker.svelte'
   import ModalDialogue from './ModalDialogue.svelte'
-  let { character, refresh }: { character: CharacterType; refresh: () => void } = $props()
+  let {
+    character,
+    refresh,
+    interfaceConfig,
+  }: { character: CharacterType; refresh: () => void; interfaceConfig: InterfaceConfig } = $props()
+
+  let visibleColumnCount = $derived(
+    1 + // name is always visible
+      (interfaceConfig.speciesVisible ? 1 : 0) +
+      (interfaceConfig.genderVisible ? 1 : 0) +
+      (interfaceConfig.occupationVisible ? 1 : 0) +
+      (interfaceConfig.locationVisible ? 1 : 0) +
+      1 // status is always visible
+  )
+
+  const nameColSpan = 2
+
+  let gridColsCSS = $derived(`grid-cols-${visibleColumnCount + 1}`
+  )
 
   async function deleteCharacter() {
     const result = await window.api.deleteChar(character.id)
@@ -32,15 +50,23 @@
 
 <a href={link}>
   <li
-    class="grid grid-cols-7 gap-x-4 px-4 py-2 place-content-between items-center bg-layer1 hover:bg-layer2 rounded-sm"
+    class="grid gap-x-4 px-4 py-2 place-content-between items-center bg-layer1 hover:bg-layer2 rounded-sm {gridColsCSS}"
   >
-    <div class="col-span-2 w-full flex gap-2">
+    <div class="col-span-{nameColSpan} w-full flex gap-2">
       <h3 class="font-bold">{character.name}</h3>
     </div>
-    {@render Field(character.species)}
-    {@render Field(character.gender)}
-    {@render Field(character.occupation)}
-    {@render Field(character.location)}
+    {#if interfaceConfig.speciesVisible}
+      {@render Field(character.species)}
+    {/if}
+    {#if interfaceConfig.genderVisible}
+      {@render Field(character.gender)}
+    {/if}
+    {#if interfaceConfig.occupationVisible}
+      {@render Field(character.occupation)}
+    {/if}
+    {#if interfaceConfig.locationVisible}
+      {@render Field(character.location)}
+    {/if}
     <div class="flex gap-2 place-content-between">
       <div class="sr-only lg:not-sr-only">
         <StatusMarker dead={character.dead ? true : false} showText></StatusMarker>
@@ -49,7 +75,6 @@
         <StatusMarker dead={character.dead ? true : false}></StatusMarker>
       </div>
       <div class="flex gap-2">
-
         <!-- DELETE FUNCTIONALITY -->
         <button
           command="show-modal"

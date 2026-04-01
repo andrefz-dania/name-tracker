@@ -13,10 +13,9 @@ This application is still in very early development, with only the basics implem
 - edit characters
 - sort by column
 - settings: toggle list style
+- search hotkey
 
 ## Planned features
-- HOTKEYS
-- ADD FONTS
 - markdown editing
 - toggle columns
 - deep search

@@ -1,13 +1,28 @@
 <script lang="ts">
-  import type { CharacterType } from '../../../types/types'
+  import type { CharacterType, InterfaceConfig } from '../../../types/types'
   import { TrashIcon, UserIcon } from '@lucide/svelte'
   import { Heading2 } from './Headings.svelte'
   import StatusMarker from './StatusMarker.svelte'
   import { truncateString } from '../utils/truncateString'
-  let { character, refresh }: { character: CharacterType; refresh: () => void } = $props()
+  let {
+    character,
+    refresh,
+    interfaceConfig
+  }: { character: CharacterType; refresh: () => void; interfaceConfig: InterfaceConfig } = $props()
 
-  const settings = JSON.parse(localStorage.getItem('interfaceConfig'))
-  const { descLength } = settings;
+  let descLength = $derived(interfaceConfig.descLength)
+
+  let visibleColumnCount = $derived(
+    2 + // name is always visible
+      (interfaceConfig.speciesVisible ? 1 : 0) +
+      (interfaceConfig.genderVisible ? 1 : 0) +
+      (interfaceConfig.occupationVisible ? 1 : 0) +
+      (interfaceConfig.locationVisible ? 1 : 0) +
+      1 // status is always visible
+  )
+
+  let gridColsCSS = $derived(`grid-cols-${visibleColumnCount + 1}`)
+  let descCSS = $derived(`col-span-${visibleColumnCount}`)
 
   async function deleteCharacter() {
     const result = await window.api.deleteChar(character.id)
@@ -34,19 +49,27 @@
   {/if}
 {/snippet}
 
-<a href={link} class="grid grid-cols-8 bg-layer1 rounded-md hover:bg-layer2">
-<div class="p-2">
-  <UserIcon size={96}></UserIcon>
-</div>
-  <li
-    class="grid grid-cols-7 col-span-7 gap-x-4 px-4 py-4 place-content-between items-start"
-  ><div class="col-span-2 w-full flex gap-2">
-    <h3 class="font-bold">{character.name}</h3>
+<a href={link} class="bg-layer1 rounded-md hover:bg-layer2">
+
+  <li class="grid gap-x-4 px-4 py-4 place-content-between items-start {gridColsCSS}">
+    <div class="p-2 row-span-2">
+    <UserIcon size={96}></UserIcon>
   </div>
-    {@render Field(character.species)}
-    {@render Field(character.gender)}
-    {@render Field(character.occupation)}
-    {@render Field(character.location)}
+    <div class="col-span-2 w-full flex gap-2">
+      <h3 class="font-bold">{character.name}</h3>
+    </div>
+    {#if interfaceConfig.speciesVisible}
+      {@render Field(character.species)}
+    {/if}
+    {#if interfaceConfig.genderVisible}
+      {@render Field(character.gender)}
+    {/if}
+    {#if interfaceConfig.occupationVisible}
+      {@render Field(character.occupation)}
+    {/if}
+    {#if interfaceConfig.locationVisible}
+      {@render Field(character.location)}
+    {/if}
     <div class="flex gap-2 place-content-between">
       <StatusMarker dead={character.dead ? true : false}></StatusMarker>
       <div class="flex gap-2">
@@ -79,19 +102,16 @@
             </div>
           </div>
         </dialog>
-
-
       </div>
-
-     
     </div>
-    <div class="col-span-7 mt-4">
-     {#if character.desc}
-       <p class="text-textcol/60 text-sm whitespace-pre-line">{truncateString(character.desc, descLength)}</p>
-       {:else}
-       <p class="opacity-50 text-sm">No description</p>
-       {/if}
+    <div class="{descCSS} mt-4">
+      {#if character.desc}
+        <p class="text-textcol/60 text-sm whitespace-pre-line">
+          {truncateString(character.desc, descLength)}
+        </p>
+      {:else}
+        <p class="opacity-50 text-sm">No description</p>
+      {/if}
     </div>
-
   </li>
 </a>

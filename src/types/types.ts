@@ -22,26 +22,29 @@ export const blankCharacter: CharacterType = {
 }
 
 export type ApiTypes = {
-      createChar(character: CharacterType): Promise<CharacterType>;
-      deleteChar(id: number): Promise<{id: number, success: boolean}>;
-      readAllChars(): Promise<CharacterType[]>;
-      readOneChar(id: number): Promise<CharacterType>;
-      updateChar(character: CharacterType): Promise<{success: boolean}>;
-      searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>;
-    };
+  createChar(character: CharacterType): Promise<CharacterType>
+  deleteChar(id: number): Promise<{ id: number; success: boolean }>
+  readAllChars(): Promise<CharacterType[]>
+  readOneChar(id: number): Promise<CharacterType>
+  updateChar(character: CharacterType): Promise<{ success: boolean }>
+  searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>
+}
 
 export type InterfaceConfig = {
-  listStyle: 'small' | 'large';
-  interfaceStyle: 'light' | 'dark';
-  descLength: number;
-
+  listStyle: 'small' | 'large'
+  interfaceStyle: 'light' | 'dark'
+  descLength: number
+  speciesVisible: boolean
+  genderVisible: boolean
+  occupationVisible: boolean
+  locationVisible: boolean
 }
 
 export type SearchMemory = {
-  lastSearch: string;
-  lastSortColumn: string;
-  lastSortReverse: boolean;
-  lastScrollLocation: number;
+  lastSearch: string
+  lastSortColumn: string
+  lastSortReverse: boolean
+  lastScrollLocation: number
 }
 
 export const defaultSearchMemory = {
@@ -54,6 +57,9 @@ export const defaultSearchMemory = {
 export const defaultInterfaceConfig: InterfaceConfig = {
   listStyle: 'small',
   interfaceStyle: 'dark',
-  descLength: 200
-
+  descLength: 200,
+  speciesVisible: true,
+  genderVisible: true,
+  occupationVisible: true,
+  locationVisible: true
 }

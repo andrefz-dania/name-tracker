@@ -8,10 +8,12 @@
     List,
     Check,
     RefreshCcw,
-    ChevronRight
+    ChevronRight,
+    Eye,
+    EyeClosed
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
-  import { Heading1, Heading3 } from '../components/Headings.svelte'
+  import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import SettingInfo from '../components/SettingInfo.svelte'
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
@@ -28,7 +30,7 @@
 
   let currentPage: CurrentPage = $state('general')
 
-  function changeSetting(settingName: string, settingValue: string | number | undefined) {
+  function changeSetting(settingName: string, settingValue: string | number | boolean | undefined) {
     interfaceConfig = {
       ...interfaceConfig,
       [settingName]: settingValue
@@ -60,6 +62,12 @@
   const handleDescLengthChange = () => {
     changeSetting('descLength', descLength)
   }
+
+  const toggleColumn = (
+    column: 'speciesVisible' | 'genderVisible' | 'occupationVisible' | 'locationVisible'
+  ) => {
+    changeSetting(column, !interfaceConfig[column])
+  }
 </script>
 
 {#snippet Hr()}
@@ -75,7 +83,9 @@
         {name}<ChevronRight></ChevronRight>
       </h2>
     {:else}
-      <h2 class="text-xl text-primary flex flex-row gap-2 items-center place-content-between capitalize hover:text-primary-highlight hover:bg-layer2 p-2 rounded-md px-4">
+      <h2
+        class="text-xl text-primary flex flex-row gap-2 items-center place-content-between capitalize hover:text-primary-highlight hover:bg-layer2 p-2 rounded-md px-4"
+      >
         {name}<ChevronRight></ChevronRight>
       </h2>
     {/if}
@@ -92,7 +102,7 @@
   <div class="flex flex-row gap-2 w-full">
     <!-- sidebar -->
     <section class="md:min-w-48 p-2 bg-layer1 rounded-xl flex flex-col h-min sticky top-0">
-    <p class="font-bold text-sm text-primary p-2">CATEGORIES</p>
+      <p class="font-bold text-sm text-primary p-2">CATEGORIES</p>
       {@render Category('general')}
       <!-- {@render Category('worlds')}
       {@render Category('storage')} -->
@@ -158,6 +168,37 @@
           </div>
 
           {@render Hr()}
+
+          <SettingInfo
+            name="Column Visibility"
+            description="Choose which columns to show in the character list. Name and status columns are always shown"
+            ><Eye></Eye></SettingInfo
+          >
+
+          <div class="flex flex-col md:flex-row gap-4 p-4">
+            <ButtonToggleL2
+              style={interfaceConfig.speciesVisible ? 'active' : 'inactive'}
+              onclick={() => toggleColumn('speciesVisible')}>{#if interfaceConfig.speciesVisible}<Eye></Eye>{:else}<EyeClosed
+                ></EyeClosed>{/if}Species</ButtonToggleL2
+            >
+            <ButtonToggleL2
+              style={interfaceConfig.genderVisible ? 'active' : 'inactive'}
+              onclick={() => toggleColumn('genderVisible')}
+              >{#if interfaceConfig.genderVisible}<Eye></Eye>{:else}<EyeClosed
+                ></EyeClosed>{/if}Gender</ButtonToggleL2
+            >
+            <ButtonToggleL2
+              style={interfaceConfig.occupationVisible ? 'active' : 'inactive'}
+              onclick={() => toggleColumn('occupationVisible')}
+              >{#if interfaceConfig.occupationVisible}<Eye></Eye>{:else}<EyeClosed
+                ></EyeClosed>{/if}Occupation</ButtonToggleL2
+            >
+            <ButtonToggleL2
+              style={interfaceConfig.locationVisible ? 'active' : 'inactive'}
+              onclick={() => toggleColumn('locationVisible')}>{#if interfaceConfig.locationVisible}<Eye></Eye>{:else}<EyeClosed
+                ></EyeClosed>{/if}Location</ButtonToggleL2
+            >
+          </div>
         </section>
       {/if}
 
@@ -188,13 +229,6 @@
           ></ModalDialogue>
         </section>
       {/if}
-      <div class="flex flex-col gap-2 opacity-50">
-        {@render Heading3('Unimplemented settings:')}
-        <h3>shown columns</h3>
-        <h3>export all characters</h3>
-        <h3>import characters</h3>
-        <h3>tags</h3>
-      </div>
     </section>
   </div>
 </div>
