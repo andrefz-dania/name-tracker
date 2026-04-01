@@ -88,7 +88,7 @@
     <div class="flex flex-row gap-2 mx-auto w-full max-w-6xl">
       <section class="rounded-md p-4 flex flex-col items-center gap-4">
         <div class="border-primary rounded-full border-2 p-0">
-          <CircleUserRound size={178}></CircleUserRound>
+          <CircleUserRound size={178} class="text-primary"></CircleUserRound>
         </div>
         <button class="cursor-pointer" onclick={invertDeadState} type="button">
           <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>

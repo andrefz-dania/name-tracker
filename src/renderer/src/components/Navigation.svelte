@@ -9,6 +9,10 @@
   }
 
   let { style, children }: PropTypes = $props()
+
+  const goBack= ()=> {
+    window.history.back()
+  }
 </script>
 
 {#if style == 'no-back'}
@@ -24,7 +28,7 @@
 {:else}
   <nav class="fixed flex w-full place-content-between pr-8">
     <div>
-      <a href="#/"><ButtonDecorated style="outline"><ChevronLeft />Back</ButtonDecorated></a>
+         <ButtonDecorated style="outline" onclick={goBack}><ChevronLeft />Back</ButtonDecorated>
     </div>
     <div class="flex gap-4">
       {@render children?.()}

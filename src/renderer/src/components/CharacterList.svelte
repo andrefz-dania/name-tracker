@@ -113,7 +113,7 @@
   }
 </script>
 
-<Navigation style="no-back">
+<Navigation>
   <a href="#/create"><ButtonDecorated type="button"><CirclePlus />New Character</ButtonDecorated></a
   >
 </Navigation>

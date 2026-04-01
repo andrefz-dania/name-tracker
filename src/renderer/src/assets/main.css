@@ -109,11 +109,6 @@ html {
   background-color: var(--color-layer3);
 }
 
-  a:focus, button:focus {
-    outline: transparent;
-    border: 1px solid transparent;
-  }
-
 ::-webkit-scrollbar {
   width: 1rem;
   height: 1rem;
@@ -213,7 +208,7 @@ dialog::backdrop {
 
 
 
-/* manually add grid-col config since the compiler cant do it for dynamic classes */
+/* manually add grid-col config since the compiler cant do it for dynamic classes... yeah... */
 
 .grid-cols-1 {
   grid-template-columns: repeat(1, 1fr);

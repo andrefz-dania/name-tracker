@@ -6,6 +6,7 @@
   import Other from './pages/Other.svelte'
   import Settings from './pages/Settings.svelte'
   import { defaultInterfaceConfig, type InterfaceConfig } from '../../types/types'
+  import Home from './pages/Home.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
   let themeClass = $derived(
@@ -55,6 +56,8 @@
 <main class="flex flex-col gap-2 p-4 min-h-screen max-h-screen {themeClass} text-textcol bg-layer0 font-block">
   <!-- <p class="fixed mt-8 bottom-0 bg-black text-textcol">DEBUG ROUTE: {currentRoute}</p> -->
   {#if currentRoute === '/'}
+    <Home />
+  {:else if currentRoute === '/list'}
     <CharacterList {interfaceConfig} />
   {:else if currentRoute === '/other'}
     <Other />

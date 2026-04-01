@@ -18,7 +18,6 @@ This application is still in very early development, with only the basics implem
 
 ## Planned features
 - markdown editing
-
 - deep search
 - favourites
 - quickly swap character status from the search list
