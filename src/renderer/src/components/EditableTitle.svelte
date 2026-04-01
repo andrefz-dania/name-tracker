@@ -18,5 +18,5 @@
     type='text'
     {placeholder}
     {defaultvalue}
-    class="text-primary capitalize font-bold text-3xl focus-within:text-textcol p-2 w-full rounded-md text-center min-w-fit focus-within:outline-0  whitespace-pre-wrap"
+    class="text-primary capitalize font-bold text-3xl focus-within:text-textcol p-2 w-full rounded-md text-center min-w-fit focus-within:outline-0  whitespace-pre-wrap font-display"
   />

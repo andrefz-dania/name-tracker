@@ -4,7 +4,7 @@
 </script>
 
 <div class="flex flex-col gap-1 w-full">
-  <label for={id || name}>
+  <label for={id || name} class="text-primary">
     {label}
   </label>
   <input

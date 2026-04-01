@@ -92,7 +92,7 @@
   <div class="flex flex-row gap-2 w-full">
     <!-- sidebar -->
     <section class="md:min-w-48 p-2 bg-layer1 rounded-xl flex flex-col h-min sticky top-0">
-    <h2 class="font-bold text-sm text-primary p-2">CATEGORIES</h2>
+    <p class="font-bold text-sm text-primary p-2">CATEGORIES</p>
       {@render Category('general')}
       <!-- {@render Category('worlds')}
       {@render Category('storage')} -->

@@ -54,7 +54,7 @@
   <TextInput label="Name" id="nameInput" name="name" bind:value={name} placeholder="Name" />
 
   <div class="w-full">
-    <label for="statusRadio">Status:</label>
+    <label for="statusRadio" class="text-primary">Status:</label>
     <div class="flex gap-4 mt-2">
       <div class="flex items-center gap-2 w-full">
         <input
@@ -68,7 +68,7 @@
         />
         {#if status == 'Alive'}
           <button
-            class="flex items-center gap-2 cursor-pointer bg-positive-muted/50 p-2 rounded-full w-full place-items-center place-content-center border border-positive"
+            class="flex items-center gap-2 cursor-pointer bg-positive-muted/50 p-2 rounded-full w-full place-items-center place-content-center border border-positive font-bold"
             onclick={() => (status = 'Alive')}
             type="button"
           >
@@ -77,7 +77,7 @@
           </button>
         {:else}
           <button
-            class="flex items-center gap-2 cursor-pointer bg-layer1 p-2 rounded-full w-full place-items-center place-content-center border border-transparent"
+            class="flex items-center gap-2 cursor-pointer bg-layer1 p-2 rounded-full w-full place-items-center place-content-center border border-transparent font-bold"
             onclick={() => (status = 'Alive')}
             type="button"
           >
@@ -99,7 +99,7 @@
 
         {#if status == 'Dead'}
           <button
-            class="flex items-center gap-2 cursor-pointer bg-destructive-muted/50 p-2 rounded-full w-full place-items-center place-content-center border border-destructive"
+            class="flex items-center gap-2 cursor-pointer bg-destructive-muted/50 p-2 rounded-full w-full place-items-center place-content-center border border-destructive font-bold"
             onclick={() => (status = 'Dead')}
             type="button"
           >
@@ -108,7 +108,7 @@
           </button>
         {:else}
           <button
-            class="flex items-center gap-2 cursor-pointer bg-layer1 p-2 rounded-full w-full place-items-center place-content-center border border-transparent"
+            class="flex items-center gap-2 cursor-pointer bg-layer1 p-2 rounded-full w-full place-items-center place-content-center border border-transparent font-bold"
             onclick={() => (status = 'Dead')}
             type="button"
           >

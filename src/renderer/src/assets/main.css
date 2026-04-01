@@ -43,7 +43,28 @@
   --color-destructive-muted-light: hsl(342.86 31.21% 60%);
 
   --color-textcol-light: #000000;
+
+  --font-block: 'Faculty Glyphic';
+  --font-display: 'Faculty Glyphic';
+  /* --font-display: 'Metamorphous'; */
 }
+
+    @font-face {
+    font-family: 'Metamorphous';
+    src: url('./Metamorphous-Regular.ttf');
+    font-weight: normal;
+  }
+
+      @font-face {
+    font-family: 'Faculty Glyphic';
+    src: url('./FacultyGlyphic-Regular.ttf');
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+    @apply font-bold;
+    letter-spacing: 0.05rem;
+  }
 
 .theme-dark {
   --color-layer0: hsl(231, 15%, 3%);
