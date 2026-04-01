@@ -7,10 +7,11 @@
     Moon,
     List,
     Check,
-    RefreshCcw
+    RefreshCcw,
+    ChevronRight
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
-  import { Heading1, Heading3 } from '../components/Headings.svelte'
+  import { Heading1, Heading2, Heading3 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import SettingInfo from '../components/SettingInfo.svelte'
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
@@ -22,6 +23,10 @@
   let { interfaceConfig = $bindable() } = $props()
 
   let descLength = $state(interfaceConfig.descLength || defaultInterfaceConfig.descLength)
+
+  type CurrentPage = 'general' | 'worlds' | 'storage' | 'reset'
+
+  let currentPage: CurrentPage = $state('general')
 
   function changeSetting(settingName: string, settingValue: string | number | undefined) {
     interfaceConfig = {
@@ -57,6 +62,26 @@
   }
 </script>
 
+{#snippet Hr()}
+  <hr class="text-primary my-8 opacity-50" />
+{/snippet}
+
+{#snippet Category(name: CurrentPage)}
+  <button onclick={() => (currentPage = name)}>
+    {#if name == currentPage}
+      <h2
+        class="text-xl font-bold text-primary-highlight flex flex-row gap-2 place-content-between items-center capitalize p-2 rounded-md px-4 hover:bg-layer2"
+      >
+        {name}<ChevronRight></ChevronRight>
+      </h2>
+    {:else}
+      <h2 class="text-xl text-primary flex flex-row gap-2 items-center place-content-between capitalize hover:text-primary-highlight hover:bg-layer2 p-2 rounded-md px-4">
+        {name}<ChevronRight></ChevronRight>
+      </h2>
+    {/if}
+  </button>
+{/snippet}
+
 <Navigation></Navigation>
 
 <Header>
@@ -66,92 +91,103 @@
 <div class="max-w-6xl w-full mx-auto overflow-y-scroll">
   <div class="flex flex-row gap-2 w-full">
     <!-- sidebar -->
-    <section class="md:min-w-48 p-4 rounded-md flex flex-col gap-4 bg-layer1 h-min sticky top-0">
-      <h2 class="text-xl font-bold text-primary">General</h2>
-      <h2 class="text-xl font-bold text-primary">Worlds</h2>
-      <h2 class="text-xl font-bold text-primary">Storage</h2>
+    <section class="md:min-w-48 p-2 bg-layer1 rounded-xl flex flex-col h-min sticky top-0">
+    <h2 class="font-bold text-sm text-primary p-2">CATEGORIES</h2>
+      {@render Category('general')}
+      <!-- {@render Category('worlds')}
+      {@render Category('storage')} -->
+      {@render Category('reset')}
     </section>
 
     <!-- main content -->
     <section class="mx-4 rounded-md w-full">
-      <SettingInfo
-        name="Interface Style"
-        description="Toggle between light and dark mode for the application"
-        ><Sun></Sun></SettingInfo
-      >
-
-      <div class="flex flex-row gap-4 p-4">
-        <ButtonToggleL2
-          style={interfaceConfig.interfaceStyle == 'dark' ? 'inactive' : 'active'}
-          onclick={handleInterfaceStyleChange}><Sun></Sun>Light</ButtonToggleL2
-        >
-        <ButtonToggleL2
-          style={interfaceConfig.interfaceStyle == 'dark' ? 'active' : 'inactive'}
-          onclick={handleInterfaceStyleChange}><Moon></Moon>Dark</ButtonToggleL2
-        >
-      </div>
-
-      <hr class="text-primary my-8 opacity-50" />
-
-      <SettingInfo
-        name="List Style"
-        description="Choose whether to show a compact list of characters, or an expanded field with a preview image and the first few lines of their description"
-        ><IdCard></IdCard></SettingInfo
-      >
-
-      <div class="flex flex-row gap-4 p-4">
-        <ButtonToggleL2
-          style={interfaceConfig.listStyle == 'small' ? 'active' : 'inactive'}
-          onclick={handleListStyleChange}><TableOfContents></TableOfContents>Compact</ButtonToggleL2
-        >
-        <ButtonToggleL2
-          style={interfaceConfig.listStyle == 'small' ? 'inactive' : 'active'}
-          onclick={handleListStyleChange}><Rows2></Rows2>Expanded</ButtonToggleL2
-        >
-      </div>
-
-      <hr class="text-primary my-8 opacity-50" />
-
-      <SettingInfo
-        name="Description Preview Length"
-        description="How many characters to display in the preview when the list style is set to Expanded"
-        ><List></List></SettingInfo
-      >
-      <div class="flex flex-row w-full gap-4 md:gap-8">
-        <RangeSlider min={100} max={1000} bind:value={descLength}></RangeSlider>
-        <div class="h-28 flex items-center">
-          <ButtonDecorated onclick={handleDescLengthChange} type="button"
-            ><Check></Check>Apply</ButtonDecorated
+      <!-- GENERAL SETTINGS PAGE -->
+      {#if currentPage == 'general'}
+        <section>
+          <SettingInfo
+            name="Interface Style"
+            description="Toggle between light and dark mode for the application"
+            ><Sun></Sun></SettingInfo
           >
-        </div>
-      </div>
 
-      <hr class="text-primary my-8 opacity-50" />
-      <SettingInfo
-        name="Restore Defaults"
-        description="Restore ALL settings to their defaults. This will remove all your settings, but keep you characters."
-        ><RefreshCcw></RefreshCcw></SettingInfo
-      >
-      <div class="p-4">
-        <ButtonDecorated
-          type="button"
-          style="destructive"
-          command="show-modal"
-          commandfor="reset-modal"><RefreshCcw></RefreshCcw>Reset</ButtonDecorated
-        >
-      </div>
+          <div class="flex flex-row gap-4 p-4">
+            <ButtonToggleL2
+              style={interfaceConfig.interfaceStyle == 'dark' ? 'inactive' : 'active'}
+              onclick={handleInterfaceStyleChange}><Sun></Sun>Light</ButtonToggleL2
+            >
+            <ButtonToggleL2
+              style={interfaceConfig.interfaceStyle == 'dark' ? 'active' : 'inactive'}
+              onclick={handleInterfaceStyleChange}><Moon></Moon>Dark</ButtonToggleL2
+            >
+          </div>
 
-      <ModalDialogue
-        dialogId="reset-modal"
-        title="Restore Defaults?"
-        confirmAction={restoreDefaults}
-        confirmText="Reset"
-        confirmStyle="destructive"
-        cancelText="cancel"
-        icon='warn'
-      ></ModalDialogue>
+          {@render Hr()}
 
-      <hr class="text-primary my-8 opacity-50" />
+          <SettingInfo
+            name="List Style"
+            description="Choose whether to show a compact list of characters, or an expanded field with a preview image and the first few lines of their description"
+            ><IdCard></IdCard></SettingInfo
+          >
+
+          <div class="flex flex-row gap-4 p-4">
+            <ButtonToggleL2
+              style={interfaceConfig.listStyle == 'small' ? 'active' : 'inactive'}
+              onclick={handleListStyleChange}
+              ><TableOfContents></TableOfContents>Compact</ButtonToggleL2
+            >
+            <ButtonToggleL2
+              style={interfaceConfig.listStyle == 'small' ? 'inactive' : 'active'}
+              onclick={handleListStyleChange}><Rows2></Rows2>Expanded</ButtonToggleL2
+            >
+          </div>
+
+          {@render Hr()}
+
+          <SettingInfo
+            name="Description Preview Length"
+            description="How many characters to display in the preview when the list style is set to Expanded"
+            ><List></List></SettingInfo
+          >
+          <div class="flex flex-row w-full gap-4 md:gap-8">
+            <RangeSlider min={100} max={1000} bind:value={descLength}></RangeSlider>
+            <div class="h-28 flex items-center">
+              <ButtonDecorated onclick={handleDescLengthChange} type="button"
+                ><Check></Check>Apply</ButtonDecorated
+              >
+            </div>
+          </div>
+
+          {@render Hr()}
+        </section>
+      {/if}
+
+      {#if currentPage == 'reset'}
+        <section>
+          <SettingInfo
+            name="Restore Defaults"
+            description="Restore ALL settings to their defaults. This will remove all your settings, but keep you characters."
+            ><RefreshCcw></RefreshCcw></SettingInfo
+          >
+          <div class="p-4">
+            <ButtonDecorated
+              type="button"
+              style="destructive"
+              command="show-modal"
+              commandfor="reset-modal"><RefreshCcw></RefreshCcw>Reset</ButtonDecorated
+            >
+          </div>
+
+          <ModalDialogue
+            dialogId="reset-modal"
+            title="Restore Default Settings?"
+            confirmAction={restoreDefaults}
+            confirmText="Reset"
+            confirmStyle="destructive"
+            cancelText="cancel"
+            icon="warn"
+          ></ModalDialogue>
+        </section>
+      {/if}
       <div class="flex flex-col gap-2 opacity-50">
         {@render Heading3('Unimplemented settings:')}
         <h3>shown columns</h3>
