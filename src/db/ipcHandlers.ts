@@ -23,6 +23,14 @@ export default function setupHandlers(db) {
     return db.readOneChar(id)
   })
 
+  ipcMain.handle('readPinned', () => {
+    return db.readPinned()
+  })
+
+  ipcMain.handle('togglePinChar', (_, id: number, unpin: boolean) => {
+    return db.togglePinChar(id, unpin)
+  })
+
   ipcMain.handle('updateChar', (_, character: CharacterType) => {
     return db.updateChar(character)
   })

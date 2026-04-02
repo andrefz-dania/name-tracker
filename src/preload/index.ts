@@ -13,6 +13,10 @@ const api = {
 
   readOneChar: (id: number) => ipcRenderer.invoke('readOneChar', id),
 
+  readPinned: () => ipcRenderer.invoke('readPinned'),
+
+  togglePinChar: (id: number, unpin:boolean) => ipcRenderer.invoke('togglePinChar', id, unpin),
+
   searchChars: (term: string, column: string, reverse:boolean) => ipcRenderer.invoke('searchChars', term, column, reverse),
 
   updateChar: (character: CharacterData) => ipcRenderer.invoke('updateChar', character),

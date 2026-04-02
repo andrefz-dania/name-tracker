@@ -124,6 +124,18 @@ class CharacterDb {
     return response
   }
 
+  togglePinChar(id, unpin) {
+        console.log('CharacterID', id)
+    console.log('UnpinValue', unpin)
+    const newValue = unpin == true ? 0 : 1;
+        console.log('newValue', newValue)
+    const updateQuery = `UPDATE characters SET pinned=? WHERE id=?`
+    const stmt = this.db.prepare(updateQuery)
+    const response = stmt.run(newValue, id)
+    console.log(response)
+    return response
+  }
+
   updateChar(character) {
     const updateQuery = `UPDATE characters SET name=?, desc=?, dead=?, age=?, gender=?, location=?, occupation=?, species=? WHERE id=? RETURNING *`
     const stmt = this.db.prepare(updateQuery)

@@ -29,6 +29,8 @@ export type ApiTypes = {
   deleteAllChars(): Promise<{ success: boolean, count: number }>
   readAllChars(): Promise<CharacterType[]>
   readOneChar(id: number): Promise<CharacterType>
+  readPinned(): Promise<CharacterType[]>
+  togglePinChar(id: number, unpin:boolean): Promise<{ success: boolean }>
   updateChar(character: CharacterType): Promise<{ success: boolean }>
   searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>
   exportCharacters(): Promise<{success: boolean}>
