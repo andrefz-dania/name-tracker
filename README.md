@@ -48,7 +48,7 @@ Follow the development instructions and run the build command for your OS - inst
 - persist scroll location
 - add images to each character
 - character tags
-- pinned lists/tags
+- pinned / favourites
 - factions
 - character relationships
 - timeline / events for each character

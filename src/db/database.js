@@ -84,6 +84,25 @@ class CharacterDb {
     }
   }
 
+  deleteAllChars() {
+    const deleteAllQuery = `DELETE FROM characters`
+    const stmt = this.db.prepare(deleteAllQuery)
+    const response = stmt.run()
+    console.log(response)
+
+    if (response.changes > 0) {
+      return {
+        count: response.changes,
+        success: true
+      }
+    } else {
+      return {
+        count: 0,
+        success: false
+      }
+    }
+  }
+
   readAllChars() {
     const selectAllQuery = `SELECT * FROM characters ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)
@@ -102,7 +121,7 @@ class CharacterDb {
     const selectQuery = `SELECT * FROM characters WHERE pinned=1 ORDER BY name DESC`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
-    return response;
+    return response
   }
 
   updateChar(character) {

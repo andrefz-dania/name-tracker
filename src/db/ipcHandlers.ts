@@ -11,6 +11,10 @@ export default function setupHandlers(db) {
     return db.deleteChar(id)
   })
 
+  ipcMain.handle('deleteAllChars', () => {
+    return db.deleteAllChars()
+  })
+
   ipcMain.handle('readAllChars', () => {
     return db.readAllChars()
   })

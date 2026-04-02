@@ -26,6 +26,7 @@ export const blankCharacter: CharacterType = {
 export type ApiTypes = {
   createChar(character: CharacterType): Promise<{ id: number; success: boolean }>
   deleteChar(id: number): Promise<{ id: number; success: boolean }>
+  deleteAllChars(): Promise<{ success: boolean, count: number }>
   readAllChars(): Promise<CharacterType[]>
   readOneChar(id: number): Promise<CharacterType>
   updateChar(character: CharacterType): Promise<{ success: boolean }>
