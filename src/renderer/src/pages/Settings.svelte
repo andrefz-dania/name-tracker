@@ -83,17 +83,18 @@
   }
 
   // STORAGE
-  const handleImport = () => {
-    //implement later
-    console.log('import clicked')
-  }
 
   const handleExport = async() => {
-    //implement later
-    console.log('export clicked')
     const response = await window.api.exportCharacters()
     if (response.success) {
       console.log('saved successfully')
+    }
+  }
+
+  const handleImport = async() => {
+    const response = await window.api.importCharacters()
+    if (response.success) {
+      console.log(`Imported ${response.count} successfully`)
     }
   }
 </script>

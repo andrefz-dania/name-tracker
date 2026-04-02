@@ -70,4 +70,41 @@ export default function setupHandlers(db) {
         return { success: false };
     }
   })
+
+  ipcMain.handle('importCharacters', async () => {
+    const file = await dialog.showOpenDialog({
+      title: 'Import Data',
+      filters: [{ name: 'JSON', extensions: ['json'] }]
+    })
+
+    if (file.canceled || !file.filePaths) {
+        return { success: false, message: 'User cancelled import' }
+    }
+
+    try {
+        const fileData = fs.readFileSync(file.filePaths[0])
+        const data = JSON.parse(fileData.toString())
+        const characters: CharacterType[] = data.map(c => ({
+            name: c.name || 'Unnamed Character',
+            desc: c.desc || '',
+            dead: c.dead || 0,
+            age: c.age || null,
+            gender: c.gender || '',
+            location: c.location || '',
+            occupation: c.occupation || '',
+            species: c.species || ''
+            }));
+
+            characters.forEach(c => {
+                db.createChar(c);
+            });
+            return {success: true, count: characters.length};
+
+
+    } catch (error) {
+        console.error(error);
+        return { success: false };
+    }
+
+    })
 }

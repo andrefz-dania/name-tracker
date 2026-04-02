@@ -17,6 +17,8 @@ const api = {
 
   exportCharacters: () => ipcRenderer.invoke('exportCharacters'),
 
+  importCharacters: () => ipcRenderer.invoke('importCharacters')
+
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

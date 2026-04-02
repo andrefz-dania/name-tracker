@@ -31,7 +31,7 @@ export type ApiTypes = {
   updateChar(character: CharacterType): Promise<{ success: boolean }>
   searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>
   exportCharacters(): Promise<{success: boolean}>
-
+  importCharacters(): Promise<{success: boolean, count?: number}>
 }
 
 export type InterfaceConfig = {
