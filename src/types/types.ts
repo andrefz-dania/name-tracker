@@ -8,6 +8,7 @@ export type CharacterType = {
   location?: string
   occupation?: string
   species?: string
+  pinned?: number
 }
 
 export const blankCharacter: CharacterType = {
@@ -18,11 +19,12 @@ export const blankCharacter: CharacterType = {
   gender: '',
   location: '',
   occupation: '',
-  species: ''
+  species: '',
+  pinned: 0
 }
 
 export type ApiTypes = {
-  createChar(character: CharacterType): Promise<CharacterType>
+  createChar(character: CharacterType): Promise<{ id: number; success: boolean }>
   deleteChar(id: number): Promise<{ id: number; success: boolean }>
   readAllChars(): Promise<CharacterType[]>
   readOneChar(id: number): Promise<CharacterType>

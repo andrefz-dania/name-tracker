@@ -8,7 +8,6 @@
   import TextInput from '../components/TextInput.svelte'
   import { Check, SkullIcon, SproutIcon, XIcon } from '@lucide/svelte'
   import { capitalizeAll, capitalizeFirst, decapitalizeAll } from '../utils/capitalize'
-
   let name = $state('')
   let status = $state('Alive') // Default to Alive
   let dead = $derived(status == 'Dead' ? 1 : 0)  //sqlite cannot handle booleans
@@ -20,7 +19,8 @@
   let occupation = $state('')
   let species = $state('')
 
-  const handleAddCharacter = async () => {
+  const handleAddCharacter = async (e) => {
+    e.preventDefault()
 
     const character: CharacterType = {
       name: capitalizeAll(name),
@@ -33,7 +33,11 @@
       species: decapitalizeAll(species)
     }
 
-    await window.api.createChar(character)
+    const response = await window.api.createChar(character)
+    console.log(response);
+    if (response.success) {
+      window.location.href = `#/character/${response.id}`
+    }
   }
 
   // let {id} = $props();

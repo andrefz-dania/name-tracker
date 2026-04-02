@@ -6,11 +6,16 @@
   type PropTypes = {
     style?: 'no-back' | 'back'
     children?: Snippet
+    backOverride?: string
   }
 
-  let { style, children }: PropTypes = $props()
+  let { style, children, backOverride }: PropTypes = $props()
 
   const goBack= ()=> {
+    if (backOverride) {
+      window.location.href = backOverride
+    }
+
     window.history.back()
   }
 </script>

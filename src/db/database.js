@@ -21,10 +21,20 @@ class CharacterDb {
         gender TEXT,
         location TEXT,
         occupation TEXT,
-        species TEXT
+        species TEXT,
+        pinned BOOLEAN DEFAULT 0
         )`
-
+    console.log('Configuring database...')
     this.db.exec(setupCharactersSql)
+
+    // support legacy v0.0.1 tables
+    try {
+      const setupPinnedSql = `ALTER TABLE characters ADD COLUMN IF NOT EXISTS pinned BOOLEAN DEFAULT 0`
+      this.db.exec(setupPinnedSql)
+    } catch (error) {
+      console.log('Pinned column already exists, skipping...')
+    }
+
     console.log('Database setup complete')
   }
 
@@ -41,11 +51,17 @@ class CharacterDb {
       character.occupation,
       character.species
     )
-    console.log(`Character with ID ${response.lastInsertRowid} created`
-    )
-    return {
-      id: response.lastInsertRowid,
-      success: response.success
+    if (response.changes == 1) {
+      console.log(`Character with ID ${response.lastInsertRowid} created`)
+      return {
+        id: response.lastInsertRowid,
+        success: true
+      }
+    } else {
+      return {
+        success: false,
+        message: 'An error occurred when creating the character'
+      }
     }
   }
 
@@ -76,10 +92,17 @@ class CharacterDb {
   }
 
   readOneChar(id) {
-    const selectQuery = `SELECT * FROM characters WHERE id = ?`;
+    const selectQuery = `SELECT * FROM characters WHERE id = ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.get(id)
     return response
+  }
+
+  readPinned() {
+    const selectQuery = `SELECT * FROM characters WHERE pinned=1 ORDER BY name DESC`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all()
+    return response;
   }
 
   updateChar(character) {
@@ -95,8 +118,8 @@ class CharacterDb {
       character.occupation,
       character.species,
       character.id
-    );
-     if (response.changes == 1) {
+    )
+    if (response.changes == 1) {
       console.log(`Character with ID ${character.id} updated`)
       return {
         success: true
@@ -107,13 +130,17 @@ class CharacterDb {
         success: false
       }
     }
-
   }
 
   searchChars(query, column, reverse) {
     const direction = reverse ? 'DESC' : 'ASC'
-    function  evaluateColumn(column) {
-      if (column == 'species' || column == 'gender' || column == 'location' || column == 'occupation') {
+    function evaluateColumn(column) {
+      if (
+        column == 'species' ||
+        column == 'gender' ||
+        column == 'location' ||
+        column == 'occupation'
+      ) {
         return column
       } else if (column == 'status') {
         return 'dead'
@@ -121,11 +148,13 @@ class CharacterDb {
         return 'name'
       }
     }
-    const protectedColumn = evaluateColumn(column);
+    const protectedColumn = evaluateColumn(column)
     const selectQuery = `SELECT * FROM characters WHERE name LIKE ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`)
-    console.log(`Found ${response.length} characters matching query: ${query} ordered by ${protectedColumn} ${direction}`)
+    console.log(
+      `Found ${response.length} characters matching query: ${query} ordered by ${protectedColumn} ${direction}`
+    )
     return response
   }
 
@@ -144,4 +173,3 @@ class CharacterDb {
 }
 
 export default CharacterDb
-

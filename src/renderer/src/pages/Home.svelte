@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { ChevronRight, Clock, Earth, Pin, UserIcon } from '@lucide/svelte'
+  import { ChevronRight, Clock, Earth, Pin, Plus, UserIcon } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
-  import ButtonDecorated from '../components/ButtonDecorated.svelte'
+  import ButtonMainMenu from '../components/ButtonMainMenu.svelte'
 
   let worldName = 'dummyWorld'
   let characterCount = 129
@@ -26,9 +26,9 @@
       {@render Heading1('World: ')}
       <p class="text-center text-textcol/75 text-3xl pl-4">{worldName}</p>
     </div>
-    <div class="w-full mx-auto flex gap-4">
-      <ButtonDecorated style="menu">Create new world<ChevronRight /></ButtonDecorated>
-      <ButtonDecorated style="menu">Switch worlds<ChevronRight /></ButtonDecorated>
+    <div class="w-full max-w-2xl mx-auto flex gap-4">
+      <ButtonMainMenu style="normal" disabled>Switch worlds<ChevronRight /></ButtonMainMenu>
+      <ButtonMainMenu style="small" disabled><Plus></Plus></ButtonMainMenu>
     </div>
   </section>
 
@@ -39,13 +39,14 @@
       {@render Heading1('Characters: ')}
       <p class="text-center text-textcol/75 text-3xl pl-4">{characterCount}</p>
     </div>
-    <div class="w-full mx-auto flex gap-4">
-      <a href="#/create" class="w-full"
-        ><ButtonDecorated style="menu">Create new character<ChevronRight /></ButtonDecorated></a
+    <div class="w-full max-w-2xl mx-auto flex gap-4">
+          <a href="#/list" class="w-full"
+        ><ButtonMainMenu style="normal">Browse all characters<ChevronRight /></ButtonMainMenu></a
       >
-      <a href="#/list" class="w-full"
-        ><ButtonDecorated style="menu">Browse all characters<ChevronRight /></ButtonDecorated></a
+      <a href="#/create" class="flex"
+        ><ButtonMainMenu style="small"><Plus></Plus></ButtonMainMenu></a
       >
+
     </div>
     <div class="w-full max-w-6xl flex gap-4">
       <div class="w-full">

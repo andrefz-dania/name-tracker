@@ -147,6 +147,7 @@
               defaultvalue={character.occupation}
               name="occupation"
               id="occupation"
+              placeholder="Unknown"
             ></EditableField>
           </div>
 
@@ -160,6 +161,7 @@
               defaultvalue={character.location}
               name="location"
               id="location"
+              placeholder="Unknown"
             ></EditableField>
           </div>
         </div>
@@ -174,6 +176,7 @@
             defaultvalue={character.desc}
             name="desc"
             id="desc"
+            placeholder='No Description'
           ></EditableArea>
         </div>
       </section>
