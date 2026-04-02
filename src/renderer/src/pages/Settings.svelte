@@ -54,10 +54,13 @@
     descLength = defaultInterfaceConfig.descLength
   }
 
-    const handleDeleteAll = () => {
-    //implement later
-    console.log('delete confirmed...')
-  }
+    const handleDeleteAll = async () => {
+    const response = await window.api.deleteAllChars()
+    if (response.success) {
+      sendNotif(notif, `Deleted ${response.count} characters`, 'positive')
+  } else {
+    sendNotif(notif, `0 characters were deleted`, 'normal')
+  } }
 
   // INTERFACE
   const handleListStyleChange = () => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Check, LoaderCircle, TriangleAlert, XIcon } from "@lucide/svelte"
+  import { Check, LoaderCircle, TriangleAlert } from "@lucide/svelte"
 
     type Props = {
         message: string,

@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { ChevronRight, Clock, Earth, Pin, Plus, UserIcon } from '@lucide/svelte'
+  import { ChevronRight, Earth, Plus, UserIcon } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import ButtonMainMenu from '../components/ButtonMainMenu.svelte'
+  import PinnedList from '../components/PinnedList.svelte'
+  import RecentList from '../components/RecentList.svelte'
 
   let worldName = 'dummyWorld'
   let characterCount = 129
@@ -40,38 +42,16 @@
       <p class="text-center text-textcol/75 text-3xl pl-4">{characterCount}</p>
     </div>
     <div class="w-full max-w-2xl mx-auto flex gap-4">
-          <a href="#/list" class="w-full"
+      <a href="#/list" class="w-full"
         ><ButtonMainMenu style="normal">Browse all characters<ChevronRight /></ButtonMainMenu></a
       >
       <a href="#/create" class="flex"
         ><ButtonMainMenu style="small"><Plus></Plus></ButtonMainMenu></a
       >
-
     </div>
     <div class="w-full max-w-6xl flex gap-4">
-      <div class="w-full">
-        <p class="text-primary font-bold flex gap-2 my-2"><Pin></Pin>PINNED</p>
-        <div class="w-full flex gap-2 flex-col">
-        <div class="h-10 bg-layer1 rounded-md p-2">Person</div>
-        <div class="h-10 bg-layer1 rounded-md p-2">Person</div>
-
-        <div class="h-10 bg-layer1 rounded-md p-2">Person</div>
-
-        <div class="h-10 bg-layer1 rounded-md p-2">Person</div>
-        </div>
-
-      </div>
-      <div class="w-full">
-        <p class="text-primary font-bold flex gap-2 my-2"><Clock></Clock>RECENT</p>
-                <div class="w-full flex gap-2 flex-col">
-        <div class="h-10 bg-layer1 rounded-md p-2">Person</div>
-        <div class="h-10 bg-layer1 rounded-md p-2">Person</div>
-
-        <div class="h-10 bg-layer1 rounded-md p-2">Person</div>
-
-        <div class="h-10 bg-layer1 rounded-md p-2">Person</div>
-        </div>
-      </div>
+      <PinnedList></PinnedList>
+      <RecentList></RecentList>
     </div>
   </section>
 </article>

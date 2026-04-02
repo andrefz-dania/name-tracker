@@ -84,6 +84,32 @@ class CharacterDb {
     }
   }
 
+  deleteAllChars() {
+    const deleteAllQuery = `DELETE FROM characters`
+    const stmt = this.db.prepare(deleteAllQuery)
+    const response = stmt.run()
+    console.log(response)
+
+    if (response.changes > 0) {
+      return {
+        count: response.changes,
+        success: true
+      }
+    } else {
+      return {
+        count: 0,
+        success: false
+      }
+    }
+  }
+
+  getCount() {
+    const countQuery = 'SELECT COUNT(*) FROM characters'
+    const stmt = this.db.prepare(countQuery)
+    const response = stmt.all()
+    return response
+  }
+
   readAllChars() {
     const selectAllQuery = `SELECT * FROM characters ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)
@@ -102,7 +128,28 @@ class CharacterDb {
     const selectQuery = `SELECT * FROM characters WHERE pinned=1 ORDER BY name DESC`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
-    return response;
+    return response
+  }
+
+  readList(list) {
+    const ids = list.map((c) => c.id);
+    const placeholders = ids.map(() => '?').join(',');
+    const selectQuery = `SELECT * FROM characters WHERE id IN (${placeholders});`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all(ids)
+    return response
+  }
+
+  togglePinChar(id, unpin) {
+        console.log('CharacterID', id)
+    console.log('UnpinValue', unpin)
+    const newValue = unpin == true ? 0 : 1;
+        console.log('newValue', newValue)
+    const updateQuery = `UPDATE characters SET pinned=? WHERE id=?`
+    const stmt = this.db.prepare(updateQuery)
+    const response = stmt.run(newValue, id)
+    console.log(response)
+    return response
   }
 
   updateChar(character) {

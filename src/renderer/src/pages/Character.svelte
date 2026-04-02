@@ -7,6 +7,8 @@
     Hammer,
     Hourglass,
     MapPin,
+    PinIcon,
+    PinOff,
     VenusAndMars,
     XIcon
   } from '@lucide/svelte'
@@ -20,6 +22,9 @@
   import EditableTitle from '../components/EditableTitle.svelte'
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
   import { formatCharacter } from '../utils/formatCharacter'
+  import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
+  import { onMount } from 'svelte'
+  import { addRecent } from '../utils/recent'
 
   let character: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
@@ -27,14 +32,27 @@
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
+    console.log(character)
   }
 
   const saveCharacter = async () => {
     const newCharacter = formatCharacter(character)
+    console.log(newCharacter)
     const response = await window.api.updateChar(newCharacter)
     if (response.success) {
       isUpdatable = false
     }
+  }
+
+  onMount(()=>{
+    addRecent(id);
+  })
+
+  const togglePinned = async () => {
+    const unpin = character.pinned ? true : false;
+    const response = await window.api.togglePinChar(character.id, unpin)
+    character.pinned = character.pinned == 1 ? 0 : 1;
+    console.log(response)
   }
 
   const discardChanges = () => {
@@ -137,6 +155,19 @@
       </section>
 
       <section class="flex flex-col gap-4 w-full">
+        <div class="flex place-content-end">
+          <div>
+            {#if character.pinned || character.pinned == 1}
+              <ButtonToggleL2 onclick={togglePinned} style="active" type="button"
+                ><PinIcon></PinIcon>Pinned</ButtonToggleL2
+              >
+            {:else}
+              <ButtonToggleL2 onclick={togglePinned} style="inactive" type="button"
+                ><PinOff></PinOff>Not pinned</ButtonToggleL2
+              >
+            {/if}
+          </div>
+        </div>
         <div class="flex gap-2 bg-layer1 p-4 rounded-md">
           <div class="w-full text-center">
             <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
@@ -176,7 +207,7 @@
             defaultvalue={character.desc}
             name="desc"
             id="desc"
-            placeholder='No Description'
+            placeholder="No Description"
           ></EditableArea>
         </div>
       </section>

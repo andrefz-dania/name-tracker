@@ -26,12 +26,21 @@ export const blankCharacter: CharacterType = {
 export type ApiTypes = {
   createChar(character: CharacterType): Promise<{ id: number; success: boolean }>
   deleteChar(id: number): Promise<{ id: number; success: boolean }>
+  deleteAllChars(): Promise<{ success: boolean; count: number }>
   readAllChars(): Promise<CharacterType[]>
   readOneChar(id: number): Promise<CharacterType>
+  readList(list: RecentChar[]): Promise<CharacterType[]>
+  readPinned(): Promise<CharacterType[]>
+  togglePinChar(id: number, unpin: boolean): Promise<{ success: boolean }>
   updateChar(character: CharacterType): Promise<{ success: boolean }>
   searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>
-  exportCharacters(): Promise<{success: boolean}>
-  importCharacters(): Promise<{success: boolean, count?: number}>
+  exportCharacters(): Promise<{ success: boolean }>
+  importCharacters(): Promise<{ success: boolean; count?: number }>
+}
+
+export type RecentChar = {
+  id: number
+  timeStamp?: number
 }
 
 export type InterfaceConfig = {
@@ -67,7 +76,6 @@ export const defaultInterfaceConfig: InterfaceConfig = {
   occupationVisible: true,
   locationVisible: true
 }
-
 
 export type Notification = {
   id: string

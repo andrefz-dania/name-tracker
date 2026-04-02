@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { RecentChar } from '../types/types'
 
 // Custom APIs for renderer
 const api = {
@@ -7,9 +8,17 @@ const api = {
 
   deleteChar: (id: number) => ipcRenderer.invoke('deleteChar', id),
 
+  deleteAllChars: () => ipcRenderer.invoke('deleteAllChars'),
+
   readAllChars: () => ipcRenderer.invoke('readAllChars'),
 
   readOneChar: (id: number) => ipcRenderer.invoke('readOneChar', id),
+
+  readList: (list: RecentChar[]) => ipcRenderer.invoke('readList', list),
+
+  readPinned: () => ipcRenderer.invoke('readPinned'),
+
+  togglePinChar: (id: number, unpin:boolean) => ipcRenderer.invoke('togglePinChar', id, unpin),
 
   searchChars: (term: string, column: string, reverse:boolean) => ipcRenderer.invoke('searchChars', term, column, reverse),
 
