@@ -6,22 +6,46 @@ This is Electron application made with Svelte and TypeScript. It is aimed at fan
 
 This application is still in very early development, with only the basics implemented
 
-## Implemented Features
-- quickly search though all your characters
-- add characters to the list, and enter their details, such as location, occupation, species, and more.
-- multiplatform support (untested)
-- edit characters
-- sort by column
-- toggle list style
-- search hotkey
-- toggle columns
+# Installation
 
-## Planned features
+## Windows
+Dowload the installer and run it. Upon completion, you should now have a start menu shortcut to launch CaraBace
+
+## Linux
+Native distribution is a work in progress
+Follow the development instructions and run the build command for your OS - install the resulting package (untested)
+
+## Mac
+Native distribution is a work in progress
+Follow the development instructions and run the build command for your OS - install the resulting package (untested)
+
+# Development Progress
+## Implemented
+
+### Core
+- Create characters
+- Edit characters
+- Delete characters
+- Import/export characters to JSON
+- Run on Windows, Linux or Mac (untested)
+- Hotkeys (partial)
+
+### Sorting
+- Seach all characters
+- Filter each column ascending or descending
+- Persist search and sorting between screens
+
+### UI
+- toggle list style
+- dark & light themes
+- toggle columns on/off
+
+## Planned
 - markdown editing
 - deep search
 - favourites
 - quickly swap character status from the search list
-- persist search and scroll location between screens
+- persist scroll location
 - add images to each character
 - character tags
 - pinned lists/tags
@@ -34,7 +58,7 @@ This application is still in very early development, with only the basics implem
 - flathub package
 
 
-## Project Setup
+# Development Setup
 
 ### Install
 
