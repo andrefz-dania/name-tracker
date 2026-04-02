@@ -1,31 +1,73 @@
-import { ipcMain } from "electron";
+import { dialog, ipcMain } from 'electron'
+import * as fs from 'fs';
+import { CharacterType } from '../types/types';
 
 export default function setupHandlers(db) {
-    ipcMain.handle('createChar', (_, character: CharacterData) => {
-        return db.createChar(character);
-    });
+  ipcMain.handle('createChar', (_, character: CharacterType) => {
+    return db.createChar(character)
+  })
 
-    ipcMain.handle('deleteChar', (_, id: number) => {
-        return db.deleteChar(id);
-    });
+  ipcMain.handle('deleteChar', (_, id: number) => {
+    return db.deleteChar(id)
+  })
 
-    ipcMain.handle('readAllChars', () => {
-        return db.readAllChars();
-    });
+  ipcMain.handle('readAllChars', () => {
+    return db.readAllChars()
+  })
 
-    ipcMain.handle('readOneChar', (_, id: number) => {
-        return db.readOneChar(id);
-    });
+  ipcMain.handle('readOneChar', (_, id: number) => {
+    return db.readOneChar(id)
+  })
 
-    ipcMain.handle('updateChar', (_, character: CharacterData) => {
-        return db.updateChar(character);
-    });
+  ipcMain.handle('updateChar', (_, character: CharacterType) => {
+    return db.updateChar(character)
+  })
 
-    ipcMain.handle('searchChars', (_, searchQuery: string, column: string, reverse: boolean) => {
-        return db.searchChars(searchQuery, column, reverse);
-    });
+  ipcMain.handle('searchChars', (_, searchQuery: string, column: string, reverse: boolean) => {
+    return db.searchChars(searchQuery, column, reverse)
+  })
 
-    ipcMain.handle('deepSearchChars', (_, searchQuery: string) => {
-        return db.searchChars(searchQuery);
-    });
+  ipcMain.handle('deepSearchChars', (_, searchQuery: string) => {
+    return db.searchChars(searchQuery)
+  })
+
+  ipcMain.handle('exportCharacters', async () => {
+    console.log('Exporting characters to file...')
+
+    const characters = await db.readAllChars();
+
+    // remove ID and Pinned fields, and account for valueless fields
+    const data = characters.map(c => ({
+        name: c.name,
+        desc: c.desc || '',
+        dead: c.dead,
+        age: c.age || null,
+        gender: c.gender || '',
+        location: c.location || '',
+        occupation: c.occupation || '',
+        species: c.species || '',
+    }))
+    const json = JSON.stringify(data);
+
+
+    // Show save dialog with filters
+    const result = await dialog.showSaveDialog({
+      title: 'Export Data',
+      defaultPath: 'export.json',
+      filters: [{ name: 'JSON', extensions: ['json'] }]
+    })
+
+    if (result.canceled || !result.filePath) {
+      return { success: false, message: 'User cancelled export' }
+    }
+
+        try {
+        // Write file
+        fs.writeFileSync(result.filePath, json);
+        return { success: true, path: result.filePath };
+    } catch (error) {
+        console.error(error);
+        return { success: false };
+    }
+  })
 }

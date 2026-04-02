@@ -13,7 +13,9 @@ const api = {
 
   searchChars: (term: string, column: string, reverse:boolean) => ipcRenderer.invoke('searchChars', term, column, reverse),
 
-  updateChar: (character: CharacterData) => ipcRenderer.invoke('updateChar', character)
+  updateChar: (character: CharacterData) => ipcRenderer.invoke('updateChar', character),
+
+  exportCharacters: () => ipcRenderer.invoke('exportCharacters'),
 
 }
 

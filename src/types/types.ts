@@ -30,6 +30,8 @@ export type ApiTypes = {
   readOneChar(id: number): Promise<CharacterType>
   updateChar(character: CharacterType): Promise<{ success: boolean }>
   searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>
+  exportCharacters(): Promise<{success: boolean}>
+
 }
 
 export type InterfaceConfig = {

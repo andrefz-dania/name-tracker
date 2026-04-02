@@ -88,9 +88,13 @@
     console.log('import clicked')
   }
 
-  const handleExport = () => {
+  const handleExport = async() => {
     //implement later
     console.log('export clicked')
+    const response = await window.api.exportCharacters()
+    if (response.success) {
+      console.log('saved successfully')
+    }
   }
 </script>
 
