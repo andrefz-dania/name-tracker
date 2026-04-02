@@ -7,6 +7,8 @@
   import Settings from './pages/Settings.svelte'
   import { defaultInterfaceConfig, type InterfaceConfig } from '../../types/types'
   import Home from './pages/Home.svelte'
+  import {notif} from './utils/context'
+  import Notification from './components/Notification.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
 
@@ -60,9 +62,29 @@
     window.addEventListener('hashchange', handler)
     return () => window.removeEventListener('hashchange', handler)
   })
+
+$effect(() => {
+  let idTimeout = undefined
+    if ($notif !== null) {
+      const time = $notif.type == 'progress' ? 60000 : 3000
+    idTimeout = setTimeout(() => {
+        $notif = null
+      }, time)
+    }
+  return () => {
+    if (idTimeout !== undefined) {
+      clearTimeout(idTimeout)
+    }
+  }
+  })
 </script>
 
 <main class="flex flex-col gap-2 p-4 min-h-screen max-h-screen {themeClass} text-textcol bg-layer0 font-block">
+<div class="absolute w-full top-4 flex flex-col gap-2 items-center place-content-center">
+ {#if $notif}
+  <Notification id={'1'} message={$notif.message} type={$notif.type}></Notification>
+ {/if}
+</div>
   <!-- <p class="fixed mt-8 bottom-0 bg-black text-textcol">DEBUG ROUTE: {currentRoute}</p> -->
   {#if currentRoute === '/'}
     <Home />
@@ -80,3 +102,4 @@
     <h2>404 Not Found</h2>
   {/if}
 </main>
+

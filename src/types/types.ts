@@ -67,3 +67,12 @@ export const defaultInterfaceConfig: InterfaceConfig = {
   occupationVisible: true,
   locationVisible: true
 }
+
+
+export type Notification = {
+  id: string
+  message: string
+  type: 'destructive' | 'positive' | 'normal'
+  hasProgress: boolean
+  done?: boolean
+}

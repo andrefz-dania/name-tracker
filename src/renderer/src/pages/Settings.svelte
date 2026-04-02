@@ -15,7 +15,10 @@
     FolderX,
     Download,
 
-    HardDrive
+    HardDrive,
+
+    Wrench
+
 
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
@@ -27,12 +30,13 @@
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
   import { defaultInterfaceConfig } from '../../../types/types'
   import ModalDialogue from '../components/ModalDialogue.svelte'
+  import { notif, sendNotif } from '../utils/context'
 
   let { interfaceConfig = $bindable() } = $props()
 
   let descLength = $state(interfaceConfig.descLength || defaultInterfaceConfig.descLength)
 
-  type CurrentPage = 'general' | 'worlds' | 'storage' | 'reset'
+  type CurrentPage = 'general' | 'worlds' | 'storage' | 'reset' | 'debug'
 
   let currentPage: CurrentPage = $state('general')
 
@@ -85,16 +89,22 @@
   // STORAGE
 
   const handleExport = async() => {
+        sendNotif(notif, 'Exporting characters...', 'progress')
     const response = await window.api.exportCharacters()
     if (response.success) {
-      console.log('saved successfully')
+      sendNotif(notif, `Export finished`, 'positive')
+    } else {
+      sendNotif(notif, 'Export failed', 'destructive')
     }
   }
 
   const handleImport = async() => {
+    sendNotif(notif, 'Importing characters...', 'progress')
     const response = await window.api.importCharacters()
     if (response.success) {
-      console.log(`Imported ${response.count} successfully`)
+      sendNotif(notif, `Imported ${response.count} characters`, 'positive')
+    } else {
+      sendNotif(notif, 'Import failed', 'destructive')
     }
   }
 </script>
@@ -136,6 +146,7 @@
       <!-- {@render Category('worlds')}-->
       {@render Category('storage')}
       {@render Category('reset')}
+      {@render Category('debug')}
     </section>
 
     <!-- main content -->
@@ -298,6 +309,24 @@
           ></ModalDialogue>
         </section>
       {/if}
+
+      {#if currentPage == 'debug'}
+      <section>
+        <SettingInfo
+          name="Test notifications"
+          description="See if the notification system is behaving itself"><Wrench></Wrench></SettingInfo>
+
+      </section>
+<div class="flex flex-row gap-2 p-2">
+  <ButtonDecorated onclick={()=>sendNotif(notif, 'Hello there', 'normal')}>send notif</ButtonDecorated>
+  <ButtonDecorated onclick={()=>sendNotif(notif, 'Oh no!', 'destructive')}>send BAD notif</ButtonDecorated>
+    <ButtonDecorated onclick={()=>sendNotif(notif, 'poggers', 'positive')}>send GOOD notif</ButtonDecorated>
+      <ButtonDecorated onclick={()=>sendNotif(notif, 'Loading...', 'progress')}>send PROG notif</ButtonDecorated>
+
+</div>
+      {/if}
     </section>
   </div>
+
+
 </div>

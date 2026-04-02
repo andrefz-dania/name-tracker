@@ -8,6 +8,7 @@
   import TextInput from '../components/TextInput.svelte'
   import { Check, SkullIcon, SproutIcon, XIcon } from '@lucide/svelte'
   import { capitalizeAll, capitalizeFirst, decapitalizeAll } from '../utils/capitalize'
+  import { notif, sendNotif } from '../utils/context'
   let name = $state('')
   let status = $state('Alive') // Default to Alive
   let dead = $derived(status == 'Dead' ? 1 : 0)  //sqlite cannot handle booleans
@@ -36,6 +37,7 @@
     const response = await window.api.createChar(character)
     console.log(response);
     if (response.success) {
+      sendNotif(notif, `${character.name} has been created`, 'positive')
       window.location.href = `#/character/${response.id}`
     }
   }
