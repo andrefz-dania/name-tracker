@@ -293,3 +293,19 @@ dialog::backdrop {
 .col-span-9 {
   grid-column: span 9 / span 9;
 }
+
+.opacity-20 {
+  opacity: 20%;
+}
+
+.opacity-40 {
+  opacity: 40%;
+}
+
+.opacity-60 {
+  opacity: 60%;
+}
+
+.opacity-80 {
+  opacity: 80%;
+}

@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { RecentChar } from '../types/types'
 
 // Custom APIs for renderer
 const api = {
@@ -12,6 +13,8 @@ const api = {
   readAllChars: () => ipcRenderer.invoke('readAllChars'),
 
   readOneChar: (id: number) => ipcRenderer.invoke('readOneChar', id),
+
+  readList: (list: RecentChar[]) => ipcRenderer.invoke('readList', list),
 
   readPinned: () => ipcRenderer.invoke('readPinned'),
 

@@ -23,6 +23,8 @@
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
   import { formatCharacter } from '../utils/formatCharacter'
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
+  import { onMount } from 'svelte'
+  import { addRecent } from '../utils/recent'
 
   let character: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
@@ -41,6 +43,10 @@
       isUpdatable = false
     }
   }
+
+  onMount(()=>{
+    addRecent(id);
+  })
 
   const togglePinned = async () => {
     const unpin = character.pinned ? true : false;

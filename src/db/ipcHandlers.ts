@@ -1,6 +1,6 @@
 import { dialog, ipcMain } from 'electron'
 import * as fs from 'fs';
-import { CharacterType } from '../types/types';
+import { CharacterType, RecentChar } from '../types/types';
 
 export default function setupHandlers(db) {
   ipcMain.handle('createChar', (_, character: CharacterType) => {
@@ -21,6 +21,10 @@ export default function setupHandlers(db) {
 
   ipcMain.handle('readOneChar', (_, id: number) => {
     return db.readOneChar(id)
+  })
+
+  ipcMain.handle('readList', (_, list: RecentChar[]) => {
+    return db.readList(list)
   })
 
   ipcMain.handle('readPinned', () => {

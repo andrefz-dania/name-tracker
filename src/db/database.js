@@ -124,6 +124,15 @@ class CharacterDb {
     return response
   }
 
+  readList(list) {
+    const ids = list.map((c) => c.id);
+    const placeholders = ids.map(() => '?').join(',');
+    const selectQuery = `SELECT * FROM characters WHERE id IN (${placeholders});`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all(ids)
+    return response
+  }
+
   togglePinChar(id, unpin) {
         console.log('CharacterID', id)
     console.log('UnpinValue', unpin)
