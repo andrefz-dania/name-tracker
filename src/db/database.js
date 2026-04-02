@@ -103,6 +103,13 @@ class CharacterDb {
     }
   }
 
+  getCount() {
+    const countQuery = 'SELECT COUNT(*) FROM characters'
+    const stmt = this.db.prepare(countQuery)
+    const response = stmt.all()
+    return response
+  }
+
   readAllChars() {
     const selectAllQuery = `SELECT * FROM characters ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)

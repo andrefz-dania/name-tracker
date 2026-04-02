@@ -34,6 +34,8 @@ Follow the development instructions and run the build command for your OS - inst
 - Seach all characters
 - Filter each column ascending or descending
 - Persist search and sorting between screens
+- pinned / favourites
+- recently viewed characters
 
 ### UI
 - toggle list style
@@ -43,12 +45,10 @@ Follow the development instructions and run the build command for your OS - inst
 ## Planned
 - markdown editing
 - deep search
-- favourites
 - quickly swap character status from the search list
 - persist scroll location
 - add images to each character
 - character tags
-- pinned / favourites
 - factions
 - character relationships
 - timeline / events for each character
