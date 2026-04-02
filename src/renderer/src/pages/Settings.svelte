@@ -10,7 +10,13 @@
     RefreshCcw,
     ChevronRight,
     Eye,
-    EyeClosed
+    EyeClosed,
+    Upload,
+    FolderX,
+    Download,
+
+    HardDrive
+
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
@@ -37,12 +43,19 @@
     }
   }
 
+  // RESETS
   const restoreDefaults = () => {
     interfaceConfig = defaultInterfaceConfig
     // clear the separate variable too, only to show the change to the user
     descLength = defaultInterfaceConfig.descLength
   }
 
+    const handleDeleteAll = () => {
+    //implement later
+    console.log('delete confirmed...')
+  }
+
+  // INTERFACE
   const handleListStyleChange = () => {
     if (interfaceConfig.listStyle == 'large') {
       changeSetting('listStyle', 'small')
@@ -67,6 +80,17 @@
     column: 'speciesVisible' | 'genderVisible' | 'occupationVisible' | 'locationVisible'
   ) => {
     changeSetting(column, !interfaceConfig[column])
+  }
+
+  // STORAGE
+  const handleImport = () => {
+    //implement later
+    console.log('import clicked')
+  }
+
+  const handleExport = () => {
+    //implement later
+    console.log('export clicked')
   }
 </script>
 
@@ -104,8 +128,8 @@
     <section class="md:min-w-48 p-2 bg-layer1 rounded-xl flex flex-col h-min sticky top-0">
       <p class="font-bold text-sm text-primary p-2">CATEGORIES</p>
       {@render Category('general')}
-      <!-- {@render Category('worlds')}
-      {@render Category('storage')} -->
+      <!-- {@render Category('worlds')}-->
+      {@render Category('storage')}
       {@render Category('reset')}
     </section>
 
@@ -178,7 +202,8 @@
           <div class="flex flex-col md:flex-row gap-4 p-4">
             <ButtonToggleL2
               style={interfaceConfig.speciesVisible ? 'active' : 'inactive'}
-              onclick={() => toggleColumn('speciesVisible')}>{#if interfaceConfig.speciesVisible}<Eye></Eye>{:else}<EyeClosed
+              onclick={() => toggleColumn('speciesVisible')}
+              >{#if interfaceConfig.speciesVisible}<Eye></Eye>{:else}<EyeClosed
                 ></EyeClosed>{/if}Species</ButtonToggleL2
             >
             <ButtonToggleL2
@@ -195,18 +220,31 @@
             >
             <ButtonToggleL2
               style={interfaceConfig.locationVisible ? 'active' : 'inactive'}
-              onclick={() => toggleColumn('locationVisible')}>{#if interfaceConfig.locationVisible}<Eye></Eye>{:else}<EyeClosed
+              onclick={() => toggleColumn('locationVisible')}
+              >{#if interfaceConfig.locationVisible}<Eye></Eye>{:else}<EyeClosed
                 ></EyeClosed>{/if}Location</ButtonToggleL2
             >
           </div>
         </section>
-      {/if}
-
-      {#if currentPage == 'reset'}
+      {:else if currentPage == 'storage'}
         <section>
           <SettingInfo
-            name="Restore Defaults"
-            description="Restore ALL settings to their defaults. This will remove all your settings, but keep you characters."
+            name="Import & Export Characters"
+            description="Import characters from a JSON file or export all characters from the current world to a JSON file that can be saved anywhere you like. Importing can cause duplicates"
+            ><HardDrive /></SettingInfo
+          >
+          <div class="p-4 flex gap-4">
+          <ButtonDecorated onclick={handleImport}><Download></Download>Import</ButtonDecorated>
+            <ButtonDecorated onclick={handleExport}><Upload></Upload>Export</ButtonDecorated>
+          </div>
+
+
+        </section>
+      {:else if currentPage == 'reset'}
+        <section>
+          <SettingInfo
+            name="Restore Default Settings"
+            description="Restore ALL settings to their defaults. Your existing worlds and characters will be kept"
             ><RefreshCcw></RefreshCcw></SettingInfo
           >
           <div class="p-4">
@@ -221,10 +259,36 @@
           <ModalDialogue
             dialogId="reset-modal"
             title="Restore Default Settings?"
+            description="This will reset ALL settings to their defaults. Your existing worlds and characters will be kept"
             confirmAction={restoreDefaults}
             confirmText="Reset"
             confirmStyle="destructive"
-            cancelText="cancel"
+            cancelText="Cancel"
+            icon="warn"
+          ></ModalDialogue>
+          {@render Hr()}
+          <SettingInfo
+            name="Delete all characters"
+            description="Removes ALL currently stored characters in this world. Your settings and world configuration will be kept"
+            ><FolderX></FolderX></SettingInfo
+          >
+          <div class="p-4">
+            <ButtonDecorated
+              type="button"
+              style="destructive"
+              command="show-modal"
+              commandfor="delete-modal"><FolderX></FolderX>Delete</ButtonDecorated
+            >
+          </div>
+
+          <ModalDialogue
+            dialogId="delete-modal"
+            title="Delete All Characters?"
+            description="This will delete ALL characters in this world. Your settings and world configuration will be kept"
+            confirmAction={handleDeleteAll}
+            confirmText="Delete All"
+            confirmStyle="destructive"
+            cancelText="Cancel"
             icon="warn"
           ></ModalDialogue>
         </section>
