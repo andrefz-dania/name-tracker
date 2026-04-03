@@ -46,7 +46,6 @@
       1 // status is always visible
   )
 
-
   let gridColsCSS = $derived(
     interfaceConfig.listStyle === 'large'
       ? `grid-cols-${visibleColumnCount + 1}`
@@ -78,13 +77,19 @@
     }
   }
 
+  const hotkeyCtrlF = (e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      e.preventDefault()
+      focusSearch()
+    }
+  }
+
   $effect(() => {
-    window.addEventListener('keydown', (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
-        e.preventDefault()
-        focusSearch()
-      }
-    })
+    window.addEventListener('keydown', hotkeyCtrlF)
+
+    return () => {
+      window.removeEventListener('keydown', hotkeyCtrlF)
+    }
   })
 
   async function getCharacters() {
@@ -250,7 +255,7 @@
   </div>
   <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
     {#each characters as char}
-      <CharacterCard character={char} {refresh} {interfaceConfig}/>
+      <CharacterCard character={char} {refresh} {interfaceConfig} />
     {/each}
   </ul>
 {/if}

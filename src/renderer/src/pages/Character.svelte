@@ -32,7 +32,6 @@
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
-    console.log(character)
   }
 
   const saveCharacter = async () => {
@@ -44,8 +43,24 @@
     }
   }
 
+    const hotkeyCtrlS = (e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+      e.preventDefault();
+      saveCharacter();
+
+      // wait 100 ms
+      setTimeout(() => {
+        isUpdatable = false;
+      }, 100);
+    }
+  }
   onMount(()=>{
     addRecent(id);
+        window.addEventListener('keydown', hotkeyCtrlS)
+
+    return () => {
+      window.removeEventListener('keydown', hotkeyCtrlS)
+    }
   })
 
   const togglePinned = async () => {
@@ -87,7 +102,7 @@
   {#if !character}
     {@render Heading1('Loading data...')}
   {:else}
-    <form onchange={() => (isUpdatable = true)}>
+    <form onchange={() => (isUpdatable = true)} onsubmit={(e)=>e.preventDefault()}>
       <EditableTitle
         id="name"
         name="name"
