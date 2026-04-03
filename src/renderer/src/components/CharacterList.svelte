@@ -84,14 +84,6 @@
     }
   }
 
-  $effect(() => {
-    window.addEventListener('keydown', hotkeyCtrlF)
-
-    return () => {
-      window.removeEventListener('keydown', hotkeyCtrlF)
-    }
-  })
-
   async function getCharacters() {
     characters = await window.api.readAllChars()
   }
@@ -118,6 +110,8 @@
   }
 </script>
 
+<svelte:window onkeydown={hotkeyCtrlF}></svelte:window>
+
 <Navigation>
   <a href="#/create"><ButtonDecorated type="button"><CirclePlus />New Character</ButtonDecorated></a
   >
@@ -128,7 +122,7 @@
 
   <!-- search bar -->
   <div class="max-w-2xl flex flex-row w-full mx-auto gap-4 mb-4 mt-8">
-    <form class="flex flex-row w-full gap-3" action="">
+    <form class="flex flex-row w-full gap-3" action="" onsubmit={e=>e.preventDefault()}>
       <input
         class="p-4 rounded-md bg-layer1/75 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
         type="text"

@@ -56,11 +56,6 @@
   }
   onMount(()=>{
     addRecent(id);
-        window.addEventListener('keydown', hotkeyCtrlS)
-
-    return () => {
-      window.removeEventListener('keydown', hotkeyCtrlS)
-    }
   })
 
   const togglePinned = async () => {
@@ -82,6 +77,8 @@
 
   getCharacter()
 </script>
+
+<svelte:window onkeydown={hotkeyCtrlS}></svelte:window>
 
 <Navigation>
   <div>
