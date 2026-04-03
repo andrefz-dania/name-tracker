@@ -27,6 +27,7 @@ export type ApiTypes = {
   createChar(character: CharacterType): Promise<{ id: number; success: boolean }>
   deleteChar(id: number): Promise<{ id: number; success: boolean }>
   deleteAllChars(): Promise<{ success: boolean; count: number }>
+  getCount(): Promise<number>
   readAllChars(): Promise<CharacterType[]>
   readOneChar(id: number): Promise<CharacterType>
   readList(list: RecentChar[]): Promise<CharacterType[]>

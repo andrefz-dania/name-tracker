@@ -15,6 +15,10 @@ export default function setupHandlers(db) {
     return db.deleteAllChars()
   })
 
+  ipcMain.handle('getCount', ()=>{
+    return db.getCount()
+  })
+
   ipcMain.handle('readAllChars', () => {
     return db.readAllChars()
   })

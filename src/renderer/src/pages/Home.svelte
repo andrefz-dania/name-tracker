@@ -7,8 +7,16 @@
   import PinnedList from '../components/PinnedList.svelte'
   import RecentList from '../components/RecentList.svelte'
 
-  let worldName = 'dummyWorld'
-  let characterCount = 129
+  let worldName = 'Feature coming soon...'
+  let characterCount = $state(0)
+
+  async function getCount() {
+    const result = await window.api.getCount()
+    characterCount = result
+  }
+
+  getCount()
+
 </script>
 
 <Navigation style="no-back"></Navigation>
@@ -20,9 +28,9 @@
   </div>
 </Header>
 
-<article class="mx-auto w-full max-w-6xl overflow-y-scroll p-2 flex flex-col gap-12">
+<article class="mx-auto w-full max-w-6xl overflow-y-scroll p-2 flex flex-col gap-16">
   <!-- world -->
-  <section class="flex-col gap-4 flex">
+  <section class="flex-col gap-4 flex opacity-50">
     <div class="text-primary flex flex-row gap-2 items-center place-content-center">
       <Earth class="h-8 w-8"></Earth>
       {@render Heading1('World: ')}
