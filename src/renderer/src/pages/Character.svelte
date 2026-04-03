@@ -32,7 +32,6 @@
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
-    console.log(character)
   }
 
   const saveCharacter = async () => {
@@ -44,6 +43,17 @@
     }
   }
 
+    const hotkeyCtrlS = (e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+      e.preventDefault();
+      saveCharacter();
+
+      // wait 100 ms
+      setTimeout(() => {
+        isUpdatable = false;
+      }, 100);
+    }
+  }
   onMount(()=>{
     addRecent(id);
   })
@@ -68,6 +78,8 @@
   getCharacter()
 </script>
 
+<svelte:window onkeydown={hotkeyCtrlS}></svelte:window>
+
 <Navigation>
   <div>
     <ButtonDecorated style="outline" disabled={!isUpdatable} onclick={discardChanges}
@@ -87,7 +99,7 @@
   {#if !character}
     {@render Heading1('Loading data...')}
   {:else}
-    <form onchange={() => (isUpdatable = true)}>
+    <form onchange={() => (isUpdatable = true)} onsubmit={(e)=>e.preventDefault()}>
       <EditableTitle
         id="name"
         name="name"

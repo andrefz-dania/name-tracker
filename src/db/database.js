@@ -88,14 +88,16 @@ class CharacterDb {
     const deleteAllQuery = `DELETE FROM characters`
     const stmt = this.db.prepare(deleteAllQuery)
     const response = stmt.run()
-    console.log(response)
 
     if (response.changes > 0) {
+      console.log("Deleted " + response.changes + " characters")
       return {
         count: response.changes,
         success: true
       }
     } else {
+            console.log("Attempted to delete all characters. Either database is empty or something went wrong")
+
       return {
         count: 0,
         success: false
@@ -104,10 +106,10 @@ class CharacterDb {
   }
 
   getCount() {
-    const countQuery = 'SELECT COUNT(*) FROM characters'
+    const countQuery = 'SELECT COUNT(*) as COUNT FROM characters'
     const stmt = this.db.prepare(countQuery)
     const response = stmt.all()
-    return response
+    return response[0].COUNT
   }
 
   readAllChars() {

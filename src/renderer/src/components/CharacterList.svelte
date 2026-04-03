@@ -46,7 +46,6 @@
       1 // status is always visible
   )
 
-
   let gridColsCSS = $derived(
     interfaceConfig.listStyle === 'large'
       ? `grid-cols-${visibleColumnCount + 1}`
@@ -78,14 +77,12 @@
     }
   }
 
-  $effect(() => {
-    window.addEventListener('keydown', (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
-        e.preventDefault()
-        focusSearch()
-      }
-    })
-  })
+  const hotkeyCtrlF = (e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      e.preventDefault()
+      focusSearch()
+    }
+  }
 
   async function getCharacters() {
     characters = await window.api.readAllChars()
@@ -113,6 +110,8 @@
   }
 </script>
 
+<svelte:window onkeydown={hotkeyCtrlF}></svelte:window>
+
 <Navigation>
   <a href="#/create"><ButtonDecorated type="button"><CirclePlus />New Character</ButtonDecorated></a
   >
@@ -123,7 +122,7 @@
 
   <!-- search bar -->
   <div class="max-w-2xl flex flex-row w-full mx-auto gap-4 mb-4 mt-8">
-    <form class="flex flex-row w-full gap-3" action="">
+    <form class="flex flex-row w-full gap-3" action="" onsubmit={e=>e.preventDefault()}>
       <input
         class="p-4 rounded-md bg-layer1/75 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
         type="text"
@@ -250,7 +249,7 @@
   </div>
   <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
     {#each characters as char}
-      <CharacterCard character={char} {refresh} {interfaceConfig}/>
+      <CharacterCard character={char} {refresh} {interfaceConfig} />
     {/each}
   </ul>
 {/if}
