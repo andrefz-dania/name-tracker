@@ -64,13 +64,17 @@ Follow the development instructions and run the build command for your OS - inst
 
 ## Development Setup
 
-### Install
+### Install dependencies
+
+Download the repository and open a terminal in the folder.
+Make sure you have Nodejs v20+ and npm installed.
+Then run:
 
 ```bash
 $ npm install
 ```
 
-### Development
+### Run in Development Mode
 
 ```bash
 $ npm run dev
