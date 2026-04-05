@@ -1,28 +1,32 @@
 # CaraBace
 
+## About
+
 Name is subject to change.
 
 This is an Electron application made with Svelte and TypeScript. It is aimed at fantasy/scifi writers, tabletop gamemasters, and other similar creative worldbuilding. The goal is to create an application that lets you track and manage a large list of characters, while keeping everything local.
 
 This application is still in very early development, with only the basics implemented
 
-# Installation
+## Installation
 
-## Windows
+### Windows
 Dowload the installer and run it. Upon completion, you should now have a start menu shortcut to launch CaraBace
 
-## Linux
-Native distribution is a work in progress
-Follow the development instructions and run the build command for your OS - install the resulting package (untested)
+### Linux
+**Debian-based**
+Download the .deb file from releases and install it.
 
-## Mac
-Native distribution is a work in progress
-Follow the development instructions and run the build command for your OS - install the resulting package (untested)
+**All distros**
+Download the AppImage from releases, make it executable, then run it.
 
-# Development Progress
-## Implemented
+### Mac (untested)
+Follow the development instructions and run the build command for your OS - install the resulting .dmg package.
 
-### Core
+## Development Progress
+### Implemented
+
+**Core**
 - Create characters
 - Edit characters
 - Delete characters
@@ -30,19 +34,19 @@ Follow the development instructions and run the build command for your OS - inst
 - Run on Windows, Linux or Mac (untested)
 - Hotkeys (partial)
 
-### Sorting
+**Sorting**
 - Seach all characters
 - Filter each column ascending or descending
 - Persist search and sorting between screens
 - pinned / favourites
 - recently viewed characters
 
-### UI
+**UI**
 - toggle list style
 - dark & light themes
 - toggle columns on/off
 
-## Planned
+### Planned
 - markdown editing
 - deep search
 - quickly swap character status from the search list
@@ -58,15 +62,19 @@ Follow the development instructions and run the build command for your OS - inst
 - flathub package
 
 
-# Development Setup
+## Development Setup
 
-### Install
+### Install dependencies
+
+Download the repository and open a terminal in the folder.
+Make sure you have Nodejs v20+ and npm installed.
+Then run:
 
 ```bash
 $ npm install
 ```
 
-### Development
+### Run in Development Mode
 
 ```bash
 $ npm run dev
