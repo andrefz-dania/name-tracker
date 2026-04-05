@@ -24,7 +24,7 @@
 <Header>
   <div class="flex flex-row gap-2 items-center w-full place-content-center">
     <div class="logo-img h-24 w-24"></div>
-    <h1 class="text-6xl text-primary">CaraBase</h1>
+    <h1 class="text-6xl text-primary">CaraBace</h1>
   </div>
 </Header>
 
