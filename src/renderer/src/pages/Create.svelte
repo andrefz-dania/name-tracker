@@ -57,7 +57,7 @@
   onsubmit={handleAddCharacter}
   class="max-w-2xl w-full mx-auto flex flex-col gap-4"
 >
-  <TextInput label="Name" id="nameInput" name="name" bind:value={name} placeholder="Name" autofocus />
+  <TextInput label="Name" id="nameInput" name="name" bind:value={name} placeholder="Name" autofocus={true} />
 
   <div class="w-full">
     <label for="statusRadio" class="text-primary">Status:</label>
