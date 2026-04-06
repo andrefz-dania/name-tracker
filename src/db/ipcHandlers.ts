@@ -1,6 +1,7 @@
 import { dialog, ipcMain } from 'electron'
-import * as fs from 'fs';
-import { CharacterType, RecentChar } from '../types/types';
+import * as fs from 'fs'
+import { CharacterType, RecentChar } from '../types/types'
+import sharp from 'sharp'
 
 export default function setupHandlers(db) {
   ipcMain.handle('createChar', (_, character: CharacterType) => {
@@ -15,7 +16,7 @@ export default function setupHandlers(db) {
     return db.deleteAllChars()
   })
 
-  ipcMain.handle('getCount', ()=>{
+  ipcMain.handle('getCount', () => {
     return db.getCount()
   })
 
@@ -33,6 +34,10 @@ export default function setupHandlers(db) {
 
   ipcMain.handle('readPinned', () => {
     return db.readPinned()
+  })
+
+  ipcMain.handle('loadImage', (_, id: number) => {
+    return db.loadImage(id)
   })
 
   ipcMain.handle('togglePinChar', (_, id: number, unpin: boolean) => {
@@ -54,21 +59,20 @@ export default function setupHandlers(db) {
   ipcMain.handle('exportCharacters', async () => {
     console.log('Exporting characters to file...')
 
-    const characters = await db.readAllChars();
+    const characters = await db.readAllChars()
 
     // remove ID and Pinned fields, and account for valueless fields
-    const data = characters.map(c => ({
-        name: c.name,
-        desc: c.desc || '',
-        dead: c.dead,
-        age: c.age || null,
-        gender: c.gender || '',
-        location: c.location || '',
-        occupation: c.occupation || '',
-        species: c.species || '',
+    const data = characters.map((c) => ({
+      name: c.name,
+      desc: c.desc || '',
+      dead: c.dead,
+      age: c.age || null,
+      gender: c.gender || '',
+      location: c.location || '',
+      occupation: c.occupation || '',
+      species: c.species || ''
     }))
-    const json = JSON.stringify(data);
-
+    const json = JSON.stringify(data)
 
     // Show save dialog with filters
     const result = await dialog.showSaveDialog({
@@ -81,13 +85,13 @@ export default function setupHandlers(db) {
       return { success: false, message: 'User cancelled export' }
     }
 
-        try {
-        // Write file
-        fs.writeFileSync(result.filePath, json);
-        return { success: true, path: result.filePath };
+    try {
+      // Write file
+      fs.writeFileSync(result.filePath, json)
+      return { success: true, path: result.filePath }
     } catch (error) {
-        console.error(error);
-        return { success: false };
+      console.error(error)
+      return { success: false }
     }
   })
 
@@ -98,33 +102,66 @@ export default function setupHandlers(db) {
     })
 
     if (file.canceled || !file.filePaths) {
-        return { success: false, message: 'User cancelled import' }
+      return { success: false, message: 'User cancelled import' }
     }
 
     try {
-        const fileData = fs.readFileSync(file.filePaths[0])
-        const data = JSON.parse(fileData.toString())
-        const characters: CharacterType[] = data.map(c => ({
-            name: c.name || 'Unnamed Character',
-            desc: c.desc || '',
-            dead: c.dead || 0,
-            age: c.age || null,
-            gender: c.gender || '',
-            location: c.location || '',
-            occupation: c.occupation || '',
-            species: c.species || ''
-            }));
+      const fileData = fs.readFileSync(file.filePaths[0])
+      const data = JSON.parse(fileData.toString())
+      const characters: CharacterType[] = data.map((c) => ({
+        name: c.name || 'Unnamed Character',
+        desc: c.desc || '',
+        dead: c.dead || 0,
+        age: c.age || null,
+        gender: c.gender || '',
+        location: c.location || '',
+        occupation: c.occupation || '',
+        species: c.species || ''
+      }))
 
-            characters.forEach(c => {
-                db.createChar(c);
-            });
-            return {success: true, count: characters.length};
-
-
+      characters.forEach((c) => {
+        db.createChar(c)
+      })
+      return { success: true, count: characters.length }
     } catch (error) {
-        console.error(error);
-        return { success: false };
+      console.error(error)
+      return { success: false }
+    }
+  })
+
+  ipcMain.handle('removeImage', (_, id: number) => {
+    return db.removeImage(id)
+  })
+
+  ipcMain.handle('updateImage', async (_, id: number) => {
+    const file = await dialog.showOpenDialog({
+      title: 'Upload Image',
+      filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }]
+    })
+    if (file.canceled || !file.filePaths || file.filePaths.length === 0) {
+      return { success: false, message: 'User cancelled import' }
     }
 
-    })
+    try {
+      // Resize and convert to Buffer using sharp library
+      const imageBuffer = await sharp(file.filePaths[0]).resize(352).toBuffer() // 352 is 2x the size of the avatar display loader
+      const result = await db.updateImage(id, imageBuffer)
+
+      if (result && result.success) {
+        return { success: true, message: 'Image updated successfully' }
+      } else {
+        // Handle case where result is null/undefined or success is false
+        return {
+          success: false,
+          message: result?.message || 'Failed to update image'
+        }
+      }
+    } catch (error) {
+      console.error('Image processing or DB error:', error)
+      return {
+        success: false,
+        message: 'An error occurred'
+      }
+    }
+  })
 }

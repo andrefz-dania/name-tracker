@@ -20,11 +20,17 @@ const api = {
 
   readPinned: () => ipcRenderer.invoke('readPinned'),
 
+  loadImage: (id: number) => ipcRenderer.invoke('loadImage', id),
+
+  removeImage: (id: number) => ipcRenderer.invoke('removeImage', id),
+
   togglePinChar: (id: number, unpin:boolean) => ipcRenderer.invoke('togglePinChar', id, unpin),
 
   searchChars: (term: string, column: string, reverse:boolean) => ipcRenderer.invoke('searchChars', term, column, reverse),
 
   updateChar: (character: CharacterData) => ipcRenderer.invoke('updateChar', character),
+
+  updateImage: (id: number) => ipcRenderer.invoke('updateImage', id, ),
 
   exportCharacters: () => ipcRenderer.invoke('exportCharacters'),
 

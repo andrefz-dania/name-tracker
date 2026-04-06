@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { CharacterType, InterfaceConfig } from '../../../types/types'
-  import { TrashIcon, UserIcon } from '@lucide/svelte'
+  import { TrashIcon } from '@lucide/svelte'
   import { Heading2 } from './Headings.svelte'
   import StatusMarker from './StatusMarker.svelte'
   import { truncateString } from '../utils/truncateString'
+  import AvatarLoader from './AvatarLoader.svelte'
   let {
     character,
     refresh,
@@ -52,8 +53,8 @@
 <a href={link} class="bg-layer1 rounded-md hover:bg-layer2">
 
   <li class="grid gap-x-4 px-4 py-4 place-content-between items-start {gridColsCSS}">
-    <div class="p-2 row-span-2">
-    <UserIcon size={96}></UserIcon>
+    <div class="p-2 row-span-2 max-w-44">
+    <AvatarLoader id={character.id}></AvatarLoader>
   </div>
     <div class="col-span-2 w-full flex gap-2">
       <h3 class="font-bold">{character.name}</h3>

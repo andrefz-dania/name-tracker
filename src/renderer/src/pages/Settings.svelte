@@ -14,11 +14,12 @@
     Upload,
     FolderX,
     Download,
-
     HardDrive,
+    Wrench,
+    Milestone,
+    SquarePen,
 
-    Wrench
-
+    Search
 
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
@@ -36,7 +37,7 @@
 
   let descLength = $state(interfaceConfig.descLength || defaultInterfaceConfig.descLength)
 
-  type CurrentPage = 'general' | 'worlds' | 'storage' | 'reset' | 'debug'
+  type CurrentPage = 'general' | 'worlds' | 'storage' | 'reset' | 'debug' | 'hotkeys'
 
   let currentPage: CurrentPage = $state('general')
 
@@ -54,13 +55,14 @@
     descLength = defaultInterfaceConfig.descLength
   }
 
-    const handleDeleteAll = async () => {
+  const handleDeleteAll = async () => {
     const response = await window.api.deleteAllChars()
     if (response.success) {
       sendNotif(notif, `Deleted ${response.count} characters`, 'positive')
-  } else {
-    sendNotif(notif, `0 characters were deleted`, 'normal')
-  } }
+    } else {
+      sendNotif(notif, `0 characters were deleted`, 'normal')
+    }
+  }
 
   // INTERFACE
   const handleListStyleChange = () => {
@@ -91,8 +93,8 @@
 
   // STORAGE
 
-  const handleExport = async() => {
-        sendNotif(notif, 'Exporting characters...', 'progress')
+  const handleExport = async () => {
+    sendNotif(notif, 'Exporting characters...', 'progress')
     const response = await window.api.exportCharacters()
     if (response.success) {
       sendNotif(notif, `Export finished`, 'positive')
@@ -101,7 +103,7 @@
     }
   }
 
-  const handleImport = async() => {
+  const handleImport = async () => {
     sendNotif(notif, 'Importing characters...', 'progress')
     const response = await window.api.importCharacters()
     if (response.success) {
@@ -146,10 +148,11 @@
     <section class="md:min-w-48 p-2 bg-layer1 rounded-xl flex flex-col h-min sticky top-0">
       <p class="font-bold text-sm text-primary p-2">CATEGORIES</p>
       {@render Category('general')}
+      {@render Category('hotkeys')}
       <!-- {@render Category('worlds')}-->
       {@render Category('storage')}
       {@render Category('reset')}
-      {@render Category('debug')}
+      <!-- {@render Category('debug')} -->
     </section>
 
     <!-- main content -->
@@ -253,11 +256,9 @@
             ><HardDrive /></SettingInfo
           >
           <div class="p-4 flex gap-4">
-          <ButtonDecorated onclick={handleImport}><Download></Download>Import</ButtonDecorated>
+            <ButtonDecorated onclick={handleImport}><Download></Download>Import</ButtonDecorated>
             <ButtonDecorated onclick={handleExport}><Upload></Upload>Export</ButtonDecorated>
           </div>
-
-
         </section>
       {:else if currentPage == 'reset'}
         <section>
@@ -314,22 +315,113 @@
       {/if}
 
       {#if currentPage == 'debug'}
-      <section>
-        <SettingInfo
-          name="Test notifications"
-          description="See if the notification system is behaving itself"><Wrench></Wrench></SettingInfo>
+        <section>
+          <SettingInfo
+            name="Test notifications"
+            description="See if the notification system is behaving itself"
+            ><Wrench></Wrench></SettingInfo
+          >
+        </section>
+        <div class="flex flex-row gap-2 p-2">
+          <ButtonDecorated onclick={() => sendNotif(notif, 'Hello there', 'normal')}
+            >send notif</ButtonDecorated
+          >
+          <ButtonDecorated onclick={() => sendNotif(notif, 'Oh no!', 'destructive')}
+            >send BAD notif</ButtonDecorated
+          >
+          <ButtonDecorated onclick={() => sendNotif(notif, 'poggers', 'positive')}
+            >send GOOD notif</ButtonDecorated
+          >
+          <ButtonDecorated onclick={() => sendNotif(notif, 'Loading...', 'progress')}
+            >send PROG notif</ButtonDecorated
+          >
+        </div>
+      {/if}
 
-      </section>
-<div class="flex flex-row gap-2 p-2">
-  <ButtonDecorated onclick={()=>sendNotif(notif, 'Hello there', 'normal')}>send notif</ButtonDecorated>
-  <ButtonDecorated onclick={()=>sendNotif(notif, 'Oh no!', 'destructive')}>send BAD notif</ButtonDecorated>
-    <ButtonDecorated onclick={()=>sendNotif(notif, 'poggers', 'positive')}>send GOOD notif</ButtonDecorated>
-      <ButtonDecorated onclick={()=>sendNotif(notif, 'Loading...', 'progress')}>send PROG notif</ButtonDecorated>
+      {#if currentPage == 'hotkeys'}
 
-</div>
+      <p class="text-center mb-4">Hotkeys are currently static. Rebinding might come in a future update</p>
+        {#snippet hotkey(string: string)}
+          <div
+            class="border border-primary-muted text-primary bg-layer1 p-1 px-2 rounded-md min-w-8 w-fit flex place-content-center"
+          >
+            {string}
+          </div>
+        {/snippet}
+        <section>
+          <SettingInfo name="Navigation" description="Navigate between different pages of the app"
+            ><Milestone></Milestone></SettingInfo
+          >
+        </section>
+        <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
+          <p>Home</p>
+          <div class="flex flex-row gap-2">
+            {@render hotkey('ctrl')}
+            +
+            {@render hotkey('h')}
+          </div>
+
+          <p>Settings</p>
+
+          <div class="flex flex-row gap-2">
+            {@render hotkey('ctrl')}
+            +
+            {@render hotkey('o')}
+          </div>
+
+          <p>Search Characters</p>
+
+          <div class="flex flex-row gap-2">
+            {@render hotkey('ctrl')}
+            +
+            {@render hotkey('f')}
+          </div>
+
+          <p>New Character</p>
+
+          <div class="flex flex-row gap-2">
+            {@render hotkey('ctrl')}
+            +
+            {@render hotkey('n')}
+          </div>
+        </div>
+        {@render Hr()}
+        <section>
+          <SettingInfo
+            name="Edit Page Actions"
+            description="Trigger specific functions on the edit page"
+            ><SquarePen></SquarePen></SettingInfo
+          >
+        </section>
+
+        <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
+          <p>Save changes</p>
+
+          <div class="flex flex-row gap-2">
+            {@render hotkey('ctrl')}
+            +
+            {@render hotkey('s')}
+          </div>
+        </div>
+        {@render Hr()}
+        <section>
+          <SettingInfo
+            name="Search Page Actions"
+            description="Trigger specific functions on the search page"
+            ><Search></Search></SettingInfo
+          >
+        </section>
+
+        <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
+          <p>Highlight search bar</p>
+
+          <div class="flex flex-row gap-2">
+            {@render hotkey('ctrl')}
+            +
+            {@render hotkey('f')}
+          </div>
+        </div>
       {/if}
     </section>
   </div>
-
-
 </div>

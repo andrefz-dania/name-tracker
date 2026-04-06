@@ -40,6 +40,18 @@
 
   let currentRoute = $state(window.location.hash.slice(1) || '/')
 
+  const navHotkeys = (e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key == 'n') {
+      window.location.hash = '#/create'
+    } else if ((e.metaKey || e.ctrlKey) && e.key == 'h') {
+      window.location.hash = '#/'
+    } else if ((e.metaKey || e.ctrlKey) && e.key == 'f') {
+      window.location.hash = '#/list'
+    } else if ((e.metaKey || e.ctrlKey) && e.key == 'o') {
+      window.location.hash = '#/settings'
+    }
+  }
+
   let route = $derived.by(() => {
     const parts = currentRoute.split('/')
     return parts[1]
@@ -78,6 +90,8 @@ $effect(() => {
   }
   })
 </script>
+
+<svelte:window onkeydown={navHotkeys}></svelte:window>
 
 <main class="flex flex-col gap-2 p-4 min-h-screen max-h-screen {themeClass} text-textcol bg-layer0 font-block">
 <div class="absolute w-full top-4 flex flex-col gap-2 items-center place-content-center">

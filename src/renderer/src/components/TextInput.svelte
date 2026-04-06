@@ -1,5 +1,15 @@
 <script lang="ts">
-  let { label, value = $bindable(), name, placeholder, id, type = 'text' } = $props();
+
+type Props = {
+  label: string,
+  value: any,
+  name: string,
+  placeholder: string,
+  id: string,
+  autofocus?: boolean
+  type?: 'text' | 'number'
+}
+  let { label, value = $bindable(), name, placeholder, id, type = 'text', autofocus }: Props = $props();
   let error = $state('');
 </script>
 
@@ -14,6 +24,7 @@
     bind:value={value}
     placeholder={placeholder}
     id={id}
+    {autofocus}
   />
   {#if error}
     <span class="text-xs text-error">{error}</span>

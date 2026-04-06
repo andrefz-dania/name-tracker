@@ -8,7 +8,8 @@ export type CharacterType = {
   location?: string
   occupation?: string
   species?: string
-  pinned?: number
+  pinned?: number,
+  image?: string
 }
 
 export const blankCharacter: CharacterType = {
@@ -24,17 +25,29 @@ export const blankCharacter: CharacterType = {
 }
 
 export type ApiTypes = {
+  // create
   createChar(character: CharacterType): Promise<{ id: number; success: boolean }>
-  deleteChar(id: number): Promise<{ id: number; success: boolean }>
-  deleteAllChars(): Promise<{ success: boolean; count: number }>
+  
+  //read
   getCount(): Promise<number>
   readAllChars(): Promise<CharacterType[]>
   readOneChar(id: number): Promise<CharacterType>
   readList(list: RecentChar[]): Promise<CharacterType[]>
   readPinned(): Promise<CharacterType[]>
+  searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>
+  loadImage(id: number): Promise<{ success: boolean; image?: Buffer }>
+  
+  //update
   togglePinChar(id: number, unpin: boolean): Promise<{ success: boolean }>
   updateChar(character: CharacterType): Promise<{ success: boolean }>
-  searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>
+  updateImage(id: number): Promise<{ success: boolean }>
+  
+  //delete
+  deleteChar(id: number): Promise<{ id: number; success: boolean }>
+  deleteAllChars(): Promise<{ success: boolean; count: number }>
+  removeImage(id: number): Promise<{ success: boolean }>
+
+  //import & export
   exportCharacters(): Promise<{ success: boolean }>
   importCharacters(): Promise<{ success: boolean; count?: number }>
 }

@@ -22,17 +22,25 @@ class CharacterDb {
         location TEXT,
         occupation TEXT,
         species TEXT,
-        pinned BOOLEAN DEFAULT 0
+        pinned BOOLEAN DEFAULT 0,
+        image BLOB
         )`
     console.log('Configuring database...')
     this.db.exec(setupCharactersSql)
 
-    // support legacy v0.0.1 tables
+    // support legacy v0.0.1 to v0.3.0 installations
     try {
-      const setupPinnedSql = `ALTER TABLE characters ADD COLUMN IF NOT EXISTS pinned BOOLEAN DEFAULT 0`
+      const setupPinnedSql = `ALTER TABLE characters ADD COLUMN pinned BOOLEAN DEFAULT 0`
       this.db.exec(setupPinnedSql)
     } catch (error) {
       console.log('Pinned column already exists, skipping...')
+    }
+
+    try {
+      const setupImageSql = `ALTER TABLE characters ADD COLUMN image BLOB`
+      this.db.exec(setupImageSql)
+    } catch (error) {
+      console.log('Image column already exists, skipping...')
     }
 
     console.log('Database setup complete')
@@ -90,13 +98,15 @@ class CharacterDb {
     const response = stmt.run()
 
     if (response.changes > 0) {
-      console.log("Deleted " + response.changes + " characters")
+      console.log('Deleted ' + response.changes + ' characters')
       return {
         count: response.changes,
         success: true
       }
     } else {
-            console.log("Attempted to delete all characters. Either database is empty or something went wrong")
+      console.log(
+        'Attempted to delete all characters. Either database is empty or something went wrong'
+      )
 
       return {
         count: 0,
@@ -113,44 +123,47 @@ class CharacterDb {
   }
 
   readAllChars() {
-    const selectAllQuery = `SELECT * FROM characters ORDER BY name DESC`
+    const selectAllQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)
     const response = stmt.all()
     return response
   }
 
   readOneChar(id) {
-    const selectQuery = `SELECT * FROM characters WHERE id = ?`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc, pinned FROM characters WHERE id = ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.get(id)
     return response
   }
 
   readPinned() {
-    const selectQuery = `SELECT * FROM characters WHERE pinned=1 ORDER BY name DESC`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE pinned=1 ORDER BY name DESC`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
     return response
   }
 
   readList(list) {
-    const ids = list.map((c) => c.id);
-    const placeholders = ids.map(() => '?').join(',');
-    const selectQuery = `SELECT * FROM characters WHERE id IN (${placeholders});`
+    const ids = list.map((c) => c.id)
+    const placeholders = ids.map(() => '?').join(',')
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE id IN (${placeholders});`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(ids)
     return response
   }
 
+  loadImage(id) {
+    const selectQuery = `SELECT image FROM characters WHERE id=?`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.get(id)
+    return response
+  }
+
   togglePinChar(id, unpin) {
-        console.log('CharacterID', id)
-    console.log('UnpinValue', unpin)
-    const newValue = unpin == true ? 0 : 1;
-        console.log('newValue', newValue)
+    const newValue = unpin == true ? 0 : 1
     const updateQuery = `UPDATE characters SET pinned=? WHERE id=?`
     const stmt = this.db.prepare(updateQuery)
     const response = stmt.run(newValue, id)
-    console.log(response)
     return response
   }
 
@@ -175,6 +188,40 @@ class CharacterDb {
       }
     } else {
       console.log(`An error occurred when updating character with ID ${character.id}`)
+      return {
+        success: false
+      }
+    }
+  }
+
+  updateImage(id, imageData) {
+    const updateQuery = `UPDATE characters SET image=? WHERE id=? RETURNING *`
+    const stmt = this.db.prepare(updateQuery)
+    const response = stmt.run(imageData, id)
+    if (response.changes == 1) {
+      console.log(`Image uploaded to character ${id}`)
+      return {
+        success: true
+      }
+    } else {
+      console.log(`Error when uploading image`)
+      return {
+        success: false
+      }
+    }
+  }
+
+  removeImage(id) {
+    const removeQuery = `UPDATE characters SET image=? WHERE id=?`
+    const stmt = this.db.prepare(removeQuery)
+    const response = stmt.run(null, id)
+    if (response.changes == 1) {
+      console.log(`Image deleted from character ${id}`)
+      return {
+        success: true
+      }
+    } else {
+      console.log(`Error when deleting image`)
       return {
         success: false
       }

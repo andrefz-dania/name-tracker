@@ -3,7 +3,6 @@
     BookOpenText,
     Cat,
     Check,
-    CircleUserRound,
     Hammer,
     Hourglass,
     MapPin,
@@ -25,6 +24,7 @@
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
   import { onMount } from 'svelte'
   import { addRecent } from '../utils/recent'
+  import AvatarEditable from '../components/AvatarEditable.svelte'
 
   let character: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
@@ -36,7 +36,6 @@
 
   const saveCharacter = async () => {
     const newCharacter = formatCharacter(character)
-    console.log(newCharacter)
     const response = await window.api.updateChar(newCharacter)
     if (response.success) {
       isUpdatable = false
@@ -60,9 +59,8 @@
 
   const togglePinned = async () => {
     const unpin = character.pinned ? true : false;
-    const response = await window.api.togglePinChar(character.id, unpin)
+    await window.api.togglePinChar(character.id, unpin)
     character.pinned = character.pinned == 1 ? 0 : 1;
-    console.log(response)
   }
 
   const discardChanges = () => {
@@ -112,14 +110,12 @@
 </Header>
 
 <form class="overflow-y-scroll" onchange={() => (isUpdatable = true)}>
-  {#if !character}
+  {#if !character || !character.id}
     <p>Loading...</p>
   {:else}
     <div class="flex flex-row gap-2 mx-auto w-full max-w-6xl">
       <section class="rounded-md p-4 flex flex-col items-center gap-4">
-        <div class="border-primary rounded-full border-2 p-0">
-          <CircleUserRound size={178} class="text-primary"></CircleUserRound>
-        </div>
+          <AvatarEditable id={character.id}></AvatarEditable>
         <button class="cursor-pointer" onclick={invertDeadState} type="button">
           <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
         </button>
