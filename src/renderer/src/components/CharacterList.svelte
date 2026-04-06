@@ -130,6 +130,7 @@
         bind:value={searchTerm}
         placeholder="search..."
         onkeydown={() => (skipDebounce = false)}
+        autofocus
       />
       <div class="w-16 -ml-18 flex items-center place-content-center">
         {#if searchTerm.length > 0}
