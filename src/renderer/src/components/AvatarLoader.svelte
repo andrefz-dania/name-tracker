@@ -9,6 +9,7 @@
     loaded = false
     const buffer = await window.api.loadImage(id)
     if (buffer && buffer.image && buffer.image.byteLength > 1) {
+      // @ts-ignore
       const blob = new Blob([buffer.image], { type: 'image/jpeg' })
       const imageUrl = URL.createObjectURL(blob)
       generatedUrl = imageUrl
