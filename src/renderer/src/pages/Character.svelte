@@ -59,9 +59,8 @@
 
   const togglePinned = async () => {
     const unpin = character.pinned ? true : false;
-    const response = await window.api.togglePinChar(character.id, unpin)
+    await window.api.togglePinChar(character.id, unpin)
     character.pinned = character.pinned == 1 ? 0 : 1;
-    console.log(response)
   }
 
   const discardChanges = () => {
