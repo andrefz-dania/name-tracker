@@ -41,14 +41,13 @@
   let currentRoute = $state(window.location.hash.slice(1) || '/')
 
   const navHotkeys = (e: KeyboardEvent) => {
-    e.preventDefault()
     if ((e.metaKey || e.ctrlKey) && e.key == 'n') {
       window.location.hash = '#/create'
-    } else if (e.key == '1') {
+    } else if ((e.metaKey || e.ctrlKey) && e.key == 'h') {
       window.location.hash = '#/'
-    } else if (e.key == '2') {
+    } else if ((e.metaKey || e.ctrlKey) && e.key == 'f') {
       window.location.hash = '#/list'
-    } else if (e.key == '3') {
+    } else if ((e.metaKey || e.ctrlKey) && e.key == 'o') {
       window.location.hash = '#/settings'
     }
   }

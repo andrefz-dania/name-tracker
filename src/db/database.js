@@ -30,14 +30,14 @@ class CharacterDb {
 
     // support legacy v0.0.1 to v0.3.0 installations
     try {
-      const setupPinnedSql = `ALTER TABLE characters ADD COLUMN IF NOT EXISTS pinned BOOLEAN DEFAULT 0`
+      const setupPinnedSql = `ALTER TABLE characters ADD COLUMN pinned BOOLEAN DEFAULT 0`
       this.db.exec(setupPinnedSql)
     } catch (error) {
       console.log('Pinned column already exists, skipping...')
     }
 
     try {
-      const setupImageSql = `ALTER TABLE characters ADD COLUMN IF NOT EXISTS image BLOB`
+      const setupImageSql = `ALTER TABLE characters ADD COLUMN image BLOB`
       this.db.exec(setupImageSql)
     } catch (error) {
       console.log('Image column already exists, skipping...')
@@ -130,7 +130,7 @@ class CharacterDb {
   }
 
   readOneChar(id) {
-    const selectQuery = `SELECT * FROM characters WHERE id = ?`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc, pinned FROM characters WHERE id = ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.get(id)
     return response
@@ -149,6 +149,14 @@ class CharacterDb {
     const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE id IN (${placeholders});`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(ids)
+    return response
+  }
+
+  loadImage(id) {
+    const selectQuery = `SELECT image FROM characters WHERE id=?`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.get(id)
+    console.log(response)
     return response
   }
 
@@ -201,6 +209,23 @@ class CharacterDb {
       }
     } else {
       console.log(`Error when uploading image`)
+      return {
+        success: false
+      }
+    }
+  }
+
+  removeImage(id) {
+    const removeQuery = `UPDATE characters SET image=? WHERE id=?`
+    const stmt = this.db.prepare(removeQuery)
+    const response = stmt.run(null, id)
+    if (response.changes == 1) {
+      console.log(`Image deleted from character ${id}`)
+      return {
+        success: true
+      }
+    } else {
+      console.log(`Error when deleting image`)
       return {
         success: false
       }
