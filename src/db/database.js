@@ -113,7 +113,7 @@ class CharacterDb {
   }
 
   readAllChars() {
-    const selectAllQuery = `SELECT * FROM characters ORDER BY name DESC`
+    const selectAllQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)
     const response = stmt.all()
     return response
@@ -127,7 +127,7 @@ class CharacterDb {
   }
 
   readPinned() {
-    const selectQuery = `SELECT * FROM characters WHERE pinned=1 ORDER BY name DESC`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE pinned=1 ORDER BY name DESC`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
     return response
@@ -136,7 +136,7 @@ class CharacterDb {
   readList(list) {
     const ids = list.map((c) => c.id);
     const placeholders = ids.map(() => '?').join(',');
-    const selectQuery = `SELECT * FROM characters WHERE id IN (${placeholders});`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE id IN (${placeholders});`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(ids)
     return response
@@ -150,7 +150,6 @@ class CharacterDb {
     const updateQuery = `UPDATE characters SET pinned=? WHERE id=?`
     const stmt = this.db.prepare(updateQuery)
     const response = stmt.run(newValue, id)
-    console.log(response)
     return response
   }
 
