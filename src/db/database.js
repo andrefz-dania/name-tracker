@@ -130,14 +130,14 @@ class CharacterDb {
   }
 
   readOneChar(id) {
-    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc, pinned FROM characters WHERE id = ?`
+    const selectQuery = `SELECT id, name, species, age, gender, occupation, dead, location, desc, pinned FROM characters WHERE id = ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.get(id)
     return response
   }
 
   readPinned() {
-    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE pinned=1 ORDER BY name DESC`
+    const selectQuery = `SELECT id, name, dead FROM characters WHERE pinned=1 ORDER BY name DESC`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
     return response
