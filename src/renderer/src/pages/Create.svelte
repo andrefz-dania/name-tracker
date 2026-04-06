@@ -35,7 +35,6 @@
     }
 
     const response = await window.api.createChar(character)
-    console.log(response);
     if (response.success) {
       sendNotif(notif, `${character.name} has been created`, 'positive')
       window.location.href = `#/character/${response.id}`

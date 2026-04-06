@@ -129,6 +129,10 @@ export default function setupHandlers(db) {
     }
   })
 
+  ipcMain.handle('removeImage', (_, id: number) => {
+    return db.removeImage(id)
+  })
+
   ipcMain.handle('updateImage', async (_, id: number) => {
     const file = await dialog.showOpenDialog({
       title: 'Upload Image',
@@ -159,9 +163,5 @@ export default function setupHandlers(db) {
         message: 'An error occurred'
       }
     }
-  })
-
-  ipcMain.handle('deleteImage', (_, id: number) => {
-    return db.deleteImage(id)
   })
 }

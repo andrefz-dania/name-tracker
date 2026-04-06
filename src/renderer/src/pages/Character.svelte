@@ -32,12 +32,10 @@
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
-    console.log(character);
   }
 
   const saveCharacter = async () => {
     const newCharacter = formatCharacter(character)
-    console.log(newCharacter)
     const response = await window.api.updateChar(newCharacter)
     if (response.success) {
       isUpdatable = false

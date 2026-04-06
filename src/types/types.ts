@@ -45,7 +45,7 @@ export type ApiTypes = {
   //delete
   deleteChar(id: number): Promise<{ id: number; success: boolean }>
   deleteAllChars(): Promise<{ success: boolean; count: number }>
-  deleteImage(id: number): Promise<{ success: boolean }>
+  removeImage(id: number): Promise<{ success: boolean }>
 
   //import & export
   exportCharacters(): Promise<{ success: boolean }>

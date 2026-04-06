@@ -17,12 +17,11 @@
 
   let loaded = $state(false)
   onMount(() => {
-    console.log('Loader', id)
     loadImage(id)
   })
 </script>
 
-<div class="max-w-44 aspect-square border-3 border-primary rounded-full overflow-hidden">
+<div class="max-w-44 aspect-square border-3 border-primary rounded-full overflow-hidden flex items-center">
     {#if loaded}
     <img alt="" src={generatedUrl} class="rounded-full"/>
   {:else}

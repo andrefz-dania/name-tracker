@@ -22,7 +22,7 @@ const api = {
 
   loadImage: (id: number) => ipcRenderer.invoke('loadImage', id),
 
-  deleteImage: (id: number) => ipcRenderer.invoke('deleteImage', id),
+  removeImage: (id: number) => ipcRenderer.invoke('removeImage', id),
 
   togglePinChar: (id: number, unpin:boolean) => ipcRenderer.invoke('togglePinChar', id, unpin),
 

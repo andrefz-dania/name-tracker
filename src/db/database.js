@@ -156,15 +156,11 @@ class CharacterDb {
     const selectQuery = `SELECT image FROM characters WHERE id=?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.get(id)
-    console.log(response)
     return response
   }
 
   togglePinChar(id, unpin) {
-    console.log('CharacterID', id)
-    console.log('UnpinValue', unpin)
     const newValue = unpin == true ? 0 : 1
-    console.log('newValue', newValue)
     const updateQuery = `UPDATE characters SET pinned=? WHERE id=?`
     const stmt = this.db.prepare(updateQuery)
     const response = stmt.run(newValue, id)

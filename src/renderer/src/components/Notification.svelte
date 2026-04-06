@@ -6,8 +6,7 @@
         id: string,
         type?: 'normal' | 'positive' | 'destructive' | 'progress'
     }
-    let {message, id, type}: Props = $props()
-    console.log(id)
+    let {message, type}: Props = $props()
 </script>
 
 
