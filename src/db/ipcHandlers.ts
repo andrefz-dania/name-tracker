@@ -1,7 +1,7 @@
 import { dialog, ipcMain } from 'electron'
 import * as fs from 'fs'
 import { CharacterType, RecentChar, TagType } from '../types/types'
-import sharp from 'sharp'
+import { Jimp } from 'jimp'
 
 export default function setupHandlers(db) {
   // characters
@@ -145,7 +145,11 @@ export default function setupHandlers(db) {
 
     try {
       // Resize and convert to Buffer using sharp library
-      const imageBuffer = await sharp(file.filePaths[0]).resize(352).toBuffer() // 352 is 2x the size of the avatar display loader
+      const image = await Jimp.read(file.filePaths[0])
+      image.resize({w: 352, h:352 })
+      const imageBuffer = await image.getBuffer('image/jpeg', {quality: 80})
+      console.log(imageBuffer);
+      // 352 is 2x the size of the avatar display loader
       const result = await db.updateImage(id, imageBuffer)
 
       if (result && result.success) {
