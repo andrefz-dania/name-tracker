@@ -1,9 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { RecentChar } from '../types/types'
+import { RecentChar, TagType } from '../types/types'
 
 // Custom APIs for renderer
 const api = {
+
+  // characters
   createChar: (character: CharacterData) => ipcRenderer.invoke('createChar', character),
 
   deleteChar: (id: number) => ipcRenderer.invoke('deleteChar', id),
@@ -34,7 +36,26 @@ const api = {
 
   exportCharacters: () => ipcRenderer.invoke('exportCharacters'),
 
-  importCharacters: () => ipcRenderer.invoke('importCharacters')
+  importCharacters: () => ipcRenderer.invoke('importCharacters'),
+
+  // tags
+  createTag: (tagName: string) => ipcRenderer.invoke('createTag', tagName),
+
+  getTags: () => ipcRenderer.invoke('getTags'),
+
+  updateTag: (tag: TagType) => ipcRenderer.invoke('updateTag', tag),
+
+  deleteTag: (id: number) => ipcRenderer.invoke('deleteTag', id),
+
+  addTagToCharacter: (characterId: number, tagId: number) => ipcRenderer.invoke('addTagToCharacter', characterId, tagId),
+
+  removeTagFromCharacter: (characterId: number, tagId: number) => ipcRenderer.invoke('removeTagFromCharacter', characterId, tagId),
+
+  getCharacterTags: (characterId: number) => ipcRenderer.invoke('getCharacterTags', characterId),
+
+  searchCharactersByTag: (tagName: string) => ipcRenderer.invoke('searchCharactersByTag', tagName),
+
+  tagSuggestions: (query: string) => ipcRenderer.invoke('tagSuggestions', query),
 
 }
 

@@ -25,6 +25,7 @@ export const blankCharacter: CharacterType = {
 }
 
 export type ApiTypes = {
+  // CHARACTERS
   // create
   createChar(character: CharacterType): Promise<{ id: number; success: boolean }>
   
@@ -50,6 +51,24 @@ export type ApiTypes = {
   //import & export
   exportCharacters(): Promise<{ success: boolean }>
   importCharacters(): Promise<{ success: boolean; count?: number }>
+
+  // TAGS
+  //create
+  createTag(tag: TagType): Promise<{ success: boolean }>
+  addTagToCharacter(characterId: number, tagId: number): Promise<{ success: boolean }>
+
+  //read
+  getTags(): Promise<TagType[]>
+  getCharacterTags(characterId: number): Promise<TagType[]>
+  tagSuggestions(query: string): Promise<TagType[]>
+  searchCharactersByTag(tagName: string): Promise<CharacterType[]>
+
+  //update
+  updateTag(tag: TagType): Promise<{ success: boolean }>
+
+  //delete
+  deleteTag(tagId: number): Promise<{ success: boolean }>
+  removeTagFromCharacter(characterId: number, tagId: number): Promise<{ success: boolean }>
 }
 
 export type RecentChar = {
@@ -97,4 +116,9 @@ export type Notification = {
   type: 'destructive' | 'positive' | 'normal'
   hasProgress: boolean
   done?: boolean
+}
+
+export type TagType = {
+  id: number,
+  name: string
 }
