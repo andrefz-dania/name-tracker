@@ -8,7 +8,6 @@
     MapPin,
     PinIcon,
     PinOff,
-    PlusIcon,
     VenusAndMars,
     XIcon
   } from '@lucide/svelte'
@@ -48,8 +47,12 @@
   }
 
   const addTag = (tag: TagType) => {
-    tags.push(tag)
-    isUpdatable = true
+    // check if tag is already in list
+    const existingTag = tags.find((t) => t.id === tag.id)
+    if (!existingTag) {
+      tags.push(tag)
+      isUpdatable = true
+    }
   }
 
   async function getCharacter() {
@@ -60,7 +63,7 @@
   const saveCharacter = async () => {
     const newCharacter = formatCharacter(character)
     const charResponse = await window.api.updateChar(newCharacter)
-    const updateArray = tags.map((t) => (t.id))
+    const updateArray = tags.map((t) => t.id)
     const tagResponse = await window.api.updateCharacterTags(character.id, updateArray)
     if (charResponse.success && tagResponse.success) {
       isUpdatable = false
@@ -192,7 +195,7 @@
           <div class="flex flex-row gap-2 flex-wrap items-center">
             <TagAdder {tags} {addTag}></TagAdder>
             {#each tags as tag}
-              <Tag {tag} editable removeTag={()=>removeTag(tag.id)}></Tag>
+              <Tag {tag} editable removeTag={() => removeTag(tag.id)}></Tag>
             {/each}
           </div>
           <div>
