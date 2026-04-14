@@ -29,6 +29,7 @@ class CharacterDb {
     this.db.exec(setupCharactersSql)
 
     // support legacy v0.0.1 to v0.3.0 installations
+    console.log('Performing legacy support checks...')
     try {
       const setupPinnedSql = `ALTER TABLE characters ADD COLUMN pinned BOOLEAN DEFAULT 0`
       this.db.exec(setupPinnedSql)
