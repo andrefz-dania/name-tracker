@@ -33,6 +33,8 @@ Follow the development instructions and run the build command for your OS - inst
 - Import/export characters to JSON
 - Run on Windows, Linux or Mac (untested)
 - Hotkeys (partial)
+- add images to each character
+- character tags and tag search
 
 **Sorting**
 - Seach all characters
@@ -51,8 +53,6 @@ Follow the development instructions and run the build command for your OS - inst
 - deep search
 - quickly swap character status from the search list
 - persist scroll location
-- add images to each character
-- character tags
 - factions
 - character relationships
 - timeline / events for each character

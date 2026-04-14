@@ -28,7 +28,21 @@ class CharacterDb {
     console.log('Configuring database...')
     this.db.exec(setupCharactersSql)
 
+    const setupTagsSql = `CREATE TABLE IF NOT EXISTS tags (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tag_name TEXT NOT NULL)`
+
+    const setupCharacterTagsSql = `CREATE TABLE IF NOT EXISTS tag_map (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     character_id INTEGER NOT NULL,
+     tag_id INTEGER NOT NULL)`
+
+    console.log('setting up tagging...')
+    this.db.exec(setupTagsSql)
+    this.db.exec(setupCharacterTagsSql)
+
     // support legacy v0.0.1 to v0.3.0 installations
+    console.log('Performing legacy support checks...')
     try {
       const setupPinnedSql = `ALTER TABLE characters ADD COLUMN pinned BOOLEAN DEFAULT 0`
       this.db.exec(setupPinnedSql)
@@ -45,7 +59,7 @@ class CharacterDb {
 
     console.log('Database setup complete')
   }
-
+  // CHARACTER QUERIES ---
   createChar(character) {
     const insertQuery = `INSERT INTO characters (name, desc, dead, age, gender, location, occupation, species) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     const stmt = this.db.prepare(insertQuery)
@@ -245,7 +259,7 @@ class CharacterDb {
       }
     }
     const protectedColumn = evaluateColumn(column)
-    const selectQuery = `SELECT * FROM characters WHERE name LIKE ? ORDER BY ${protectedColumn} ${direction}`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`)
     console.log(
@@ -255,10 +269,127 @@ class CharacterDb {
   }
 
   deepSearchChars(query) {
-    const selectQuery = `SELECT * FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
     console.log(`Found ${response.length} characters matching deep query: ${query}`)
+    return response
+  }
+
+  // TAG QUERIES ---
+  createTag(tagName) {
+    const insertQuery = `INSERT INTO tags (tag_name) VALUES (?) RETURNING *`
+    const stmt = this.db.prepare(insertQuery)
+    const response = stmt.run(tagName)
+    if (response.changes === 1) {
+      return { success: true, newId: response.lastInsertRowid }
+    } else return { success: false }
+  }
+
+  getTags() {
+    const selectQuery = `SELECT * FROM tags ORDER BY tag_name`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all()
+    return response
+  }
+
+  updateTag(tag) {
+    const updateQuery = `UPDATE tags SET tag_name=? WHERE id=?`
+    const stmt = this.db.prepare(updateQuery)
+    const response = stmt.run(tag.tag_name, tag.id)
+    return response
+  }
+
+  deleteTag(id) {
+    const deleteQuery = `DELETE FROM tags WHERE id=?`
+    const stmt = this.db.prepare(deleteQuery)
+    const response = stmt.run(id)
+
+    // if successful, also delete the tag from the tag map
+    if (response.changes === 1) {
+      const deleteTagFromMapQuery = `DELETE FROM tag_map WHERE tag_id=?`
+      const stmt2 = this.db.prepare(deleteTagFromMapQuery)
+      const response2 = stmt2.run(id)
+      return { success: true }
+    } else {
+      return { success: false }
+    }
+  }
+
+  updateCharacterTags(characterId, tagIds) {
+    let deletedCount = 0
+    let addedCount = 0
+    let errors = false
+    if (!tagIds.length) {
+      return { success: true, deleted: 0, added: 0 }
+    }
+
+    // remove all tags for this character first
+    try {
+      const deleteQuery = `DELETE FROM tag_map WHERE character_id=?`
+      const deleteStmt = this.db.prepare(deleteQuery)
+      const deleteResponse = deleteStmt.run(characterId)
+    } catch (error) {
+      errors = true
+      console.error(`Failed to delete all tags for character ${characterId}:`, error.message)
+    }
+
+    // then add each desired tag
+    const insertQuery = `INSERT INTO tag_map (character_id, tag_id) VALUES (?,?)`
+    const insertStmt = this.db.prepare(insertQuery)
+
+    tagIds.forEach((tagId) => {
+      try {
+        insertStmt.run(characterId, tagId)
+        addedCount++
+      } catch (err) {
+        errors = true
+        console.error(`Failed to add tag ${tagId} for character ${characterId}:`, err.message)
+      }
+    })
+
+    return {
+      success: !errors,
+      deleted: deletedCount,
+      added: addedCount
+    }
+  }
+
+  getCharacterTags(characterId) {
+    const selectQuery = `SELECT * FROM tag_map JOIN tags ON tag_map.tag_id=tags.id WHERE character_id=?`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all(characterId)
+    return response
+  }
+
+  searchCharactersByTag(tagName, column, reverse) {
+    const direction = reverse ? 'DESC' : 'ASC'
+    function evaluateColumn(column) {
+      if (
+        column == 'species' ||
+        column == 'gender' ||
+        column == 'location' ||
+        column == 'occupation'
+      ) {
+        return column
+      } else if (column == 'status') {
+        return 'dead'
+      } else {
+        return 'name'
+      }
+    }
+    const protectedColumn = evaluateColumn(column)
+    const selectQuery = `SELECT c.id, c.name, c.species, c.gender, c.occupation, c.dead, c.location, c.desc FROM characters c JOIN tag_map tm ON c.id = tm.character_id JOIN tags t ON tm.tag_id = t.id WHERE t.tag_name = ? ORDER BY ${protectedColumn} ${direction}`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all(tagName)
+    console.log(`Found ${response.length} characters with tag #${tagName}`)
+    return response
+  }
+
+  getTagSuggestions(query) {
+    const selectQuery = `SELECT * FROM tags WHERE tag_name LIKE ?`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all('%' + query + '%')
     return response
   }
 

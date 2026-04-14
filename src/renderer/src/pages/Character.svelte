@@ -11,7 +11,7 @@
     VenusAndMars,
     XIcon
   } from '@lucide/svelte'
-  import { blankCharacter, type CharacterType } from '../../../types/types'
+  import { blankCharacter, type CharacterType, type TagType } from '../../../types/types'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
@@ -25,42 +25,70 @@
   import { onMount } from 'svelte'
   import { addRecent } from '../utils/recent'
   import AvatarEditable from '../components/AvatarEditable.svelte'
+  import Tag from '../components/Tag.svelte'
+  import TagAdder from '../components/TagAdder.svelte'
 
   let character: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
   let isUpdatable: boolean = $state(false)
+  let tags: TagType[] = $state([])
+
+  // const dummyTags = [
+  //   { id: 1, name: 'test' },
+  //   { id: 2, name: 'test2' },
+  //   { id: 3, name: 'test3' },
+  //   { id: 4, name: 'test4' },
+  //   { id: 5, name: 'test5' }
+  // ]
+
+  const removeTag = (tagId: number) => {
+    tags = tags.filter((tag) => tag.id !== tagId)
+    isUpdatable = true
+  }
+
+  const addTag = (tag: TagType) => {
+    // check if tag is already in list
+    const existingTag = tags.find((t) => t.id === tag.id)
+    if (!existingTag) {
+      tags.push(tag)
+      isUpdatable = true
+    }
+  }
 
   async function getCharacter() {
     character = await window.api.readOneChar(id)
+    tags = await window.api.getCharacterTags(id)
   }
 
   const saveCharacter = async () => {
     const newCharacter = formatCharacter(character)
-    const response = await window.api.updateChar(newCharacter)
-    if (response.success) {
+    const charResponse = await window.api.updateChar(newCharacter)
+    const updateArray = tags.map((t) => t.id)
+    const tagResponse = await window.api.updateCharacterTags(character.id, updateArray)
+    if (charResponse.success && tagResponse.success) {
       isUpdatable = false
     }
   }
 
-    const hotkeyCtrlS = (e: KeyboardEvent) => {
+  const hotkeyCtrlS = (e: KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-      e.preventDefault();
-      saveCharacter();
+      e.preventDefault()
+      saveCharacter()
 
       // wait 100 ms
       setTimeout(() => {
-        isUpdatable = false;
-      }, 100);
+        isUpdatable = false
+      }, 100)
     }
   }
-  onMount(()=>{
-    addRecent(id);
+  onMount(() => {
+    addRecent(id)
   })
 
   const togglePinned = async () => {
-    const unpin = character.pinned ? true : false;
+    const unpin = character.pinned ? true : false
     await window.api.togglePinChar(character.id, unpin)
-    character.pinned = character.pinned == 1 ? 0 : 1;
+    character.pinned = character.pinned == 1 ? 0 : 1
   }
 
   const discardChanges = () => {
@@ -76,7 +104,7 @@
   getCharacter()
 </script>
 
-<svelte:window onkeydown={hotkeyCtrlS}></svelte:window>
+<svelte:window onkeydown={hotkeyCtrlS} />
 
 <Navigation>
   <div>
@@ -97,7 +125,7 @@
   {#if !character}
     {@render Heading1('Loading data...')}
   {:else}
-    <form onchange={() => (isUpdatable = true)} onsubmit={(e)=>e.preventDefault()}>
+    <form onchange={() => (isUpdatable = true)} onsubmit={(e) => e.preventDefault()}>
       <EditableTitle
         id="name"
         name="name"
@@ -115,7 +143,7 @@
   {:else}
     <div class="flex flex-row gap-2 mx-auto w-full max-w-6xl">
       <section class="rounded-md p-4 flex flex-col items-center gap-4">
-          <AvatarEditable id={character.id}></AvatarEditable>
+        <AvatarEditable id={character.id}></AvatarEditable>
         <button class="cursor-pointer" onclick={invertDeadState} type="button">
           <StatusMarker dead={character.dead ? true : false} showText={true}></StatusMarker>
         </button>
@@ -163,7 +191,13 @@
       </section>
 
       <section class="flex flex-col gap-4 w-full">
-        <div class="flex place-content-end">
+        <div class="flex place-content-between">
+          <div class="flex flex-row gap-2 flex-wrap items-center">
+            <TagAdder {tags} {addTag}></TagAdder>
+            {#each tags as tag}
+              <Tag {tag} editable removeTag={() => removeTag(tag.id)}></Tag>
+            {/each}
+          </div>
           <div>
             {#if character.pinned || character.pinned == 1}
               <ButtonToggleL2 onclick={togglePinned} style="active" type="button"

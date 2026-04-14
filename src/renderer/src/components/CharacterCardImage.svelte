@@ -44,7 +44,7 @@
 
 {#snippet Field(string?: String)}
   {#if string && string.length > 0}
-    <p class="text-sm capitalize">{string}</p>
+    <p class="text-sm capitalize wrap-break-word overflow-x-scroll">{string}</p>
   {:else}
     <p class="opacity-50 text-sm">Unknown</p>
   {/if}
@@ -53,11 +53,11 @@
 <a href={link} class="bg-layer1 rounded-md hover:bg-layer2">
 
   <li class="grid gap-x-4 px-4 py-4 place-content-between items-start {gridColsCSS}">
-    <div class="p-2 row-span-2 max-w-44">
+    <div class="row-span-2 max-w-44">
     <AvatarLoader id={character.id}></AvatarLoader>
   </div>
     <div class="col-span-2 w-full flex gap-2">
-      <h3 class="font-bold">{character.name}</h3>
+      <h3 class="font-bold wrap-break-word overflow-x-scroll">{character.name}</h3>
     </div>
     {#if interfaceConfig.speciesVisible}
       {@render Field(character.species)}
@@ -107,7 +107,7 @@
     </div>
     <div class="{descCSS} mt-4">
       {#if character.desc}
-        <p class="text-textcol/60 text-sm whitespace-pre-line">
+        <p class="text-textcol/60 text-sm whitespace-pre-line wrap-break-word overflow-x-scroll">
           {truncateString(character.desc, descLength)}
         </p>
       {:else}

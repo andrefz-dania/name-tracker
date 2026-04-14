@@ -9,6 +9,7 @@
   import { Check, SkullIcon, SproutIcon, XIcon } from '@lucide/svelte'
   import { capitalizeAll, capitalizeFirst, decapitalizeAll } from '../utils/capitalize'
   import { notif, sendNotif } from '../utils/context'
+  import { INPUT_LONG_MAX, INPUT_SHORT_MAX } from '../input.config'
   let name = $state('')
   let status = $state('Alive') // Default to Alive
   let dead = $derived(status == 'Dead' ? 1 : 0)  //sqlite cannot handle booleans
@@ -56,7 +57,7 @@
   onsubmit={handleAddCharacter}
   class="max-w-2xl w-full mx-auto flex flex-col gap-4"
 >
-  <TextInput label="Name" id="nameInput" name="name" bind:value={name} placeholder="Name" autofocus={true} />
+  <TextInput label="Name" id="nameInput" name="name" bind:value={name} placeholder="Name" autofocus={true} maxLength={INPUT_LONG_MAX} />
 
   <div class="w-full">
     <label for="statusRadio" class="text-primary">Status:</label>
@@ -131,6 +132,7 @@
     name="occupation"
     bind:value={occupation}
     placeholder="Occupation"
+    maxLength={INPUT_LONG_MAX}
   />
 
   <TextAreaInput
@@ -144,7 +146,7 @@
 
   <div class="flex flex-row mx-auto gap-4">
     <TextInput label="Age" id="ageInput" name="age" bind:value={age} placeholder="Age" type="number" />
-    <TextInput label="Gender" id="genderInput" name="gender" bind:value={gender} placeholder="Gender" />
+    <TextInput label="Gender" id="genderInput" name="gender" bind:value={gender} placeholder="Gender" maxLength={INPUT_SHORT_MAX} />
   </div>
 
   <div class="flex flex-row mx-auto gap-4">
@@ -154,6 +156,7 @@
       name="species"
       bind:value={species}
       placeholder="Species"
+      maxLength={INPUT_SHORT_MAX}
     />
     <TextInput
       label="Location"
@@ -161,6 +164,7 @@
       name="location"
       bind:value={location}
       placeholder="Location"
+      maxLength={INPUT_LONG_MAX}
     />
   </div>
 

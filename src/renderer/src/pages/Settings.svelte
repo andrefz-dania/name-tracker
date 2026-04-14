@@ -18,9 +18,9 @@
     Wrench,
     Milestone,
     SquarePen,
-
-    Search
-
+    Search,
+    TagIcon,
+    PlusIcon
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
@@ -29,15 +29,16 @@
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
   import RangeSlider from '../components/RangeSlider.svelte'
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
-  import { defaultInterfaceConfig } from '../../../types/types'
+  import { defaultInterfaceConfig, type TagType } from '../../../types/types'
   import ModalDialogue from '../components/ModalDialogue.svelte'
   import { notif, sendNotif } from '../utils/context'
+  import TagEditable from '../components/TagEditable.svelte'
 
   let { interfaceConfig = $bindable() } = $props()
 
   let descLength = $state(interfaceConfig.descLength || defaultInterfaceConfig.descLength)
 
-  type CurrentPage = 'general' | 'worlds' | 'storage' | 'reset' | 'debug' | 'hotkeys'
+  type CurrentPage = 'general' | 'world' | 'storage' | 'reset' | 'debug' | 'hotkeys'
 
   let currentPage: CurrentPage = $state('general')
 
@@ -112,6 +113,35 @@
       sendNotif(notif, 'Import failed', 'destructive')
     }
   }
+
+  // WORLD
+  let tags:TagType[] = $state([])
+  let newTagName: string = $state('')
+
+  async function getTags() {
+    tags = await window.api.getTags()
+  }
+
+  getTags();
+
+  const createTag = async (e) => {
+    e.preventDefault()
+    const response = await window.api.createTag(newTagName)
+    if (response.success) {
+      tags = [...tags, {id: response.newId, name: newTagName}]
+      newTagName = ''
+    }
+  }
+
+  async function deleteTag(id: number) {
+    const response = await window.api.deleteTag(id)
+    if (response.success) {
+      tags = tags.filter((tag) => tag.id !== id)
+      console.log(tags)
+    }
+  }
+
+
 </script>
 
 {#snippet Hr()}
@@ -149,7 +179,7 @@
       <p class="font-bold text-sm text-primary p-2">CATEGORIES</p>
       {@render Category('general')}
       {@render Category('hotkeys')}
-      <!-- {@render Category('worlds')}-->
+      {@render Category('world')}
       {@render Category('storage')}
       {@render Category('reset')}
       <!-- {@render Category('debug')} -->
@@ -338,9 +368,43 @@
         </div>
       {/if}
 
-      {#if currentPage == 'hotkeys'}
+      {#if currentPage == 'world'}
+        <section>
+          <SettingInfo
+            name="Character Tags"
+            description="Add or remove tags that can be used to organize your characters in this world"
+            ><TagIcon></TagIcon></SettingInfo
+          >
+          <form class="flex flex-row gap-2 items-center mt-4 w-full" onsubmit={createTag}>
+            <div class="flex flex-row gap-2 w-full relative">
+              <p class="absolute bottom-2 left-4 text-textcol">#</p>
+              <input
+                class="pl-8 whitespace-pre p-2 rounded-md bg-layer1 w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
+                name="Tag name"
+                id="newtag"
+                bind:value={newTagName}
+                placeholder="Newtag"
+                maxlength=24
+              />
+            </div>
 
-      <p class="text-center mb-4">Hotkeys are currently static. Rebinding might come in a future update</p>
+            <div class="flex flex-row w-full h-min max-w-36 mb-0.5">
+              <ButtonDecorated><PlusIcon></PlusIcon>Add tag</ButtonDecorated>
+            </div>
+          </form>
+
+          <div class="flex flex-row flex-wrap gap-2 mt-4">
+            {#each tags as tag}
+              <TagEditable tag={tag} deleteSelf={()=>deleteTag(tag.id)}></TagEditable>
+            {/each}
+          </div>
+        </section>
+      {/if}
+
+      {#if currentPage == 'hotkeys'}
+        <p class="text-center mb-4">
+          Hotkeys are currently static. Rebinding might come in a future update
+        </p>
         {#snippet hotkey(string: string)}
           <div
             class="border border-primary-muted text-primary bg-layer1 p-1 px-2 rounded-md min-w-8 w-fit flex place-content-center"

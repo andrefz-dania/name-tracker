@@ -1,9 +1,10 @@
 import { dialog, ipcMain } from 'electron'
 import * as fs from 'fs'
-import { CharacterType, RecentChar } from '../types/types'
+import { CharacterType, RecentChar, TagType } from '../types/types'
 import sharp from 'sharp'
 
 export default function setupHandlers(db) {
+  // characters
   ipcMain.handle('createChar', (_, character: CharacterType) => {
     return db.createChar(character)
   })
@@ -164,4 +165,38 @@ export default function setupHandlers(db) {
       }
     }
   })
+
+  // tags
+  ipcMain.handle('getTags', async () => {
+    return db.getTags()
+  })
+
+  ipcMain.handle('createTag', async (_, tag: TagType) => {
+    return db.createTag(tag)
+  })
+
+  ipcMain.handle('updateTag', async (_, tag: TagType) => {
+    return db.updateTag(tag)
+  })
+
+  ipcMain.handle('deleteTag', async (_, id: number) => {
+    return db.deleteTag(id)
+  })
+
+  ipcMain.handle('getCharacterTags', async (_, characterId: number) => {
+    return db.getCharacterTags(characterId)
+  })
+
+  ipcMain.handle('updateCharacterTags', async (_, characterId: number, tagList: number[]) => {
+    return db.updateCharacterTags(characterId, tagList)
+  })
+
+  ipcMain.handle('searchCharactersByTag', async (_, tagName: string, column: string, reverse: boolean) => {
+    return db.searchCharactersByTag(tagName, column, reverse)
+  })
+
+  ipcMain.handle('getTagSuggestions', async (_, query: string) => {
+    return db.getTagSuggestions(query)
+  })
+
 }
