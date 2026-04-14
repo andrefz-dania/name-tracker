@@ -375,11 +375,11 @@
             description="Add or remove tags that can be used to organize your characters in this world"
             ><TagIcon></TagIcon></SettingInfo
           >
-          <form class="flex flex-row gap-2 items-center mt-4" onsubmit={createTag}>
-            <div class="relative">
-              <p class="absolute bottom-1 left-4 text-primary-highlight">#</p>
+          <form class="flex flex-row gap-2 items-center mt-4 w-full" onsubmit={createTag}>
+            <div class="flex flex-row gap-2 w-full relative">
+              <p class="absolute bottom-2 left-4 text-textcol">#</p>
               <input
-                class="pl-8 bg-primary/30 text-primary-highlight rounded-full px-2 py-1 border border-transparent focus:ring-0 focus:outline-0 focus-within:border-primary-highlight"
+                class="pl-8 whitespace-pre p-2 rounded-md bg-layer1 w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
                 name="Tag name"
                 id="newtag"
                 bind:value={newTagName}
