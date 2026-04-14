@@ -54,8 +54,7 @@ export type ApiTypes = {
 
   // TAGS
   //create
-  createTag(tag: TagType): Promise<{ success: boolean }>
-  addTagToCharacter(characterId: number, tagId: number): Promise<{ success: boolean }>
+  createTag(tagName: string): Promise<{ success: boolean, newId: number }>
 
   //read
   getTags(): Promise<TagType[]>
@@ -65,10 +64,10 @@ export type ApiTypes = {
 
   //update
   updateTag(tag: TagType): Promise<{ success: boolean }>
+  updateCharacterTags(characterId: number, tagIds: number[]): Promise<{ success: boolean, deleted: number, added: number }>
 
   //delete
   deleteTag(tagId: number): Promise<{ success: boolean }>
-  removeTagFromCharacter(characterId: number, tagId: number): Promise<{ success: boolean }>
 }
 
 export type RecentChar = {

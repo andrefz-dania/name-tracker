@@ -47,11 +47,9 @@ const api = {
 
   deleteTag: (id: number) => ipcRenderer.invoke('deleteTag', id),
 
-  addTagToCharacter: (characterId: number, tagId: number) => ipcRenderer.invoke('addTagToCharacter', characterId, tagId),
-
-  removeTagFromCharacter: (characterId: number, tagId: number) => ipcRenderer.invoke('removeTagFromCharacter', characterId, tagId),
-
   getCharacterTags: (characterId: number) => ipcRenderer.invoke('getCharacterTags', characterId),
+
+  updateCharacterTags: (characterId: number, tagIds: number[]) => ipcRenderer.invoke('updateCharacterTags', characterId, tagIds),
 
   searchCharactersByTag: (tagName: string) => ipcRenderer.invoke('searchCharactersByTag', tagName),
 

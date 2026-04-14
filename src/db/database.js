@@ -278,17 +278,17 @@ class CharacterDb {
 
   // TAG QUERIES ---
   createTag(tagName) {
-    const insertQuery = `INSERT INTO tags (name) VALUES (?)`
+    const insertQuery = `INSERT INTO tags (name) VALUES (?) RETURNING *`
     const stmt = this.db.prepare(insertQuery)
     const response = stmt.run(tagName)
     console.log(response)
     if (response.changes === 1) {
-      return { success: true }
+      return { success: true, newId: response.lastInsertRowid  }
     } else return { success: false }
   }
 
   getTags() {
-    const selectQuery = `SELECT * FROM tags`
+    const selectQuery = `SELECT * FROM tags ORDER BY name`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
     console.log(response)
@@ -314,27 +314,50 @@ class CharacterDb {
       const deleteTagFromMapQuery = `DELETE FROM tag_map WHERE tag_id=?`
       const stmt2 = this.db.prepare(deleteTagFromMapQuery)
       const response2 = stmt2.run(id)
-      console.log(response)
-      return response2.changes === 1 ? { success: true } : { success: false }
+      console.log(response2)
+      return { success: true }
     } else {
       return { success: false }
     }
   }
 
-  addTagToCharacter(characterId, tagId) {
-    const insertQuery = `INSERT INTO tag_map (character_id, tag_id) VALUES (?, ?)`
-    const stmt = this.db.prepare(insertQuery)
-    const response = stmt.run(characterId, tagId)
-    console.log(response)
-    return response
-  }
+  updateCharacterTags(characterId, tagIds) {
+    let deletedCount = 0
+    let addedCount = 0
+    let errors = false
+    if (!tagIds.length) {
+      return { success: true, deleted: 0, added: 0 }
+    }
 
-  removetagFromCharacter(characterId, tagId) {
-    const deleteQuery = `DELETE FROM tag_map WHERE character_id=? AND tag_id=?`
-    const stmt = this.db.prepare(deleteQuery)
-    const response = stmt.run(characterId, tagId)
-    console.log(response)
-    return response
+    // remove all tags for this character first
+    try {
+      const deleteQuery = `DELETE FROM tag_map WHERE character_id=?`
+      const deleteStmt = this.db.prepare(deleteQuery)
+      const deleteResponse = deleteStmt.run(characterId)
+    } catch (error) {
+      errors = true
+      console.error(`Failed to delete all tags for character ${characterId}:`, error.message)
+    }
+
+    // then add each desired tag
+    const insertQuery = `INSERT INTO tag_map (character_id, tag_id) VALUES (?,?)`
+    const insertStmt = this.db.prepare(insertQuery)
+
+    tagIds.forEach((tagId) => {
+      try {
+        insertStmt.run(characterId, tagId)
+        addedCount++
+      } catch (err) {
+        errors = true
+        console.error(`Failed to add tag ${tagId} for character ${characterId}:`, err.message)
+      }
+    })
+
+    return {
+      success: !errors,
+      deleted: deletedCount,
+      added: addedCount
+    }
   }
 
   getCharacterTags(characterId) {

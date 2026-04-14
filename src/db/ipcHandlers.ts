@@ -183,16 +183,12 @@ export default function setupHandlers(db) {
     return db.deleteTag(id)
   })
 
-  ipcMain.handle('addTagToCharacter', async (_, characterId: number, tagId: number) => {
-    return db.addTagToCharacter(characterId, tagId)
-  })
-
-  ipcMain.handle('removeTagFromCharacter', async (_, characterId: number, tagId: number) => {
-    return db.removeTagFromCharacter(characterId, tagId)
-  })
-
   ipcMain.handle('getCharacterTags', async (_, characterId: number) => {
     return db.getCharacterTags(characterId)
+  })
+
+  ipcMain.handle('updateCharacterTags', async (_, characterId: number, tagList: number[]) => {
+    return db.updateCharacterTags(characterId, tagList)
   })
 
   ipcMain.handle('searchCharactersByTag', async (_, tagName: string) => {

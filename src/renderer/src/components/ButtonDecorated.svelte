@@ -13,6 +13,7 @@
       | 'positive'
       | 'simple'
       | 'transparent'
+      | 'transparent-primary'
       | 'menu'
     disabled?: boolean
     command?: string
@@ -70,6 +71,15 @@
 {:else if style == 'transparent'}
   <button
     class="cursor-pointer items-center flex place-content-center gap-2 text-textcol p-2 rounded-md hover:bg-layer1"
+    {type}
+    {command}
+    {commandfor}
+    {onclick}
+    {disabled}>{@render children()}</button
+  >
+  {:else if style == 'transparent-primary'}
+  <button
+    class="cursor-pointer items-center flex place-content-center gap-2 text-primary p-2 rounded-md hover:bg-layer1 hover:text-primary-highlight"
     {type}
     {command}
     {commandfor}
