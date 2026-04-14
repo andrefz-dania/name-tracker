@@ -191,11 +191,11 @@ export default function setupHandlers(db) {
     return db.updateCharacterTags(characterId, tagList)
   })
 
-  ipcMain.handle('searchCharactersByTag', async (_, tagName: string) => {
-    return db.searchCharactersByTag(tagName)
+  ipcMain.handle('searchCharactersByTag', async (_, tagName: string, column: string, reverse: boolean) => {
+    return db.searchCharactersByTag(tagName, column, reverse)
   })
 
-  ipcMain.handle('tagSuggestions', async (_, query: string) => {
+  ipcMain.handle('getTagSuggestions', async (_, query: string) => {
     return db.getTagSuggestions(query)
   })
 

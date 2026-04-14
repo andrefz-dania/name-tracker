@@ -59,8 +59,8 @@ export type ApiTypes = {
   //read
   getTags(): Promise<TagType[]>
   getCharacterTags(characterId: number): Promise<TagType[]>
-  tagSuggestions(query: string): Promise<TagType[]>
-  searchCharactersByTag(tagName: string): Promise<CharacterType[]>
+  getTagSuggestions(query: string): Promise<TagType[]>
+  searchCharactersByTag(tagName: string,  column: string, reverse: boolean): Promise<CharacterType[]>
 
   //update
   updateTag(tag: TagType): Promise<{ success: boolean }>
@@ -119,5 +119,5 @@ export type Notification = {
 
 export type TagType = {
   id: number,
-  name: string
+  tag_name: string
 }

@@ -22,7 +22,8 @@
   import {
     defaultSearchMemory,
     type InterfaceConfig,
-    type SearchMemory
+    type SearchMemory,
+    type TagType
   } from '../../../types/types'
   import CharacterCardImage from './CharacterCardImage.svelte'
 
@@ -34,6 +35,7 @@
   let sortColumn: string = $state(savedSearch.lastSortColumn || 'name')
   let sortReverse: boolean = $state(savedSearch.lastSortReverse || false)
   let searchTerm: string = $state(savedSearch.lastSearch || '')
+  let searchInTags: boolean = $derived(searchTerm.charAt(0) == '#' ? true : false)
 
   let skipDebounce: boolean = $state(false)
 
@@ -56,6 +58,10 @@
 
   let characters = $state([])
 
+  let tagSuggestions: TagType[] = $state([])
+
+  let selectedSuggestion: number | null = $state(null)
+
   const debouncedSearch = $derived(debounce(search, 300))
 
   $effect(() => {
@@ -77,10 +83,33 @@
     }
   }
 
-  const hotkeyCtrlF = (e: KeyboardEvent) => {
+  const hotkeys = (e: KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
       e.preventDefault()
       focusSearch()
+    }
+
+    if (e.key == 'ArrowDown') {
+      e.preventDefault()
+      if (selectedSuggestion == null) {
+        selectedSuggestion = 0
+      } else {
+        selectedSuggestion++
+      }
+    }
+
+    if (e.key == 'ArrowUp') {
+      e.preventDefault()
+      if (selectedSuggestion == null || selectedSuggestion <= 0) {
+        selectedSuggestion = 0
+      } else {
+        selectedSuggestion--
+      }
+    }
+
+    if (e.key == 'Enter' && searchInTags) {
+      e.preventDefault()
+      searchTerm = '#' + tagSuggestions[selectedSuggestion].tag_name
     }
   }
 
@@ -88,9 +117,24 @@
     characters = await window.api.readAllChars()
   }
 
+  async function getTagSuggestions() {
+    const unhashedTerm = searchTerm.split('#')[1]
+    tagSuggestions = await window.api.getTagSuggestions(unhashedTerm)
+    selectedSuggestion = 0
+  }
+
   async function search() {
-    characters = await window.api.searchChars(searchTerm, sortColumn, sortReverse)
-    console.log('searching for', searchTerm)
+    if (searchInTags) {
+      const unhashedTerm = searchTerm.split('#')[1]
+      getTagSuggestions()
+      characters = await window.api.searchCharactersByTag(unhashedTerm, sortColumn, sortReverse)
+      console.log('searching for tag #' + unhashedTerm)
+    } else {
+      tagSuggestions = []
+      characters = await window.api.searchChars(searchTerm, sortColumn, sortReverse)
+      console.log('searching for', searchTerm)
+    }
+
     // save search to localstorage
     const saved: SearchMemory = {
       lastSearch: searchTerm,
@@ -110,7 +154,7 @@
   }
 </script>
 
-<svelte:window onkeydown={hotkeyCtrlF}></svelte:window>
+<svelte:window onkeydown={hotkeys} />
 
 <Navigation>
   <a href="#/create"><ButtonDecorated type="button"><CirclePlus />New Character</ButtonDecorated></a
@@ -121,10 +165,10 @@
   {@render Heading1('Characters')}
 
   <!-- search bar -->
-  <div class="max-w-2xl flex flex-row w-full mx-auto gap-4 mb-4 mt-8">
-    <form class="flex flex-row w-full gap-3" action="" onsubmit={e=>e.preventDefault()}>
+  <div class="max-w-2xl flex flex-row w-full mx-auto gap-4 mb-4 mt-8 relative">
+    <form class="flex flex-row w-full gap-3" action="" onsubmit={(e) => e.preventDefault()}>
       <input
-        class="p-4 rounded-md bg-layer1/75 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary"
+        class="p-4 rounded-md bg-layer1/75 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary {searchInTags ? "text-primary font-bold" : "text-textcol"}"
         type="text"
         bind:this={searchBar}
         bind:value={searchTerm}
@@ -140,6 +184,39 @@
         {/if}
       </div>
     </form>
+    {#if tagSuggestions.length > 0 && tagSuggestions[0].tag_name !== searchTerm.split('#')[1]}
+      <div
+        class="z-20 absolute w-full top-16 left-0 flex flex-col gap-2 bg-layer1 p-2 rounded-md border-primary border max-h-64 overflow-y-scroll"
+      >
+        {#each tagSuggestions as tag, index}
+          {#if selectedSuggestion == index}
+            <button
+              id="suggestion-${index}"
+              type="button"
+              class="bg-layer2 hover:bg-layer2 p-2 text-left text-sm text-textcol rounded-md"
+              onclick={() => {
+                searchTerm = '#' + tag.tag_name
+                tagSuggestions = []
+              }}
+            >
+              #{tag.tag_name}
+            </button>
+          {:else}
+            <button
+              id="suggestion-${index}"
+              type="button"
+              class="hover:bg-layer2 p-2 text-left text-sm text-textcol/75 rounded-md"
+              onclick={() => {
+                searchTerm = '#' + tag.tag_name
+                tagSuggestions = []
+              }}
+            >
+              #{tag.tag_name}
+            </button>
+          {/if}
+        {/each}
+      </div>
+    {/if}
   </div>
 </Header>
 

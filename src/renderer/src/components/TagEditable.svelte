@@ -15,7 +15,7 @@
 <div
   class="px-2 py-1 rounded-full bg-primary/30 flex items-center text-primary-highlight h-min group"
 >
-  <p>#{tag.name}</p>
+  <p>#{tag.tag_name}</p>
   <button
     command="show-modal"
     commandfor={dialogId}
@@ -27,8 +27,8 @@
   <ModalDialogue
   {dialogId}
   confirmAction={deleteSelf}
-  title="Delete #{tag.name}?"
-  description='Are you sure you want to delete #{tag.name}? This will also remove this tag from ALL characters'
+  title="Delete #{tag.tag_name}?"
+  description='Are you sure you want to delete #{tag.tag_name}? This will also remove this tag from ALL characters'
   icon='warn'
   confirmText='Delete'
   cancelText='Cancel'

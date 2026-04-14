@@ -30,7 +30,7 @@ class CharacterDb {
 
     const setupTagsSql = `CREATE TABLE IF NOT EXISTS tags (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL)`
+        tag_name TEXT NOT NULL)`
 
     const setupCharacterTagsSql = `CREATE TABLE IF NOT EXISTS tag_map (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -259,7 +259,7 @@ class CharacterDb {
       }
     }
     const protectedColumn = evaluateColumn(column)
-    const selectQuery = `SELECT * FROM characters WHERE name LIKE ? ORDER BY ${protectedColumn} ${direction}`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`)
     console.log(
@@ -269,7 +269,7 @@ class CharacterDb {
   }
 
   deepSearchChars(query) {
-    const selectQuery = `SELECT * FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
     console.log(`Found ${response.length} characters matching deep query: ${query}`)
@@ -278,28 +278,25 @@ class CharacterDb {
 
   // TAG QUERIES ---
   createTag(tagName) {
-    const insertQuery = `INSERT INTO tags (name) VALUES (?) RETURNING *`
+    const insertQuery = `INSERT INTO tags (tag_name) VALUES (?) RETURNING *`
     const stmt = this.db.prepare(insertQuery)
     const response = stmt.run(tagName)
-    console.log(response)
     if (response.changes === 1) {
-      return { success: true, newId: response.lastInsertRowid  }
+      return { success: true, newId: response.lastInsertRowid }
     } else return { success: false }
   }
 
   getTags() {
-    const selectQuery = `SELECT * FROM tags ORDER BY name`
+    const selectQuery = `SELECT * FROM tags ORDER BY tag_name`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
-    console.log(response)
     return response
   }
 
   updateTag(tag) {
-    const updateQuery = `UPDATE tags SET name=? WHERE id=?`
+    const updateQuery = `UPDATE tags SET tag_name=? WHERE id=?`
     const stmt = this.db.prepare(updateQuery)
-    const response = stmt.run(tag.name, tag.id)
-    console.log(response)
+    const response = stmt.run(tag.tag_name, tag.id)
     return response
   }
 
@@ -307,14 +304,12 @@ class CharacterDb {
     const deleteQuery = `DELETE FROM tags WHERE id=?`
     const stmt = this.db.prepare(deleteQuery)
     const response = stmt.run(id)
-    console.log(response)
 
     // if successful, also delete the tag from the tag map
     if (response.changes === 1) {
       const deleteTagFromMapQuery = `DELETE FROM tag_map WHERE tag_id=?`
       const stmt2 = this.db.prepare(deleteTagFromMapQuery)
       const response2 = stmt2.run(id)
-      console.log(response2)
       return { success: true }
     } else {
       return { success: false }
@@ -364,23 +359,37 @@ class CharacterDb {
     const selectQuery = `SELECT * FROM tag_map JOIN tags ON tag_map.tag_id=tags.id WHERE character_id=?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all(characterId)
-    console.log(response)
     return response
   }
 
-  searchCharactersByTag(tagName) {
-    const selectQuery = `SELECT * FROM tag_map JOIN characters ON tag_map.character_id=characters.id WHERE tag_map.tag_id=(SELECT id FROM tags WHERE name=?)`
+  searchCharactersByTag(tagName, column, reverse) {
+    const direction = reverse ? 'DESC' : 'ASC'
+    function evaluateColumn(column) {
+      if (
+        column == 'species' ||
+        column == 'gender' ||
+        column == 'location' ||
+        column == 'occupation'
+      ) {
+        return column
+      } else if (column == 'status') {
+        return 'dead'
+      } else {
+        return 'name'
+      }
+    }
+    const protectedColumn = evaluateColumn(column)
+    const selectQuery = `SELECT c.id, c.name, c.species, c.gender, c.occupation, c.dead, c.location, c.desc FROM characters c JOIN tag_map tm ON c.id = tm.character_id JOIN tags t ON tm.tag_id = t.id WHERE t.tag_name = ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
-    const tags = stmt.all(tagName)
-    console.log(response)
+    const response = stmt.all(tagName)
+    console.log(`Found ${response.length} characters with tag #${tagName}`)
     return response
   }
 
-  tagSuggestions(query) {
-    const selectQuery = `SELECT * FROM tags WHERE name LIKE ?`
+  getTagSuggestions(query) {
+    const selectQuery = `SELECT * FROM tags WHERE tag_name LIKE ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all('%' + query + '%')
-    console.log(response)
     return response
   }
 

@@ -51,9 +51,9 @@ const api = {
 
   updateCharacterTags: (characterId: number, tagIds: number[]) => ipcRenderer.invoke('updateCharacterTags', characterId, tagIds),
 
-  searchCharactersByTag: (tagName: string) => ipcRenderer.invoke('searchCharactersByTag', tagName),
+  searchCharactersByTag: (query: string, column: string, reverse: boolean) => ipcRenderer.invoke('searchCharactersByTag', query, column, reverse),
 
-  tagSuggestions: (query: string) => ipcRenderer.invoke('tagSuggestions', query),
+  getTagSuggestions: (query: string) => ipcRenderer.invoke('getTagSuggestions', query),
 
 }
 
