@@ -33,14 +33,6 @@
   let isUpdatable: boolean = $state(false)
   let tags: TagType[] = $state([])
 
-  // const dummyTags = [
-  //   { id: 1, name: 'test' },
-  //   { id: 2, name: 'test2' },
-  //   { id: 3, name: 'test3' },
-  //   { id: 4, name: 'test4' },
-  //   { id: 5, name: 'test5' }
-  // ]
-
   const removeTag = (tagId: number) => {
     tags = tags.filter((tag) => tag.id !== tagId)
     isUpdatable = true

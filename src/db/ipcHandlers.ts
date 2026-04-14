@@ -146,7 +146,7 @@ export default function setupHandlers(db) {
     try {
       // Resize and convert to Buffer using sharp library
       const image = await Jimp.read(file.filePaths[0])
-      image.resize({w: 352, h:352 })
+      image.cover({w: 352, h:352 })
       const imageBuffer = await image.getBuffer('image/jpeg', {quality: 80})
       console.log(imageBuffer);
       // 352 is 2x the size of the avatar display loader
