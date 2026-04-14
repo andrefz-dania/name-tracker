@@ -42,7 +42,7 @@
 
 {#snippet Field(string?: String)}
   {#if string && string.length > 0}
-    <p class="text-sm capitalize">{string}</p>
+    <p class="text-sm capitalize wrap-break-word overflow-x-scroll">{string}</p>
   {:else}
     <p class="opacity-50 text-sm">Unknown</p>
   {/if}
@@ -53,7 +53,7 @@
     class="grid gap-x-4 px-4 py-2 place-content-between items-center bg-layer1 hover:bg-layer2 rounded-sm {gridColsCSS}"
   >
     <div class="col-span-{nameColSpan} w-full flex gap-2">
-      <h3 class="font-bold">{character.name}</h3>
+      <h3 class="font-bold wrap-break-word overflow-x-scroll">{character.name}</h3>
     </div>
     {#if interfaceConfig.speciesVisible}
       {@render Field(character.species)}

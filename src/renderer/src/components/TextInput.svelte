@@ -6,10 +6,11 @@ type Props = {
   name: string,
   placeholder: string,
   id: string,
+  maxLength?: number,
   autofocus?: boolean
   type?: 'text' | 'number'
 }
-  let { label, value = $bindable(), name, placeholder, id, type = 'text', autofocus }: Props = $props();
+  let { label, value = $bindable(), name, placeholder, id, type = 'text', maxLength, autofocus }: Props = $props();
   let error = $state('');
 </script>
 
@@ -24,6 +25,7 @@ type Props = {
     bind:value={value}
     placeholder={placeholder}
     id={id}
+    maxlength={maxLength}
     {autofocus}
   />
   {#if error}
