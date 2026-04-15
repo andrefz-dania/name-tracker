@@ -128,7 +128,7 @@
     e.preventDefault()
     const response = await window.api.createTag(newTagName)
     if (response.success) {
-      tags = [...tags, {id: response.newId, name: newTagName}]
+      tags = [...tags, {id: response.newId, tag_name: newTagName}]
       newTagName = ''
     }
   }
