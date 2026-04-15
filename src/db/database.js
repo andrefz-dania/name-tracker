@@ -1,12 +1,14 @@
 import { app } from 'electron'
 import path from 'node:path'
+import { is } from '@electron-toolkit/utils'
 const Database = require('better-sqlite3')
 
 const options = {}
 
 class CharacterDb {
   constructor() {
-    const storagePath = path.join(app.getPath('userData'), 'name-tracker.sqlite')
+    const dbName = is.dev ? 'name-tracker-dev.sqlite' : 'name-tracker.sqlite'
+    const storagePath = path.join(app.getPath('userData'), dbName)
     this.db = new Database(storagePath, options)
     this.db.pragma('journal_mode = WAL')
     this.setup()

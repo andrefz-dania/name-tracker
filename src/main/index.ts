@@ -4,20 +4,19 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import CharacterDb from '../db/database.js'
 import setupHandlers from '../db/ipcHandlers'
 
-let db;
-
-const appIcon = nativeImage.createFromPath('./resources/logo.png');
+let db
 
 function createWindow(): void {
+  const pngIcon = nativeImage.createFromPath(join(app.getAppPath(), 'resources/logo.png'))
+  const icoIcon = nativeImage.createFromPath(join(app.getAppPath(), 'resources/icon.ico'))
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1080,
     height: 860,
     show: false,
     autoHideMenuBar: true,
-    icon: appIcon,
-    
-    // ...(process.platform === 'linux' ? { icon } : {}),
+
+    ...(process.platform === 'linux' ? { icon: pngIcon } : { icon: icoIcon }),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -26,6 +25,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    mainWindow.setIcon(pngIcon)
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -57,8 +57,8 @@ app.whenReady().then(() => {
   })
 
   // connect to database
-  db = new CharacterDb();
-  setupHandlers(db);
+  db = new CharacterDb()
+  setupHandlers(db)
 
   createWindow()
 
@@ -73,7 +73,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  db.close();
+  db.close()
   if (process.platform !== 'darwin') {
     app.quit()
   }
