@@ -187,7 +187,7 @@
           <div class="flex flex-row gap-2 flex-wrap items-center">
             <TagAdder {tags} {addTag}></TagAdder>
             {#each tags as tag}
-              <Tag {tag} editable removeTag={() => removeTag(tag.id)}></Tag>
+              <Tag {tag} editable navigable removeTag={() => removeTag(tag.id)}></Tag>
             {/each}
           </div>
           <div>
