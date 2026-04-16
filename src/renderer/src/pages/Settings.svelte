@@ -38,9 +38,9 @@
 
   let descLength = $state(interfaceConfig.descLength || defaultInterfaceConfig.descLength)
 
-  type CurrentPage = 'general' | 'world' | 'storage' | 'reset' | 'debug' | 'hotkeys'
+  type CurrentPage = 'interface' | 'world' | 'reset' | 'debug' | 'hotkeys'
 
-  let currentPage: CurrentPage = $state('general')
+  let currentPage: CurrentPage = $state('interface')
 
   function changeSetting(settingName: string, settingValue: string | number | boolean | undefined) {
     interfaceConfig = {
@@ -177,18 +177,17 @@
     <!-- sidebar -->
     <section class="md:min-w-48 p-2 bg-layer1 rounded-xl flex flex-col h-min sticky top-0">
       <p class="font-bold text-sm text-primary p-2">CATEGORIES</p>
-      {@render Category('general')}
+      {@render Category('interface')}
       {@render Category('hotkeys')}
       {@render Category('world')}
-      {@render Category('storage')}
       {@render Category('reset')}
       <!-- {@render Category('debug')} -->
     </section>
 
     <!-- main content -->
     <section class="mx-4 rounded-md w-full">
-      <!-- GENERAL SETTINGS PAGE -->
-      {#if currentPage == 'general'}
+      <!-- INTERFACE SETTINGS PAGE -->
+      {#if currentPage == 'interface'}
         <section>
           <SettingInfo
             name="Interface Style"
@@ -276,18 +275,6 @@
               >{#if interfaceConfig.locationVisible}<Eye></Eye>{:else}<EyeClosed
                 ></EyeClosed>{/if}Location</ButtonToggleL2
             >
-          </div>
-        </section>
-      {:else if currentPage == 'storage'}
-        <section>
-          <SettingInfo
-            name="Import & Export Characters"
-            description="Import characters from a JSON file or export all characters from the current world to a JSON file that can be saved anywhere you like. Importing can cause duplicates"
-            ><HardDrive /></SettingInfo
-          >
-          <div class="p-4 flex gap-4">
-            <ButtonDecorated onclick={handleImport}><Download></Download>Import</ButtonDecorated>
-            <ButtonDecorated onclick={handleExport}><Upload></Upload>Export</ButtonDecorated>
           </div>
         </section>
       {:else if currentPage == 'reset'}
@@ -397,6 +384,19 @@
             {#each tags as tag}
               <TagEditable tag={tag} deleteSelf={()=>deleteTag(tag.id)}></TagEditable>
             {/each}
+          </div>
+        </section>
+        {@render Hr()}
+
+                <section>
+          <SettingInfo
+            name="Import & Export Characters"
+            description="Import characters from a JSON file or export all characters from the current world to a JSON file that can be saved anywhere you like. Importing can cause duplicates"
+            ><HardDrive /></SettingInfo
+          >
+          <div class="p-4 flex gap-4">
+            <ButtonDecorated onclick={handleImport}><Download></Download>Import</ButtonDecorated>
+            <ButtonDecorated onclick={handleExport}><Upload></Upload>Export</ButtonDecorated>
           </div>
         </section>
       {/if}
