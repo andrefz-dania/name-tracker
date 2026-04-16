@@ -475,7 +475,7 @@
         <section>
           <SettingInfo
             name="Character Page Actions"
-            description="Trigger specific functions on the edit page"
+            description="Trigger specific functions on the character editing page"
             ><SquarePen></SquarePen></SettingInfo
           >
 
@@ -499,7 +499,7 @@
         </section>
 
         {@render Hr()}
-        
+
         <section>
           <SettingInfo
             name="Search Page Actions"
