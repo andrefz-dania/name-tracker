@@ -20,7 +20,8 @@
     SquarePen,
     Search,
     TagIcon,
-    PlusIcon
+    PlusIcon,
+    Globe
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
@@ -115,20 +116,20 @@
   }
 
   // WORLD
-  let tags:TagType[] = $state([])
+  let tags: TagType[] = $state([])
   let newTagName: string = $state('')
 
   async function getTags() {
     tags = await window.api.getTags()
   }
 
-  getTags();
+  getTags()
 
   const createTag = async (e) => {
     e.preventDefault()
     const response = await window.api.createTag(newTagName)
     if (response.success) {
-      tags = [...tags, {id: response.newId, tag_name: newTagName}]
+      tags = [...tags, { id: response.newId, tag_name: newTagName }]
       newTagName = ''
     }
   }
@@ -140,8 +141,6 @@
       console.log(tags)
     }
   }
-
-
 </script>
 
 {#snippet Hr()}
@@ -371,7 +370,7 @@
                 id="newtag"
                 bind:value={newTagName}
                 placeholder="Newtag"
-                maxlength=24
+                maxlength="24"
               />
             </div>
 
@@ -382,13 +381,13 @@
 
           <div class="flex flex-row flex-wrap gap-2 mt-4">
             {#each tags as tag}
-              <TagEditable tag={tag} deleteSelf={()=>deleteTag(tag.id)}></TagEditable>
+              <TagEditable {tag} deleteSelf={() => deleteTag(tag.id)}></TagEditable>
             {/each}
           </div>
         </section>
         {@render Hr()}
 
-                <section>
+        <section>
           <SettingInfo
             name="Import & Export Characters"
             description="Import characters from a JSON file or export all characters from the current world to a JSON file that can be saved anywhere you like. Importing can cause duplicates"
@@ -412,79 +411,112 @@
             {string}
           </div>
         {/snippet}
+
         <section>
           <SettingInfo name="Navigation" description="Navigate between different pages of the app"
             ><Milestone></Milestone></SettingInfo
           >
+          <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
+            <p>To Home</p>
+            <div class="flex flex-row gap-2 items-center">
+              {@render hotkey('ctrl')}
+              +
+              {@render hotkey('h')}
+            </div>
+
+            <p>To Settings</p>
+
+            <div class="flex flex-row gap-2 items-center">
+              {@render hotkey('ctrl')}
+              +
+              {@render hotkey('o')}
+            </div>
+
+            <p>To Search</p>
+
+            <div class="flex flex-row gap-2 items-center">
+              {@render hotkey('ctrl')}
+              +
+              {@render hotkey('f')}
+            </div>
+          </div>
         </section>
-        <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
-          <p>Home</p>
-          <div class="flex flex-row gap-2">
-            {@render hotkey('ctrl')}
-            +
-            {@render hotkey('h')}
-          </div>
 
-          <p>Settings</p>
-
-          <div class="flex flex-row gap-2">
-            {@render hotkey('ctrl')}
-            +
-            {@render hotkey('o')}
-          </div>
-
-          <p>Search Characters</p>
-
-          <div class="flex flex-row gap-2">
-            {@render hotkey('ctrl')}
-            +
-            {@render hotkey('f')}
-          </div>
-
-          <p>New Character</p>
-
-          <div class="flex flex-row gap-2">
-            {@render hotkey('ctrl')}
-            +
-            {@render hotkey('n')}
-          </div>
-        </div>
         {@render Hr()}
+
+        <section>
+          <SettingInfo name="Global" description="Actions that apply to all pages"
+            ><Globe></Globe></SettingInfo
+          >
+
+          <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
+            <p>New Character</p>
+
+            <div class="flex flex-row gap-2 items-center">
+              {@render hotkey('ctrl')}
+              +
+              {@render hotkey('n')}
+            </div>
+
+            <p>Run Command</p>
+
+            <div class="flex flex-row gap-2 items-center">
+              {@render hotkey('ctrl')}
+              +
+              {@render hotkey('p')}
+              /
+              {@render hotkey('k')}
+            </div>
+          </div>
+        </section>
+
+        {@render Hr()}
+
         <section>
           <SettingInfo
-            name="Edit Page Actions"
+            name="Character Page Actions"
             description="Trigger specific functions on the edit page"
             ><SquarePen></SquarePen></SettingInfo
           >
+
+          <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
+            <p>Save changes</p>
+
+            <div class="flex flex-row gap-2">
+              {@render hotkey('ctrl')}
+              +
+              {@render hotkey('s')}
+            </div>
+
+            <p>Discard changes</p>
+
+            <div class="flex flex-row gap-2">
+              {@render hotkey('ctrl')}
+              +
+              {@render hotkey('d')}
+            </div>
+          </div>
         </section>
 
-        <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
-          <p>Save changes</p>
-
-          <div class="flex flex-row gap-2">
-            {@render hotkey('ctrl')}
-            +
-            {@render hotkey('s')}
-          </div>
-        </div>
         {@render Hr()}
+        
         <section>
           <SettingInfo
             name="Search Page Actions"
             description="Trigger specific functions on the search page"
             ><Search></Search></SettingInfo
           >
-        </section>
 
-        <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
-          <p>Highlight search bar</p>
+          <div class="grid grid-cols-2 gap-y-2 mt-4 text-textcol/50">
+            <p>Highlight search bar</p>
 
-          <div class="flex flex-row gap-2">
-            {@render hotkey('ctrl')}
-            +
-            {@render hotkey('f')}
+            <div class="flex flex-row gap-2">
+              {@render hotkey('ctrl')}
+              +
+              {@render hotkey('f')}
+            </div>
           </div>
-        </div>
+        </section>
       {/if}
     </section>
   </div>

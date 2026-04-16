@@ -106,11 +106,6 @@
         selectedSuggestion--
       }
     }
-
-    if (e.key == 'Enter' && searchInTags) {
-      e.preventDefault()
-      searchTerm = '#' + tagSuggestions[selectedSuggestion].tag_name
-    }
   }
 
   async function getCharacters() {

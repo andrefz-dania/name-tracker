@@ -47,9 +47,9 @@
     }
   }
 
-  async function getCharacter() {
-    character = await window.api.readOneChar(id)
-    tags = await window.api.getCharacterTags(id)
+  async function getCharacter(characterId: number) {
+    character = await window.api.readOneChar(characterId)
+    tags = await window.api.getCharacterTags(characterId)
   }
 
   const saveCharacter = async () => {
@@ -62,6 +62,11 @@
     }
   }
 
+  const discardChanges = () => {
+    getCharacter(id)
+    isUpdatable = false
+  }
+
   const hotkeyCtrlS = (e: KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 's') {
       e.preventDefault()
@@ -72,7 +77,13 @@
         isUpdatable = false
       }, 100)
     }
+
+    if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
+      e.preventDefault()
+      discardChanges()
+    }
   }
+  
   onMount(() => {
     addRecent(id)
   })
@@ -83,17 +94,13 @@
     character.pinned = character.pinned == 1 ? 0 : 1
   }
 
-  const discardChanges = () => {
-    getCharacter()
-    isUpdatable = false
-  }
-
   const invertDeadState = () => {
     character.dead == 0 ? (character.dead = 1) : (character.dead = 0)
     isUpdatable = true
   }
-
-  getCharacter()
+  $effect(() => {
+    getCharacter(id)
+  })
 </script>
 
 <svelte:window onkeydown={hotkeyCtrlS} />
