@@ -9,6 +9,7 @@
   import Home from './pages/Home.svelte'
   import {notif} from './utils/context'
   import Notification from './components/Notification.svelte'
+  import CommandPalette from './components/CommandPalette.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
 
@@ -41,16 +42,28 @@
   let currentRoute = $state(window.location.hash.slice(1) || '/')
 
   const navHotkeys = (e: KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key == 'n') {
-      window.location.hash = '#/create'
-    } else if ((e.metaKey || e.ctrlKey) && e.key == 'h') {
-      window.location.hash = '#/'
-    } else if ((e.metaKey || e.ctrlKey) && e.key == 'f') {
-      window.location.hash = '#/list'
-    } else if ((e.metaKey || e.ctrlKey) && e.key == 'o') {
-      window.location.hash = '#/settings'
+    if ((e.metaKey || e.ctrlKey) && e.key) {
+      const key = e.key.toLowerCase() as 'n' | 'h' | 'f' | 'o' | 'p';
+      
+      switch (key) {
+        case 'n':
+          window.location.hash = '#/create';
+          break;
+        case 'h':
+          window.location.hash = '#/';
+          break;
+        case 'f':
+          window.location.hash = '#/list';
+          break;
+        case 'o':
+          window.location.hash = '#/settings';
+          break;
+        default:
+          break;
+      }
     }
   }
+
 
   let route = $derived.by(() => {
     const parts = currentRoute.split('/')
@@ -94,6 +107,7 @@ $effect(() => {
 <svelte:window onkeydown={navHotkeys}></svelte:window>
 
 <main class="flex flex-col gap-2 p-4 min-h-screen max-h-screen {themeClass} text-textcol bg-layer0 font-block">
+<CommandPalette></CommandPalette>
 <div class="absolute w-full top-4 flex flex-col gap-2 items-center place-content-center">
  {#if $notif}
   <Notification id={'1'} message={$notif.message} type={$notif.type}></Notification>

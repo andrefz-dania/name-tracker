@@ -33,14 +33,6 @@
   let isUpdatable: boolean = $state(false)
   let tags: TagType[] = $state([])
 
-  // const dummyTags = [
-  //   { id: 1, name: 'test' },
-  //   { id: 2, name: 'test2' },
-  //   { id: 3, name: 'test3' },
-  //   { id: 4, name: 'test4' },
-  //   { id: 5, name: 'test5' }
-  // ]
-
   const removeTag = (tagId: number) => {
     tags = tags.filter((tag) => tag.id !== tagId)
     isUpdatable = true
@@ -55,9 +47,9 @@
     }
   }
 
-  async function getCharacter() {
-    character = await window.api.readOneChar(id)
-    tags = await window.api.getCharacterTags(id)
+  async function getCharacter(characterId: number) {
+    character = await window.api.readOneChar(characterId)
+    tags = await window.api.getCharacterTags(characterId)
   }
 
   const saveCharacter = async () => {
@@ -70,6 +62,11 @@
     }
   }
 
+  const discardChanges = () => {
+    getCharacter(id)
+    isUpdatable = false
+  }
+
   const hotkeyCtrlS = (e: KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 's') {
       e.preventDefault()
@@ -80,7 +77,13 @@
         isUpdatable = false
       }, 100)
     }
+
+    if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
+      e.preventDefault()
+      discardChanges()
+    }
   }
+  
   onMount(() => {
     addRecent(id)
   })
@@ -91,17 +94,13 @@
     character.pinned = character.pinned == 1 ? 0 : 1
   }
 
-  const discardChanges = () => {
-    getCharacter()
-    isUpdatable = false
-  }
-
   const invertDeadState = () => {
     character.dead == 0 ? (character.dead = 1) : (character.dead = 0)
     isUpdatable = true
   }
-
-  getCharacter()
+  $effect(() => {
+    getCharacter(id)
+  })
 </script>
 
 <svelte:window onkeydown={hotkeyCtrlS} />
@@ -195,7 +194,7 @@
           <div class="flex flex-row gap-2 flex-wrap items-center">
             <TagAdder {tags} {addTag}></TagAdder>
             {#each tags as tag}
-              <Tag {tag} editable removeTag={() => removeTag(tag.id)}></Tag>
+              <Tag {tag} editable navigable removeTag={() => removeTag(tag.id)}></Tag>
             {/each}
           </div>
           <div>

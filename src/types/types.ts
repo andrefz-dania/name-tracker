@@ -41,7 +41,7 @@ export type ApiTypes = {
   //update
   togglePinChar(id: number, unpin: boolean): Promise<{ success: boolean }>
   updateChar(character: CharacterType): Promise<{ success: boolean }>
-  updateImage(id: number): Promise<{ success: boolean }>
+  updateImage(id: number): Promise<{ success: boolean, message?: string, isError?: boolean }>
   
   //delete
   deleteChar(id: number): Promise<{ id: number; success: boolean }>

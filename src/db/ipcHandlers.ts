@@ -1,7 +1,7 @@
 import { dialog, ipcMain } from 'electron'
 import * as fs from 'fs'
 import { CharacterType, RecentChar, TagType } from '../types/types'
-import sharp from 'sharp'
+import { Jimp } from 'jimp'
 
 export default function setupHandlers(db) {
   // characters
@@ -140,12 +140,16 @@ export default function setupHandlers(db) {
       filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }]
     })
     if (file.canceled || !file.filePaths || file.filePaths.length === 0) {
-      return { success: false, message: 'User cancelled import' }
+      return { success: false, message: 'Import cancelled' }
     }
 
     try {
       // Resize and convert to Buffer using sharp library
-      const imageBuffer = await sharp(file.filePaths[0]).resize(352).toBuffer() // 352 is 2x the size of the avatar display loader
+      const image = await Jimp.read(file.filePaths[0])
+      image.cover({w: 352, h:352 })
+      const imageBuffer = await image.getBuffer('image/jpeg', {quality: 80})
+      console.log(imageBuffer);
+      // 352 is 2x the size of the avatar display loader
       const result = await db.updateImage(id, imageBuffer)
 
       if (result && result.success) {
@@ -154,14 +158,16 @@ export default function setupHandlers(db) {
         // Handle case where result is null/undefined or success is false
         return {
           success: false,
-          message: result?.message || 'Failed to update image'
+          message: result?.message || 'Failed to update image',
+          isError: true
         }
       }
     } catch (error) {
       console.error('Image processing or DB error:', error)
       return {
         success: false,
-        message: 'An error occurred'
+        message: 'Image is too large or wrong format',
+        isError: true
       }
     }
   })
