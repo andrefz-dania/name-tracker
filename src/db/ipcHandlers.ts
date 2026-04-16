@@ -140,7 +140,7 @@ export default function setupHandlers(db) {
       filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }]
     })
     if (file.canceled || !file.filePaths || file.filePaths.length === 0) {
-      return { success: false, message: 'User cancelled import' }
+      return { success: false, message: 'Import cancelled' }
     }
 
     try {
@@ -158,14 +158,16 @@ export default function setupHandlers(db) {
         // Handle case where result is null/undefined or success is false
         return {
           success: false,
-          message: result?.message || 'Failed to update image'
+          message: result?.message || 'Failed to update image',
+          isError: true
         }
       }
     } catch (error) {
       console.error('Image processing or DB error:', error)
       return {
         success: false,
-        message: 'An error occurred'
+        message: 'Image is too large or wrong format',
+        isError: true
       }
     }
   })

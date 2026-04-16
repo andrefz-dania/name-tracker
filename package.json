@@ -1,6 +1,6 @@
 {
   "name": "carabace",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Manage characters in fictional worlds",
   "main": "./out/main/index.js",
   "author": "example.com",

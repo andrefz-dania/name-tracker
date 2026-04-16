@@ -37,7 +37,7 @@ Follow the development instructions and run the build command for your OS - inst
 - character tags and tag search
 
 **Sorting**
-- Seach all characters
+- Search all characters
 - Filter each column ascending or descending
 - Persist search and sorting between screens
 - pinned / favourites
@@ -47,6 +47,8 @@ Follow the development instructions and run the build command for your OS - inst
 - toggle list style
 - dark & light themes
 - toggle columns on/off
+
+---
 
 ### Planned
 - markdown editing

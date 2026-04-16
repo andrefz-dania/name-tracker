@@ -11,6 +11,7 @@
 
   let key = $state(0)
 
+  // refresh only this component rather than the whole page. This preserves notifications.
   function refresh() {
     key++;
   }
@@ -23,7 +24,7 @@
       // changes arent reflected unless component is reloaded
       refresh()
     } else {
-      sendNotif(notif, 'Error uploading image', 'destructive')
+      sendNotif(notif, response.message, response.isError ? 'destructive' : 'normal')
     }
   }
 
