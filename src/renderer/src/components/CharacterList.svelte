@@ -147,6 +147,16 @@
       getCharacters()
     }
   }
+
+  async function applyTag(e) {
+    e.preventDefault()
+    const tag = tagSuggestions[selectedSuggestion].tag_name
+    console.log(tag)
+    if (searchInTags && tagSuggestions.length > 0) {
+      searchTerm = `#` + tag
+    }
+    search()
+  }
 </script>
 
 <svelte:window onkeydown={hotkeys} />
@@ -161,7 +171,7 @@
 
   <!-- search bar -->
   <div class="max-w-2xl flex flex-row w-full mx-auto gap-4 mb-4 mt-8 relative">
-    <form class="flex flex-row w-full gap-3" action="" onsubmit={(e) => e.preventDefault()}>
+    <form class="flex flex-row w-full gap-3" action="" onsubmit={(e) =>applyTag(e)}>
       <input
         class="p-4 rounded-md bg-layer1/75 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary {searchInTags ? "text-primary font-bold" : "text-textcol"}"
         type="text"
