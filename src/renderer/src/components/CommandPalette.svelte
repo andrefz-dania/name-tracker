@@ -86,7 +86,13 @@
         break
 
       case 'Enter':
-        if (totalLength == 0 || command.length == 0) break
+        runSelected();
+        break
+    }
+  }
+
+  function runSelected() {
+        if (totalLength == 0 || command.length == 0) return;
         if (selectedOption <= filteredCommands.length - 1 && filteredCommands.length != 0) {
           runCommand(filteredCommands[selectedOption].id)
         } else if (selectedOption < filteredCommands.length + characters.length) {
@@ -97,8 +103,10 @@
           showTagged(tags[index].tag_name)
         }
         isOpen = false
-        break
-    }
+  }
+
+  async function setSelected(n: number) {
+    selectedOption = n
   }
 
   $effect(() => {
@@ -107,35 +115,36 @@
     }
   })
 
-  $effect(() => {
-    if (selectedOption > totalLength) selectedOption = totalLength
-  })
 </script>
 
 <svelte:window onkeydown={hotkeys} />
 
 {#snippet Result(text, index, offset)}
+<button class="text-left cursor-pointer" onclick={()=>{setSelected(index + offset).then(()=>runSelected())}}>
   {#if selectedOption == index + offset}
     <p class="p-1 px-2 rounded-md text-textcol bg-layer2">
       {text}
     </p>
   {:else}
-    <p class="p-1 px-2 rounded-md text-textcol/50">
+    <p class="p-1 px-2 rounded-md text-textcol/50 hover:bg-layer2 hover:text-textcol">
       {text}
     </p>
   {/if}
+  </button>
 {/snippet}
 
 {#snippet TagResult(text, index, offset)}
+<button class="text-left cursor-pointer my-1" onclick={()=>{setSelected(index + offset).then(()=>runSelected())}}>
   {#if selectedOption == index + offset}
-    <p class="p-1 px-2 rounded-full text-textcol bg-primary/30 w-fit my-2 outline outline-textcol">
+    <p class="p-1 px-2 rounded-full text-textcol bg-primary/30 w-fit outline outline-textcol">
       #{text}
     </p>
   {:else}
-    <p class="p-1 px-2 rounded-full text-primary-highlight bg-primary/30 w-fit my-2">
+    <p class="p-1 px-2 rounded-full text-primary-highlight bg-primary/30 w-fit outline outline-transparent hover:outline-textcol hover:text-textcol">
       #{text}
     </p>
   {/if}
+  </button>
 {/snippet}
 
 <dialog class="absolute top-0 h-screen w-screen z-90 bg-black/50 backdrop-blur-xs" open={isOpen}>
@@ -150,7 +159,7 @@
         class="p-4 rounded-md bg-layer1 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary text-textcol"
       />
       {#if command.length > 0}
-        <div class="bg-layer1 border border-primary rounded-md p-2 max-h-96 overflow-y-scroll">
+        <div class="bg-layer1 border flex flex-col border-primary rounded-md p-2 max-h-96 overflow-y-scroll">
           <p class="text-sm uppercase text-primary font-bold">commands</p>
           {#each filteredCommands as o, index}
             {@render Result(o.name, index, 0)}
@@ -159,12 +168,10 @@
           {#each characters as c, index}
             {@render Result(c.name, index, filteredCommands.length)}
           {/each}
-          <div>
             <p class="text-sm uppercase text-primary font-bold mt-2">tags</p>
             {#each tags as t, index}
               {@render TagResult(t.tag_name, index, filteredCommands.length + characters.length)}
             {/each}
-          </div>
         </div>
         <!-- <p class="text-textcol">Option: {selectedOption}</p>
         <p class="text-textcol">commands: {filteredCommands.length}</p>
