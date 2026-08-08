@@ -29,7 +29,7 @@
 <div class="w-full">
   <p class="text-primary font-bold flex gap-2 my-2"><Clock></Clock>RECENT</p>
   {#if recentCharacters.length == 0}
-    <p>No pinned characters</p>
+    <p>No recent characters</p>
   {:else}
     <div class="w-full flex gap-2 flex-col-reverse">
       {#each recentCharacters as character, i}

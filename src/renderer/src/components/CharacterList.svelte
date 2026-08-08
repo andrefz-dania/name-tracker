@@ -40,7 +40,7 @@
   let skipDebounce: boolean = $state(false)
 
   let visibleColumnCount = $derived(
-    2 + // name is always visible
+    2 + // name is always visible and fills 2 columns
       (interfaceConfig.speciesVisible ? 1 : 0) +
       (interfaceConfig.genderVisible ? 1 : 0) +
       (interfaceConfig.occupationVisible ? 1 : 0) +

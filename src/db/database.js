@@ -59,6 +59,79 @@ class CharacterDb {
       console.log('Image column already exists, skipping...')
     }
 
+    console.log("migrating to 0.6 worlds system...")
+    try {
+      const createWorldstableSql = `CREATE TABLE IF NOT EXISTS worlds (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       name TEXT NOT NULL)`
+       this.db.exec(createWorldstableSql)
+    } catch (error) {
+      console.error(error)
+    }
+
+    try {
+      const addWorldsToCharactersSql = `ALTER TABLE characters ADD COLUMN world_id INTEGER`
+      this.db.exec(addWorldsToCharactersSql)
+    } catch (error) {
+      console.error(error)
+    }
+
+    try {
+      const addWorldsToTagsSql = `ALTER TABLE tags ADD COLUMN world_id INTEGER`
+      this.db.exec(addWorldsToTagsSql)
+    } catch (error) {
+      console.error(error)
+    }
+
+    // check if there are any existing worlds
+    let hasWorlds = false
+
+    try {
+      const checkWorldsQuery = this.db.prepare(`SELECT * FROM worlds`)
+      const existingWorlds = checkWorldsQuery.all()
+      console.log(existingWorlds);
+      if (existingWorlds.length > 0) {
+        hasWorlds = true
+      }
+    } catch (error) {
+      
+    }
+
+
+    // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
+    // this.db.exec(tempDeleteWorldsTable)
+
+    if (!hasWorlds) {
+      // create a default world
+      try {
+
+
+        const createWorldSql = `INSERT INTO worlds (name) VALUES (?)`
+        const stmt = this.db.prepare(createWorldSql)
+        const response = stmt.run('Default World')
+      } catch (error) {
+        console.error(error)
+      }
+
+      // backfill all existing characters with world ID
+      try {
+        const addWorldIdSql = `UPDATE characters SET world_id = 0`
+        this.db.exec(addWorldIdSql)
+      } catch (error) {
+        console.error(error)
+      }
+
+      // do the same for tags
+      try {
+        const addWorldIdSql = `UPDATE tags SET world_id = 0`
+        this.db.exec(addWorldIdSql)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+
+
     console.log('Database setup complete')
   }
   // CHARACTER QUERIES ---
