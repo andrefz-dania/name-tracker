@@ -59,12 +59,12 @@ class CharacterDb {
       console.log('Image column already exists, skipping...')
     }
 
-    console.log("migrating to 0.6 worlds system...")
+    console.log('migrating to 0.6 worlds system...')
     try {
       const createWorldstableSql = `CREATE TABLE IF NOT EXISTS worlds (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
        name TEXT NOT NULL)`
-       this.db.exec(createWorldstableSql)
+      this.db.exec(createWorldstableSql)
     } catch (error) {
       console.error(error)
     }
@@ -73,14 +73,22 @@ class CharacterDb {
       const addWorldsToCharactersSql = `ALTER TABLE characters ADD COLUMN world_id INTEGER`
       this.db.exec(addWorldsToCharactersSql)
     } catch (error) {
-      console.error(error)
+      if (error && error.code == 'SQLITE_ERROR') {
+        console.log('World_id column already exists on characters, skipping...')
+      } else {
+        console.error(error)
+      }
     }
 
     try {
       const addWorldsToTagsSql = `ALTER TABLE tags ADD COLUMN world_id INTEGER`
       this.db.exec(addWorldsToTagsSql)
     } catch (error) {
-      console.error(error)
+            if (error && error.code == 'SQLITE_ERROR') {
+        console.log('World_id column already exists on tags, skipping...')
+      } else {
+        console.error(error)
+      }
     }
 
     // check if there are any existing worlds
@@ -89,14 +97,15 @@ class CharacterDb {
     try {
       const checkWorldsQuery = this.db.prepare(`SELECT * FROM worlds`)
       const existingWorlds = checkWorldsQuery.all()
-      console.log(existingWorlds);
       if (existingWorlds.length > 0) {
+        console.log('Found existing worlds, skipping further migrations...')
         hasWorlds = true
       }
     } catch (error) {
-      
+      if (error && error.code) {
+        console.error(error)
+      }
     }
-
 
     // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
     // this.db.exec(tempDeleteWorldsTable)
@@ -104,8 +113,7 @@ class CharacterDb {
     if (!hasWorlds) {
       // create a default world
       try {
-
-
+        console.log('Creating default world...')
         const createWorldSql = `INSERT INTO worlds (name) VALUES (?)`
         const stmt = this.db.prepare(createWorldSql)
         const response = stmt.run('Default World')
@@ -115,6 +123,7 @@ class CharacterDb {
 
       // backfill all existing characters with world ID
       try {
+        console.log('Migrating characters table...')
         const addWorldIdSql = `UPDATE characters SET world_id = 0`
         this.db.exec(addWorldIdSql)
       } catch (error) {
@@ -123,14 +132,13 @@ class CharacterDb {
 
       // do the same for tags
       try {
+        console.log('Migrating tags table...')
         const addWorldIdSql = `UPDATE tags SET world_id = 0`
         this.db.exec(addWorldIdSql)
       } catch (error) {
         console.error(error)
       }
     }
-
-
 
     console.log('Database setup complete')
   }
