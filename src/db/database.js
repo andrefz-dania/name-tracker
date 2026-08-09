@@ -63,7 +63,9 @@ class CharacterDb {
     try {
       const createWorldstableSql = `CREATE TABLE IF NOT EXISTS worlds (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
-       name TEXT NOT NULL)`
+       name TEXT NOT NULL,
+       description TEXT,
+       last_accessed INTEGER)`
       this.db.exec(createWorldstableSql)
     } catch (error) {
       console.error(error)
@@ -94,6 +96,9 @@ class CharacterDb {
     // check if there are any existing worlds
     let hasWorlds = false
 
+    // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
+    // this.db.exec(tempDeleteWorldsTable)
+
     try {
       const checkWorldsQuery = this.db.prepare(`SELECT * FROM worlds`)
       const existingWorlds = checkWorldsQuery.all()
@@ -107,16 +112,15 @@ class CharacterDb {
       }
     }
 
-    // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
-    // this.db.exec(tempDeleteWorldsTable)
+
 
     if (!hasWorlds) {
       // create a default world
       try {
         console.log('Creating default world...')
-        const createWorldSql = `INSERT INTO worlds (name) VALUES (?)`
+        const createWorldSql = `INSERT INTO worlds (id, name, description) VALUES (?, ?, ?)`
         const stmt = this.db.prepare(createWorldSql)
-        const response = stmt.run('Default World')
+        const response = stmt.run(0, 'My World', 'This is the default world created when this app is first run. Edit the name and description to make it yours!')
       } catch (error) {
         console.error(error)
       }
@@ -491,10 +495,10 @@ class CharacterDb {
     return response;
   }
 
-  createWorld(name) {
-    const insertQuery = `INSERT INTO worlds (name) VALUES (?)`
+  createWorld(world) {
+    const insertQuery = `INSERT INTO worlds (name, description) VALUES (?, ?)`
     const stmt = this.db.prepare(insertQuery)
-    const response = stmt.run(name)
+    const response = stmt.run(world.name, world.description)
     if (response.changes === 1) {
       return { success: true, newId: response.lastInsertRowid }
     } else return { success: false }
@@ -520,8 +524,6 @@ class CharacterDb {
   }
 
   deleteWorld(id) {
-
-
     const transaction = db.transaction((worldId) => {
 
       // setup required queries

@@ -68,6 +68,14 @@ export type ApiTypes = {
 
   //delete
   deleteTag(tagId: number): Promise<{ success: boolean }>
+
+  // WORLDS
+  // create
+  createWorld(world: WorldType): Promise<{ success: boolean; id?: number }>
+
+  //read
+  getWorld(id: number): Promise<WorldType>
+  getWorlds(): Promise<WorldType[]>
 }
 
 export type RecentChar = {
@@ -123,8 +131,12 @@ export type TagType = {
 }
 
 export type WorldType = {
-  id: number,
+  id?: number,
   name: string,
   description?: string,
   lastAccessed?: number 
+}
+
+export const defaultActiveWorld = {
+  id: 0
 }

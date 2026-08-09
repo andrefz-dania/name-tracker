@@ -1,6 +1,6 @@
 import { dialog, ipcMain } from 'electron'
 import * as fs from 'fs'
-import { CharacterType, RecentChar, TagType } from '../types/types'
+import { CharacterType, RecentChar, TagType, WorldType } from '../types/types'
 import { Jimp } from 'jimp'
 
 export default function setupHandlers(db) {
@@ -204,5 +204,19 @@ export default function setupHandlers(db) {
   ipcMain.handle('getTagSuggestions', async (_, query: string) => {
     return db.getTagSuggestions(query)
   })
+
+  // worlds
+  ipcMain.handle('getWorlds', async () => {
+    return db.getWorlds()
+  })
+
+  ipcMain.handle('getWorld', async (_, id: number) => {
+    return db.getWorld(id)
+  })
+
+  ipcMain.handle('createWorld', async (_, world: WorldType) => {
+    return db.createWorld(world)
+  })
+
 
 }

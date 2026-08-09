@@ -5,14 +5,17 @@
   import Create from './pages/Create.svelte'
   import Other from './pages/Other.svelte'
   import Settings from './pages/Settings.svelte'
-  import { defaultInterfaceConfig, type InterfaceConfig } from '../../types/types'
+  import { defaultActiveWorld, defaultInterfaceConfig, type InterfaceConfig } from '../../types/types'
   import Home from './pages/Home.svelte'
   import {notif} from './utils/context'
   import Notification from './components/Notification.svelte'
   import CommandPalette from './components/CommandPalette.svelte'
   import Worlds from './pages/Worlds.svelte'
+  import CreateWorld from './pages/CreateWorld.svelte'
+  import World from './pages/World.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
+  let activeWorld: {id: number} | null = $state(null)
 
 
   let themeClass = $derived(
@@ -22,22 +25,33 @@
   onMount(() => {
     const loadedInteraceConfig = JSON.parse(localStorage.getItem('interfaceConfig'))
     if (!loadedInteraceConfig || loadedInteraceConfig.length < 1) {
-      setDefaultConfig();
+      localStorage.setItem('interfaceConfig', JSON.stringify(defaultInterfaceConfig))
       window.location.reload();
     }
 
     interfaceConfig = loadedInteraceConfig
-  })
 
-  function setDefaultConfig() {
-    localStorage.setItem('interfaceConfig', JSON.stringify(defaultInterfaceConfig))
-  }
+    const savedActiveWorld = JSON.parse(localStorage.getItem('activeWorld'))
+    if (!savedActiveWorld || savedActiveWorld.length < 1) {
+      localStorage.setItem('activeWorld', JSON.stringify(defaultActiveWorld))
+      activeWorld = defaultActiveWorld
+    } else {
+      activeWorld = savedActiveWorld
+    }
+
+
+  })
 
   $effect(() => {
     console.log('LOADED CONFIG', interfaceConfig)
     if (interfaceConfig?.listStyle) {
     localStorage.setItem('interfaceConfig', JSON.stringify(interfaceConfig))
     }
+  })
+
+  $effect(()=>{
+    console.log('switched active world to', activeWorld.id)
+    localStorage.setItem('activeWorld', JSON.stringify(activeWorld))
   })
 
   let currentRoute = $state(window.location.hash.slice(1) || '/')
@@ -128,7 +142,11 @@ $effect(() => {
   {:else if route === 'settings'}
     <Settings bind:interfaceConfig></Settings>
   {:else if route === 'worlds'}
-    <Worlds />
+    <Worlds bind:activeWorld/>
+  {:else if route === 'createworld'}
+    <CreateWorld />
+  {:else if route === 'world'}
+    <World {id} />
   {:else}
     <h2>404 Not Found</h2>
   {/if}

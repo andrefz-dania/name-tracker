@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { RecentChar, TagType } from '../types/types'
+import { RecentChar, TagType, WorldType } from '../types/types'
 
 // Custom APIs for renderer
 const api = {
@@ -54,6 +54,13 @@ const api = {
   searchCharactersByTag: (query: string, column: string, reverse: boolean) => ipcRenderer.invoke('searchCharactersByTag', query, column, reverse),
 
   getTagSuggestions: (query: string) => ipcRenderer.invoke('getTagSuggestions', query),
+
+  // worlds
+  getWorld: (id: number) => ipcRenderer.invoke('getWorld', id),
+
+  getWorlds: () => ipcRenderer.invoke('getWorlds'),
+
+  createWorld: (world: WorldType) => ipcRenderer.invoke('createWorld', world),
 
 }
 
