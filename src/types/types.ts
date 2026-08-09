@@ -121,3 +121,10 @@ export type TagType = {
   id: number,
   tag_name: string
 }
+
+export type WorldType = {
+  id: number,
+  name: string,
+  description?: string,
+  lastAccessed?: number 
+}

@@ -476,6 +476,79 @@ class CharacterDb {
     return response
   }
 
+  // WORLD QUERIES ---
+  getWorlds() {
+    const selectQuery = `SELECT * FROM worlds`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all()
+    return response;
+  }
+
+  getWorld(id) {
+    const selectQuery = `SELECT * FROM worlds WHERE id = ?`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.get(id)
+    return response;
+  }
+
+  createWorld(name) {
+    const insertQuery = `INSERT INTO worlds (name) VALUES (?)`
+    const stmt = this.db.prepare(insertQuery)
+    const response = stmt.run(name)
+    if (response.changes === 1) {
+      return { success: true, newId: response.lastInsertRowid }
+    } else return { success: false }
+  }
+
+  updateWorld(id, world) {
+    const insertQuery = `UPDATE worlds SET name=?, description=?, last_accessed=? WHERE id=?`
+    const timestamp = new Date().valueOf()
+    const stmt = this.db.prepare(insertQuery)
+    const response = stmt.run(world.name, world.description, timestamp, id)
+    if (response.changes == 1) {
+      console.log(`World ${id} updated successfully`)
+      return {
+        success: true
+      }
+    } else {
+      console.log(`Error when updating world`)
+      console.log(response)
+      return {
+        success: false
+      }
+    }
+  }
+
+  deleteWorld(id) {
+
+
+    const transaction = db.transaction((worldId) => {
+
+      // setup required queries
+      const deleteStmt = db.prepare(`DELETE FROM worlds WHERE id=?`)
+      const deleteCharactersStmt = db.prepare(`DELETE FROM characters WHERE world_id=?`)
+      const deleteTagMapStmt = db.prepare(`DELETE FROM tag_map WHERE id IN (SELECT id FROM tags WHERE world_id=?)`)
+      const deleteTagsStmt = db.prepare(`DELETE FROM tags WHERE world_id=?`)
+
+      // run queries in order, make sure dependent tables are wiped first
+      deleteTagMapStmt.run(worldId);
+      deleteTagsStmt.run(worldId);
+      deleteCharactersStmt.run(worldId);
+      deleteWorldsStmt.run(worldId);
+
+    })
+
+    try {
+      transaction(id)
+      console.log('World deleted successfully')
+    } catch (error) {
+      console.log('World deletion failed, cancelling transaction.')
+      Console.error(error)
+    }
+  }
+
+
+
   close() {
     this.db.close()
     console.log('Database closed')
