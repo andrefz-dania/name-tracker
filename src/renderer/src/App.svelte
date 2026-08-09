@@ -10,6 +10,7 @@
   import {notif} from './utils/context'
   import Notification from './components/Notification.svelte'
   import CommandPalette from './components/CommandPalette.svelte'
+  import Worlds from './pages/Worlds.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
 
@@ -126,6 +127,8 @@ $effect(() => {
     <Create />
   {:else if route === 'settings'}
     <Settings bind:interfaceConfig></Settings>
+  {:else if route === 'worlds'}
+    <Worlds />
   {:else}
     <h2>404 Not Found</h2>
   {/if}
