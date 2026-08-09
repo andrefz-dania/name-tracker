@@ -7,14 +7,15 @@
   import PinnedList from '../components/PinnedList.svelte'
   import RecentList from '../components/RecentList.svelte'
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
+  import { getActiveWorld } from '../utils/getActiveWorld'
 
   let worldName = $state('')
   let characterCount = $state(0)
 
   async function getWorldData() {
-    //const result = await window.api.getWorldData()
-    const result = 'Default World'
-    worldName = result
+    const worldId = getActiveWorld()
+    const result = await window.api.getWorld(worldId)
+    worldName = result.name
   }
 
   async function getCount() {
@@ -23,7 +24,6 @@
   }
   getWorldData()
   getCount()
-
 </script>
 
 <Navigation style="no-back"></Navigation>
@@ -42,11 +42,14 @@
       <Earth class="h-8 w-8"></Earth>
       {@render Heading1('World: ')}
       <p class="text-center text-textcol/75 text-3xl pl-4">{worldName}</p>
+      <a href="#/createworld" class="flex"
+        ><ButtonDecorated style="transparent-primary"><Plus></Plus></ButtonDecorated></a
+      >
     </div>
     <div class="w-full max-w-2xl mx-auto flex gap-4">
-    <a href="#/worlds" class="w-full">
-      <ButtonMainMenu style="normal">Switch worlds<ChevronRight /></ButtonMainMenu>
-    </a>
+      <a href="#/worlds" class="w-full">
+        <ButtonMainMenu style="normal">Switch worlds<ChevronRight /></ButtonMainMenu>
+      </a>
     </div>
   </section>
 
@@ -56,7 +59,7 @@
       <UserIcon class="h-8 w-8"></UserIcon>
       {@render Heading1('Characters: ')}
       <p class="text-center text-textcol/75 text-3xl pl-4">{characterCount}</p>
-            <a href="#/create" class="flex"
+      <a href="#/create" class="flex"
         ><ButtonDecorated style="transparent-primary"><Plus></Plus></ButtonDecorated></a
       >
     </div>

@@ -12,7 +12,6 @@
   import CommandPalette from './components/CommandPalette.svelte'
   import Worlds from './pages/Worlds.svelte'
   import CreateWorld from './pages/CreateWorld.svelte'
-  import World from './pages/World.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
   let activeWorld: {id: number} | null = $state(null)
@@ -145,8 +144,6 @@ $effect(() => {
     <Worlds bind:activeWorld/>
   {:else if route === 'createworld'}
     <CreateWorld />
-  {:else if route === 'world'}
-    <World {id} />
   {:else}
     <h2>404 Not Found</h2>
   {/if}

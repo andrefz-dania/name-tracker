@@ -21,7 +21,10 @@
     Search,
     TagIcon,
     PlusIcon,
-    Globe
+    Globe,
+    CheckIcon,
+    XIcon,
+    Earth
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
@@ -30,10 +33,13 @@
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
   import RangeSlider from '../components/RangeSlider.svelte'
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
-  import { defaultInterfaceConfig, type TagType } from '../../../types/types'
+  import { defaultInterfaceConfig, type TagType, type WorldType } from '../../../types/types'
   import ModalDialogue from '../components/ModalDialogue.svelte'
   import { notif, sendNotif } from '../utils/context'
   import TagEditable from '../components/TagEditable.svelte'
+  import EditableArea from '../components/EditableArea.svelte'
+  import { getActiveWorld } from '../utils/getActiveWorld'
+  import { INPUT_LONG_MAX } from '../input.config'
 
   let { interfaceConfig = $bindable() } = $props()
 
@@ -116,13 +122,39 @@
   }
 
   // WORLD
+  const worldId: number = getActiveWorld()
+  let world: WorldType | null = $state(null)
+  let newWorldName: string = $state('')
+  let newWorldDesc: string = $state('')
+
+
+  async function getWorldInfo() {
+    world = await window.api.getWorld(worldId)
+    newWorldName = world.name;
+    newWorldDesc = world.description;
+  }
+
+  let worldEdited: boolean = $derived.by(()=>{
+    if (world.name == newWorldName && world.description == newWorldDesc) return false
+    else return true
+  })
+
+  const discardWorldChanges = () => {
+    newWorldName = world.name;
+    newWorldDesc = world.description;
+  }
+
+  const updateWorld = (e) => {
+    e.preventDefault()
+  }
+
   let tags: TagType[] = $state([])
   let newTagName: string = $state('')
 
   async function getTags() {
     tags = await window.api.getTags()
   }
-
+  getWorldInfo()
   getTags()
 
   const createTag = async (e) => {
@@ -355,6 +387,36 @@
       {/if}
 
       {#if currentPage == 'world'}
+        <section>
+          <SettingInfo
+            name="World Name & Info"
+            description="Change the name and description of your world"
+            ><Earth /></SettingInfo
+          >
+          {#if world && world.name}
+          <form class="flex flex-col gap-4 items-center mt-4 mb-8 w-full" onsubmit={updateWorld}>
+              <input
+                class="p-2 rounded-md bg-layer1 w-full focus-within:outline-0 border border-transparent text-center text-primary text-lg focus-within:text-primary-highlight focus-within:border-primary"
+                maxlength={INPUT_LONG_MAX}
+                name="World name"
+                id="worldname"
+                bind:value={newWorldName}
+                placeholder={world.name}
+              />
+            <EditableArea
+            name="World description"
+            id="worlddesc"
+            bind:value={newWorldDesc}></EditableArea>
+            <div class="p-4 flex gap-4 w-full">
+              <ButtonDecorated disabled={!worldEdited} type="submit"><CheckIcon></CheckIcon> Save changes</ButtonDecorated>
+              <ButtonDecorated disabled={!worldEdited} type="button" style="outline" onclick={discardWorldChanges}><XIcon></XIcon> Discard changes</ButtonDecorated>
+            </div>
+            
+          </form>
+          {/if}
+        </section>
+        {@render Hr()}
+
         <section>
           <SettingInfo
             name="Character Tags"

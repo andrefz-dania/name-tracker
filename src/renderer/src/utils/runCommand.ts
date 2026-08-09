@@ -55,7 +55,7 @@ export function runCommand(id: number) {
         hashNavigate('#/list')
         break
     case 7:
-        // implement worlds first
+        hashNavigate('#/worlds')
         break
     case 8:
         const newSpeciesVisible = !prev.speciesVisible

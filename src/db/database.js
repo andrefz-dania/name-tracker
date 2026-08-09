@@ -120,7 +120,7 @@ class CharacterDb {
         console.log('Creating default world...')
         const createWorldSql = `INSERT INTO worlds (id, name, description) VALUES (?, ?, ?)`
         const stmt = this.db.prepare(createWorldSql)
-        const response = stmt.run(0, 'My World', 'This is the default world created when this app is first run. Edit the name and description to make it yours!')
+        const response = stmt.run(0, 'My World', 'This is the default world created when this app is first run. Edit the name and description in the settings menu to make it yours!')
       } catch (error) {
         console.error(error)
       }

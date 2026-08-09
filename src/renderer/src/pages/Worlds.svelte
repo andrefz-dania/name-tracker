@@ -6,6 +6,7 @@
   import { Heading1 } from '../components/Headings.svelte'
   import Navigation from '../components/Navigation.svelte'
   import WorldCard from '../components/WorldCard.svelte'
+  import { notif, sendNotif } from '../utils/context'
   let { activeWorld = $bindable() } = $props()
   let worlds: WorldType[] = $state([])
 
@@ -15,9 +16,14 @@
 
   getWorlds();
   const changeActiveWorld = (id: number) => {
+        sendNotif(notif, 'Switching worlds...', 'progress')
     activeWorld = {
       id: id
     };
+    const worldName = worlds.filter((world) => {
+      return world.id === id;
+    })[0].name;
+    sendNotif(notif, `Switched world to ${worldName}`, 'normal')
   }
 </script>
 
