@@ -9,61 +9,83 @@ This is an Electron application made with Svelte and TypeScript. It is aimed at 
 ## Installation
 
 ### Windows
-Dowload the installer and run it. Upon completion, you should now have a start menu shortcut to launch CaraBace
+- Dowload the setup.exe installer and run it.
+- Upon completion, you should now have a start menu shortcut to launch CaraBace
 
 ### Linux
 **Debian-based**
-Download the .deb file from releases and install it.
+- Download the .deb file from releases and install it.
 
 **Fedora-based**
-Download the .rpm file from releases and install it.
+- Download the .rpm file from releases and install it.
 
 **All distros**
-Download the AppImage from releases, make it executable, then run it.
+- Download the AppImage file from releases
+- make the AppImage executable
+- Run the AppImage
 
 ### Mac (untested)
-Follow the development instructions and run the build command for your OS - install the resulting .dmg package.
+- Follow the development instructions and run the build command for your OS
+- install the resulting .dmg package.
 
 ## Development Progress
 ### Implemented
 
 **Core**
-- Create characters
-- Edit characters
-- Delete characters
+- Create, browse, edit and delete characters
+- Store a description, age, occupation, location & more for each character
+- add images to each character
 - Import/export characters to JSON
 - Run on Windows, Linux or Mac (untested)
-- Hotkeys (partial)
-- add images to each character
-- character tags and tag search
+- Hotkeys (see setting for full list)
+- Command palette to quickly navigate, change settings, or perform actions
+
+**Worlds**
 - Create multiple worlds and switch between them
 - Each world has its own characters and tags
+- Edit world names and descriptions from settings
 
 **Sorting**
 - Search all characters
 - Filter each column ascending or descending
 - Persist search and sorting between screens
-- pinned / favourites
+- character tagging and tag search
+- pinned / favourited characters
 - recently viewed characters
 
 **UI**
 - toggle list style
 - dark & light themes
 - toggle columns on/off
+- Set the length of preview text in search results
 
 ---
 
 ### Planned
+
+**Major**
 - markdown text editing
-- deep search
-- quickly swap character status from the search list
-- persist scroll location
-- factions
+- deep search through descriptions and more
 - character relationships
+- factions
 - timeline / events for each character
 - custom time system
+- hotkey rebinding
 - flathub package
 
+**Minor**
+- quickly swap character status from the search list
+- persist scroll location
+- Allow world switching inside command palette rather than navigating to worlds page
+
+- Use arrow keys and Enter to select and activate worlds in worlds page.
+
+
+
+### Known bugs
+- Ending a tag search in the search bar by pressing Enter can occasionally navigate to a previously visited character
+- Command palette does not scroll to highlighted result in command palette when using arrow keys and list is long enough to have a scrollbar
+- Running both the dev and released build at the same time causes issues with saving to localStorage (settings / list of recently visited characters)
 
 ## Development Setup
 
