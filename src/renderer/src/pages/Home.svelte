@@ -7,13 +7,14 @@
   import PinnedList from '../components/PinnedList.svelte'
   import RecentList from '../components/RecentList.svelte'
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
-  import { getActiveWorld } from '../utils/getActiveWorld'
+  import { getWorldContext } from '../utils/worldContext.svelte'
 
   let worldName = $state('')
   let characterCount = $state(0)
 
   async function getWorldData() {
-    const worldId = getActiveWorld()
+    const worldContext = getWorldContext()
+    const worldId = worldContext.activeWorld.id
     const result = await window.api.getWorld(worldId)
     worldName = result.name
   }

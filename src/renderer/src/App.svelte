@@ -5,16 +5,17 @@
   import Create from './pages/Create.svelte'
   import Other from './pages/Other.svelte'
   import Settings from './pages/Settings.svelte'
-  import { defaultActiveWorld, defaultInterfaceConfig, type InterfaceConfig } from '../../types/types'
+  import { defaultInterfaceConfig, type InterfaceConfig } from '../../types/types'
   import Home from './pages/Home.svelte'
   import {notif} from './utils/context'
+  import { setWorldContext } from './utils/worldContext.svelte'
   import Notification from './components/Notification.svelte'
   import CommandPalette from './components/CommandPalette.svelte'
   import Worlds from './pages/Worlds.svelte'
   import CreateWorld from './pages/CreateWorld.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
-  let activeWorld: {id: number} | null = $state(null)
+  const worldCtx = setWorldContext()
 
 
   let themeClass = $derived(
@@ -30,15 +31,6 @@
 
     interfaceConfig = loadedInteraceConfig
 
-    const savedActiveWorld = JSON.parse(localStorage.getItem('activeWorld'))
-    if (!savedActiveWorld || savedActiveWorld.length < 1) {
-      localStorage.setItem('activeWorld', JSON.stringify(defaultActiveWorld))
-      activeWorld = defaultActiveWorld
-    } else {
-      activeWorld = savedActiveWorld
-    }
-
-
   })
 
   $effect(() => {
@@ -49,8 +41,8 @@
   })
 
   $effect(()=>{
-    console.log('switched active world to', activeWorld.id)
-    localStorage.setItem('activeWorld', JSON.stringify(activeWorld))
+    console.log('switched active world to', worldCtx.activeWorld.id)
+    localStorage.setItem('activeWorld', JSON.stringify(worldCtx.activeWorld))
   })
 
   let currentRoute = $state(window.location.hash.slice(1) || '/')
@@ -141,7 +133,7 @@ $effect(() => {
   {:else if route === 'settings'}
     <Settings bind:interfaceConfig></Settings>
   {:else if route === 'worlds'}
-    <Worlds bind:activeWorld/>
+    <Worlds bind:activeWorld={worldCtx.activeWorld}/>
   {:else if route === 'createworld'}
     <CreateWorld />
   {:else}

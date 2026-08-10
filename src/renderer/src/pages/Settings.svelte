@@ -38,8 +38,8 @@
   import { notif, sendNotif } from '../utils/context'
   import TagEditable from '../components/TagEditable.svelte'
   import EditableArea from '../components/EditableArea.svelte'
-  import { getActiveWorld } from '../utils/getActiveWorld'
   import { INPUT_LONG_MAX } from '../input.config'
+  import { getWorldContext } from '../utils/worldContext.svelte'
 
   let { interfaceConfig = $bindable() } = $props()
 
@@ -122,7 +122,8 @@
   }
 
   // WORLD
-  const worldId: number = getActiveWorld()
+  const worldContext = getWorldContext()
+  const worldId = worldContext.activeWorld.id
   let world: WorldType | null = $state(null)
   let newWorldName: string = $state('')
   let newWorldDesc: string = $state('')
