@@ -214,6 +214,14 @@ export default function setupHandlers(db) {
     return db.getWorld(id)
   })
 
+  ipcMain.handle('accessWorld', async (_, id: number) => {
+    return db.accessWorld(id)
+  })
+
+  ipcMain.handle('updateWorld', async (_, id: number, world: WorldType) => {
+    return db.updateWorld(id, world);
+  })
+
   ipcMain.handle('createWorld', async (_, world: WorldType) => {
     return db.createWorld(world)
   })

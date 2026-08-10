@@ -60,6 +60,10 @@ const api = {
 
   getWorlds: () => ipcRenderer.invoke('getWorlds'),
 
+  accessWorld: (id: number) => ipcRenderer.invoke('accessWorld', id),
+
+  updateWorld: (id: number, world: WorldType) => ipcRenderer.invoke('updateWorld', id, world),
+
   createWorld: (world: WorldType) => ipcRenderer.invoke('createWorld', world),
 
 }

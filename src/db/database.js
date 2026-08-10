@@ -523,7 +523,34 @@ class CharacterDb {
     }
   }
 
+    accessWorld(id) {
+    const insertQuery = `UPDATE worlds SET last_accessed=? WHERE id=?`
+    const timestamp = new Date().valueOf()
+    const stmt = this.db.prepare(insertQuery)
+    const response = stmt.run(timestamp, id)
+    if (response.changes == 1) {
+      return {
+        success: true
+      }
+    } else {
+      console.log(`Error when updating world access timestamp world`)
+      console.log(response)
+      return {
+        success: false
+      }
+    }
+  }
+
   deleteWorld(id) {
+    // check if this is the only world first
+    const selectQuery = `SELECT * FROM worlds`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all()
+
+    if (response.length < 2) {
+      return {success: false}
+    }
+
     const transaction = db.transaction((worldId) => {
 
       // setup required queries
@@ -543,9 +570,11 @@ class CharacterDb {
     try {
       transaction(id)
       console.log('World deleted successfully')
+      return {success: true}
     } catch (error) {
       console.log('World deletion failed, cancelling transaction.')
       Console.error(error)
+      return {success: false}
     }
   }
 

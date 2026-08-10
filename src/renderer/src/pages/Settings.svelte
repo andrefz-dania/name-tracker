@@ -144,8 +144,16 @@
     newWorldDesc = world.description;
   }
 
-  const updateWorld = (e) => {
+  const updateWorld = async (e) => {
     e.preventDefault()
+    const newWorld = {name: newWorldName, description: newWorldDesc}
+    const response = await window.api.updateWorld(worldId, newWorld)
+    console.log(response);
+    if (!response.success) {
+      sendNotif(notif, 'Error updating world', 'destructive')
+    } else {
+      world = newWorld;
+    }
   }
 
   let tags: TagType[] = $state([])

@@ -15,7 +15,7 @@
   }
 
   getWorlds();
-  const changeActiveWorld = (id: number) => {
+  const changeActiveWorld = async (id: number) => {
         sendNotif(notif, 'Switching worlds...', 'progress')
     activeWorld = {
       id: id
@@ -23,7 +23,13 @@
     const worldName = worlds.filter((world) => {
       return world.id === id;
     })[0].name;
-    sendNotif(notif, `Switched world to ${worldName}`, 'normal')
+    const response = await window.api.accessWorld(id)
+    console.log(response)
+    if (response.success) {
+      sendNotif(notif, `Switched world to ${worldName}`, 'normal')
+    } else {
+      sendNotif(notif, `Failed to switch world`, 'destructive')
+    }
   }
 </script>
 

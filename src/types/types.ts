@@ -76,6 +76,10 @@ export type ApiTypes = {
   //read
   getWorld(id: number): Promise<WorldType>
   getWorlds(): Promise<WorldType[]>
+
+  //update
+  accessWorld(id: number): Promise<{ success: boolean }>
+  updateWorld(id: number, world: WorldType): Promise<{ success: boolean }>
 }
 
 export type RecentChar = {
