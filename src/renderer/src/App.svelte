@@ -8,10 +8,14 @@
   import { defaultInterfaceConfig, type InterfaceConfig } from '../../types/types'
   import Home from './pages/Home.svelte'
   import {notif} from './utils/context'
+  import { setWorldContext } from './utils/worldContext.svelte'
   import Notification from './components/Notification.svelte'
   import CommandPalette from './components/CommandPalette.svelte'
+  import Worlds from './pages/Worlds.svelte'
+  import CreateWorld from './pages/CreateWorld.svelte'
 
   let interfaceConfig: InterfaceConfig = $state(defaultInterfaceConfig)
+  const worldCtx = setWorldContext()
 
 
   let themeClass = $derived(
@@ -21,22 +25,24 @@
   onMount(() => {
     const loadedInteraceConfig = JSON.parse(localStorage.getItem('interfaceConfig'))
     if (!loadedInteraceConfig || loadedInteraceConfig.length < 1) {
-      setDefaultConfig();
+      localStorage.setItem('interfaceConfig', JSON.stringify(defaultInterfaceConfig))
       window.location.reload();
     }
 
     interfaceConfig = loadedInteraceConfig
-  })
 
-  function setDefaultConfig() {
-    localStorage.setItem('interfaceConfig', JSON.stringify(defaultInterfaceConfig))
-  }
+  })
 
   $effect(() => {
     console.log('LOADED CONFIG', interfaceConfig)
     if (interfaceConfig?.listStyle) {
     localStorage.setItem('interfaceConfig', JSON.stringify(interfaceConfig))
     }
+  })
+
+  $effect(()=>{
+    console.log('switched active world to', worldCtx.activeWorld.id)
+    localStorage.setItem('activeWorld', JSON.stringify(worldCtx.activeWorld))
   })
 
   let currentRoute = $state(window.location.hash.slice(1) || '/')
@@ -107,7 +113,7 @@ $effect(() => {
 <svelte:window onkeydown={navHotkeys}></svelte:window>
 
 <main class="flex flex-col gap-2 p-4 min-h-screen max-h-screen {themeClass} text-textcol bg-layer0 font-block">
-<CommandPalette></CommandPalette>
+<CommandPalette worldId={worldCtx.activeWorld.id}></CommandPalette>
 <div class="absolute w-full top-4 flex flex-col gap-2 items-center place-content-center">
  {#if $notif}
   <Notification id={'1'} message={$notif.message} type={$notif.type}></Notification>
@@ -126,6 +132,10 @@ $effect(() => {
     <Create />
   {:else if route === 'settings'}
     <Settings bind:interfaceConfig></Settings>
+  {:else if route === 'worlds'}
+    <Worlds bind:activeWorld={worldCtx.activeWorld}/>
+  {:else if route === 'createworld'}
+    <CreateWorld />
   {:else}
     <h2>404 Not Found</h2>
   {/if}

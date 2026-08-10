@@ -21,7 +21,10 @@
     Search,
     TagIcon,
     PlusIcon,
-    Globe
+    Globe,
+    CheckIcon,
+    XIcon,
+    Earth
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
@@ -30,10 +33,13 @@
   import ButtonToggleL2 from '../components/ButtonToggleL2.svelte'
   import RangeSlider from '../components/RangeSlider.svelte'
   import ButtonDecorated from '../components/ButtonDecorated.svelte'
-  import { defaultInterfaceConfig, type TagType } from '../../../types/types'
+  import { defaultInterfaceConfig, type TagType, type WorldType } from '../../../types/types'
   import ModalDialogue from '../components/ModalDialogue.svelte'
   import { notif, sendNotif } from '../utils/context'
   import TagEditable from '../components/TagEditable.svelte'
+  import EditableArea from '../components/EditableArea.svelte'
+  import { INPUT_LONG_MAX } from '../input.config'
+  import { getWorldContext } from '../utils/worldContext.svelte'
 
   let { interfaceConfig = $bindable() } = $props()
 
@@ -50,6 +56,8 @@
     }
   }
 
+  const worldId: number = getWorldContext().activeWorld.id
+
   // RESETS
   const restoreDefaults = () => {
     interfaceConfig = defaultInterfaceConfig
@@ -58,7 +66,7 @@
   }
 
   const handleDeleteAll = async () => {
-    const response = await window.api.deleteAllChars()
+    const response = await window.api.deleteAllChars(worldId)
     if (response.success) {
       sendNotif(notif, `Deleted ${response.count} characters`, 'positive')
     } else {
@@ -97,7 +105,7 @@
 
   const handleExport = async () => {
     sendNotif(notif, 'Exporting characters...', 'progress')
-    const response = await window.api.exportCharacters()
+    const response = await window.api.exportCharacters(worldId)
     if (response.success) {
       sendNotif(notif, `Export finished`, 'positive')
     } else {
@@ -107,7 +115,7 @@
 
   const handleImport = async () => {
     sendNotif(notif, 'Importing characters...', 'progress')
-    const response = await window.api.importCharacters()
+    const response = await window.api.importCharacters(worldId)
     if (response.success) {
       sendNotif(notif, `Imported ${response.count} characters`, 'positive')
     } else {
@@ -116,18 +124,51 @@
   }
 
   // WORLD
+  let world: WorldType | null = $state(null)
+  let newWorldName: string = $state('')
+  let newWorldDesc: string = $state('')
+
+
+  async function getWorldInfo() {
+    world = await window.api.getWorld(worldId)
+    newWorldName = world.name;
+    newWorldDesc = world.description;
+  }
+
+  let worldEdited: boolean = $derived.by(()=>{
+    if (world.name == newWorldName && world.description == newWorldDesc) return false
+    else return true
+  })
+
+  const discardWorldChanges = () => {
+    newWorldName = world.name;
+    newWorldDesc = world.description;
+  }
+
+  const updateWorld = async (e) => {
+    e.preventDefault()
+    const newWorld = {name: newWorldName, description: newWorldDesc}
+    const response = await window.api.updateWorld(worldId, newWorld)
+    console.log(response);
+    if (!response.success) {
+      sendNotif(notif, 'Error updating world', 'destructive')
+    } else {
+      world = newWorld;
+    }
+  }
+
   let tags: TagType[] = $state([])
   let newTagName: string = $state('')
 
   async function getTags() {
-    tags = await window.api.getTags()
+    tags = await window.api.getTags(worldId)
   }
-
+  getWorldInfo()
   getTags()
 
   const createTag = async (e) => {
     e.preventDefault()
-    const response = await window.api.createTag(newTagName)
+    const response = await window.api.createTag(newTagName, worldId)
     if (response.success) {
       tags = [...tags, { id: response.newId, tag_name: newTagName }]
       newTagName = ''
@@ -355,6 +396,36 @@
       {/if}
 
       {#if currentPage == 'world'}
+        <section>
+          <SettingInfo
+            name="World Name & Info"
+            description="Change the name and description of your world"
+            ><Earth /></SettingInfo
+          >
+          {#if world && world.name}
+          <form class="flex flex-col gap-4 items-center mt-4 mb-8 w-full" onsubmit={updateWorld}>
+              <input
+                class="p-2 rounded-md bg-layer1 w-full focus-within:outline-0 border border-transparent text-center text-primary text-lg focus-within:text-primary-highlight focus-within:border-primary"
+                maxlength={INPUT_LONG_MAX}
+                name="World name"
+                id="worldname"
+                bind:value={newWorldName}
+                placeholder={world.name}
+              />
+            <EditableArea
+            name="World description"
+            id="worlddesc"
+            bind:value={newWorldDesc}></EditableArea>
+            <div class="p-4 flex gap-4 w-full">
+              <ButtonDecorated disabled={!worldEdited} type="submit"><CheckIcon></CheckIcon> Save changes</ButtonDecorated>
+              <ButtonDecorated disabled={!worldEdited} type="button" style="outline" onclick={discardWorldChanges}><XIcon></XIcon> Discard changes</ButtonDecorated>
+            </div>
+            
+          </form>
+          {/if}
+        </section>
+        {@render Hr()}
+
         <section>
           <SettingInfo
             name="Character Tags"

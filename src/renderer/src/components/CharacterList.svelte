@@ -26,6 +26,7 @@
     type TagType
   } from '../../../types/types'
   import CharacterCardImage from './CharacterCardImage.svelte'
+  import { getWorldContext } from '../utils/worldContext.svelte'
 
   let { interfaceConfig }: { interfaceConfig: InterfaceConfig } = $props()
 
@@ -40,7 +41,7 @@
   let skipDebounce: boolean = $state(false)
 
   let visibleColumnCount = $derived(
-    2 + // name is always visible
+    2 + // name is always visible and fills 2 columns
       (interfaceConfig.speciesVisible ? 1 : 0) +
       (interfaceConfig.genderVisible ? 1 : 0) +
       (interfaceConfig.occupationVisible ? 1 : 0) +
@@ -63,6 +64,10 @@
   let selectedSuggestion: number | null = $state(null)
 
   const debouncedSearch = $derived(debounce(search, 300))
+
+
+
+  const worldId: number = getWorldContext().activeWorld.id
 
   $effect(() => {
     // instantly re-fetch the full list when the field is cleared
@@ -109,12 +114,12 @@
   }
 
   async function getCharacters() {
-    characters = await window.api.readAllChars()
+    characters = await window.api.readAllChars(worldId)
   }
 
   async function getTagSuggestions() {
     const unhashedTerm = searchTerm.split('#')[1]
-    tagSuggestions = await window.api.getTagSuggestions(unhashedTerm)
+    tagSuggestions = await window.api.getTagSuggestions(unhashedTerm, worldId)
     selectedSuggestion = 0
   }
 
@@ -122,11 +127,11 @@
     if (searchInTags) {
       const unhashedTerm = searchTerm.split('#')[1]
       getTagSuggestions()
-      characters = await window.api.searchCharactersByTag(unhashedTerm, sortColumn, sortReverse)
+      characters = await window.api.searchCharactersByTag(unhashedTerm, sortColumn, sortReverse, worldId)
       console.log('searching for tag #' + unhashedTerm)
     } else {
       tagSuggestions = []
-      characters = await window.api.searchChars(searchTerm, sortColumn, sortReverse)
+      characters = await window.api.searchChars(searchTerm, sortColumn, sortReverse, worldId)
       console.log('searching for', searchTerm)
     }
 
@@ -147,6 +152,16 @@
       getCharacters()
     }
   }
+
+  async function applyTag(e) {
+    e.preventDefault()
+    const tag = tagSuggestions[selectedSuggestion].tag_name
+    console.log(tag)
+    if (searchInTags && tagSuggestions.length > 0) {
+      searchTerm = `#` + tag
+    }
+    search()
+  }
 </script>
 
 <svelte:window onkeydown={hotkeys} />
@@ -161,7 +176,7 @@
 
   <!-- search bar -->
   <div class="max-w-2xl flex flex-row w-full mx-auto gap-4 mb-4 mt-8 relative">
-    <form class="flex flex-row w-full gap-3" action="" onsubmit={(e) => e.preventDefault()}>
+    <form class="flex flex-row w-full gap-3" action="" onsubmit={(e) =>applyTag(e)}>
       <input
         class="p-4 rounded-md bg-layer1/75 text-lg w-full focus-within:outline-0 border border-transparent focus-within:border-primary {searchInTags ? "text-primary font-bold" : "text-textcol"}"
         type="text"

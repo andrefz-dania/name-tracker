@@ -1,8 +1,10 @@
 import type { RecentChar } from "../../../types/types"
 
-export async function addRecent(id: number) {
+export async function addRecent(id: number, worldId) {
 
-  const existingRecents: RecentChar[] | [] = JSON.parse(localStorage.getItem('recents') || '[]')
+  const storageName = 'recents-' + worldId
+
+  const existingRecents: RecentChar[] | [] = JSON.parse(localStorage.getItem(storageName) || '[]')
 
   // remove duplicates
   const newRecents = existingRecents.filter((c: RecentChar) => c.id !== id)
@@ -20,5 +22,5 @@ export async function addRecent(id: number) {
   newRecents.unshift({ id: id, timeStamp: Date.now() })
 
 
-  localStorage.setItem('recents', JSON.stringify(newRecents))
+  localStorage.setItem(storageName, JSON.stringify(newRecents))
 }

@@ -10,7 +10,8 @@
   let { character, fadeCount }: Props = $props()
 
   const link = $derived('#/character/' + character.id)
-  const opacity = (fadeCount || 0) * 20;
+  //const opacity = (fadeCount || 0) * 20;
+  const opacity = 100 - (fadeCount || 0) * 20;
 </script>
 
 <a

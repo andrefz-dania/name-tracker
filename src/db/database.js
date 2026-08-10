@@ -59,11 +59,96 @@ class CharacterDb {
       console.log('Image column already exists, skipping...')
     }
 
+    console.log('migrating to 0.6 worlds system...')
+    try {
+      const createWorldstableSql = `CREATE TABLE IF NOT EXISTS worlds (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       name TEXT NOT NULL,
+       description TEXT,
+       last_accessed INTEGER)`
+      this.db.exec(createWorldstableSql)
+    } catch (error) {
+      console.error(error)
+    }
+
+    try {
+      const addWorldsToCharactersSql = `ALTER TABLE characters ADD COLUMN world_id INTEGER`
+      this.db.exec(addWorldsToCharactersSql)
+    } catch (error) {
+      if (error && error.code == 'SQLITE_ERROR') {
+        console.log('World_id column already exists on characters, skipping...')
+      } else {
+        console.error(error)
+      }
+    }
+
+    try {
+      const addWorldsToTagsSql = `ALTER TABLE tags ADD COLUMN world_id INTEGER`
+      this.db.exec(addWorldsToTagsSql)
+    } catch (error) {
+            if (error && error.code == 'SQLITE_ERROR') {
+        console.log('World_id column already exists on tags, skipping...')
+      } else {
+        console.error(error)
+      }
+    }
+
+    // check if there are any existing worlds
+    let hasWorlds = false
+
+    // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
+    // this.db.exec(tempDeleteWorldsTable)
+
+    try {
+      const checkWorldsQuery = this.db.prepare(`SELECT * FROM worlds`)
+      const existingWorlds = checkWorldsQuery.all()
+      if (existingWorlds.length > 0) {
+        console.log('Found existing worlds, skipping further migrations...')
+        hasWorlds = true
+      }
+    } catch (error) {
+      if (error && error.code) {
+        console.error(error)
+      }
+    }
+
+
+
+    if (!hasWorlds) {
+      // create a default world
+      try {
+        console.log('Creating default world...')
+        const createWorldSql = `INSERT INTO worlds (id, name, description) VALUES (?, ?, ?)`
+        const stmt = this.db.prepare(createWorldSql)
+        const response = stmt.run(0, 'My World', 'This is the default world created when this app is first run. Edit the name and description in the settings menu to make it yours!')
+      } catch (error) {
+        console.error(error)
+      }
+
+      // backfill all existing characters with world ID
+      try {
+        console.log('Migrating characters table...')
+        const addWorldIdSql = `UPDATE characters SET world_id = 0`
+        this.db.exec(addWorldIdSql)
+      } catch (error) {
+        console.error(error)
+      }
+
+      // do the same for tags
+      try {
+        console.log('Migrating tags table...')
+        const addWorldIdSql = `UPDATE tags SET world_id = 0`
+        this.db.exec(addWorldIdSql)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
     console.log('Database setup complete')
   }
   // CHARACTER QUERIES ---
-  createChar(character) {
-    const insertQuery = `INSERT INTO characters (name, desc, dead, age, gender, location, occupation, species) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  createChar(character, worldId) {
+    const insertQuery = `INSERT INTO characters (name, desc, dead, age, gender, location, occupation, species, world_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     const stmt = this.db.prepare(insertQuery)
     const response = stmt.run(
       character.name,
@@ -73,7 +158,8 @@ class CharacterDb {
       character.gender,
       character.location,
       character.occupation,
-      character.species
+      character.species,
+      worldId
     )
     if (response.changes == 1) {
       console.log(`Character with ID ${response.lastInsertRowid} created`)
@@ -108,10 +194,10 @@ class CharacterDb {
     }
   }
 
-  deleteAllChars() {
-    const deleteAllQuery = `DELETE FROM characters`
+  deleteAllChars(worldId) {
+    const deleteAllQuery = `DELETE FROM characters WHERE world_id = ?`
     const stmt = this.db.prepare(deleteAllQuery)
-    const response = stmt.run()
+    const response = stmt.run(worldId)
 
     if (response.changes > 0) {
       console.log('Deleted ' + response.changes + ' characters')
@@ -131,17 +217,17 @@ class CharacterDb {
     }
   }
 
-  getCount() {
-    const countQuery = 'SELECT COUNT(*) as COUNT FROM characters'
+  getCount(worldId) {
+    const countQuery = 'SELECT COUNT(*) as COUNT FROM characters WHERE world_id=?'
     const stmt = this.db.prepare(countQuery)
-    const response = stmt.all()
+    const response = stmt.all(worldId)
     return response[0].COUNT
   }
 
-  readAllChars() {
-    const selectAllQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters ORDER BY name DESC`
+  readAllChars(worldId) {
+    const selectAllQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE world_id = ? ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)
-    const response = stmt.all()
+    const response = stmt.all(worldId)
     return response
   }
 
@@ -152,10 +238,10 @@ class CharacterDb {
     return response
   }
 
-  readPinned() {
-    const selectQuery = `SELECT id, name, dead FROM characters WHERE pinned=1 ORDER BY name DESC`
+  readPinned(worldId) {
+    const selectQuery = `SELECT id, name, dead FROM characters WHERE pinned=1 AND world_id=? ORDER BY name DESC`
     const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all()
+    const response = stmt.all(worldId)
     return response
   }
 
@@ -244,7 +330,7 @@ class CharacterDb {
     }
   }
 
-  searchChars(query, column, reverse) {
+  searchChars(query, column, reverse, worldId) {
     const direction = reverse ? 'DESC' : 'ASC'
     function evaluateColumn(column) {
       if (
@@ -261,37 +347,37 @@ class CharacterDb {
       }
     }
     const protectedColumn = evaluateColumn(column)
-    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? ORDER BY ${protectedColumn} ${direction}`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? AND world_id = ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all(`%${query}%`)
+    const response = stmt.all(`%${query}%`, worldId)
     console.log(
       `Found ${response.length} characters matching query: ${query} ordered by ${protectedColumn} ${direction}`
     )
     return response
   }
 
-  deepSearchChars(query) {
-    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
-    const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
-    console.log(`Found ${response.length} characters matching deep query: ${query}`)
-    return response
-  }
+  // deepSearchChars(query) {
+  //   const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
+  //   const stmt = this.db.prepare(selectQuery)
+  //   const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
+  //   console.log(`Found ${response.length} characters matching deep query: ${query}`)
+  //   return response
+  // }
 
   // TAG QUERIES ---
-  createTag(tagName) {
-    const insertQuery = `INSERT INTO tags (tag_name) VALUES (?) RETURNING *`
+  createTag(tagName, worldId) {
+    const insertQuery = `INSERT INTO tags (tag_name, world_id) VALUES (?, ?) RETURNING *`
     const stmt = this.db.prepare(insertQuery)
-    const response = stmt.run(tagName)
+    const response = stmt.run(tagName, worldId)
     if (response.changes === 1) {
       return { success: true, newId: response.lastInsertRowid }
     } else return { success: false }
   }
 
-  getTags() {
-    const selectQuery = `SELECT * FROM tags ORDER BY tag_name`
+  getTags(worldId) {
+    const selectQuery = `SELECT * FROM tags WHERE world_id = ? ORDER BY tag_name`
     const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all()
+    const response = stmt.all(worldId)
     return response
   }
 
@@ -394,6 +480,106 @@ class CharacterDb {
     const response = stmt.all('%' + query + '%')
     return response
   }
+
+  // WORLD QUERIES ---
+  getWorlds() {
+    const selectQuery = `SELECT * FROM worlds`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all()
+    return response;
+  }
+
+  getWorld(id) {
+    const selectQuery = `SELECT * FROM worlds WHERE id = ?`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.get(id)
+    return response;
+  }
+
+  createWorld(world) {
+    const insertQuery = `INSERT INTO worlds (name, description) VALUES (?, ?)`
+    const stmt = this.db.prepare(insertQuery)
+    const response = stmt.run(world.name, world.description)
+    if (response.changes === 1) {
+      return { success: true, newId: response.lastInsertRowid }
+    } else return { success: false }
+  }
+
+  updateWorld(id, world) {
+    const insertQuery = `UPDATE worlds SET name=?, description=?, last_accessed=? WHERE id=?`
+    const timestamp = new Date().valueOf()
+    const stmt = this.db.prepare(insertQuery)
+    const response = stmt.run(world.name, world.description, timestamp, id)
+    if (response.changes == 1) {
+      console.log(`World ${id} updated successfully`)
+      return {
+        success: true
+      }
+    } else {
+      console.log(`Error when updating world`)
+      console.log(response)
+      return {
+        success: false
+      }
+    }
+  }
+
+    accessWorld(id) {
+    const insertQuery = `UPDATE worlds SET last_accessed=? WHERE id=?`
+    const timestamp = new Date().valueOf()
+    const stmt = this.db.prepare(insertQuery)
+    const response = stmt.run(timestamp, id)
+    if (response.changes == 1) {
+      return {
+        success: true
+      }
+    } else {
+      console.log(`Error when updating world access timestamp world`)
+      console.log(response)
+      return {
+        success: false
+      }
+    }
+  }
+
+  deleteWorld(id) {
+    // check if this is the only world first
+    const selectQuery = `SELECT * FROM worlds`
+    const stmt = this.db.prepare(selectQuery)
+    const response = stmt.all()
+
+    if (response.length < 2) {
+      return {success: false}
+    }
+
+    const transaction = db.transaction((worldId) => {
+
+      // setup required queries
+      const deleteStmt = db.prepare(`DELETE FROM worlds WHERE id=?`)
+      const deleteCharactersStmt = db.prepare(`DELETE FROM characters WHERE world_id=?`)
+      const deleteTagMapStmt = db.prepare(`DELETE FROM tag_map WHERE id IN (SELECT id FROM tags WHERE world_id=?)`)
+      const deleteTagsStmt = db.prepare(`DELETE FROM tags WHERE world_id=?`)
+
+      // run queries in order, make sure dependent tables are wiped first
+      deleteTagMapStmt.run(worldId);
+      deleteTagsStmt.run(worldId);
+      deleteCharactersStmt.run(worldId);
+      deleteWorldsStmt.run(worldId);
+
+    })
+
+    try {
+      transaction(id)
+      console.log('World deleted successfully')
+      return {success: true}
+    } catch (error) {
+      console.log('World deletion failed, cancelling transaction.')
+      Console.error(error)
+      return {success: false}
+    }
+  }
+
+
 
   close() {
     this.db.close()
