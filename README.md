@@ -6,8 +6,6 @@ Name is subject to change.
 
 This is an Electron application made with Svelte and TypeScript. It is aimed at fantasy/scifi writers, tabletop gamemasters, and other similar creative worldbuilding. The goal is to create an application that lets you track and manage a large list of characters, while keeping everything local.
 
-This application is still in very early development, with only the basics implemented
-
 ## Installation
 
 ### Windows
@@ -16,6 +14,9 @@ Dowload the installer and run it. Upon completion, you should now have a start m
 ### Linux
 **Debian-based**
 Download the .deb file from releases and install it.
+
+**Fedora-based**
+Download the .rpm file from releases and install it.
 
 **All distros**
 Download the AppImage from releases, make it executable, then run it.
