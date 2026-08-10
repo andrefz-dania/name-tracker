@@ -11,16 +11,17 @@
 
   let worldName = $state('')
   let characterCount = $state(0)
+  const worldContext = getWorldContext()
+  const worldId = worldContext.activeWorld.id
 
   async function getWorldData() {
-    const worldContext = getWorldContext()
-    const worldId = worldContext.activeWorld.id
+
     const result = await window.api.getWorld(worldId)
     worldName = result.name
   }
 
   async function getCount() {
-    const result = await window.api.getCount()
+    const result = await window.api.getCount(worldId)
     characterCount = result
   }
   getWorldData()

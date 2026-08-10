@@ -10,6 +10,7 @@
   import { capitalizeAll, capitalizeFirst, decapitalizeAll } from '../utils/capitalize'
   import { notif, sendNotif } from '../utils/context'
   import { INPUT_LONG_MAX, INPUT_SHORT_MAX } from '../input.config'
+  import { getWorldContext } from '../utils/worldContext.svelte'
   let name = $state('')
   let status = $state('Alive') // Default to Alive
   let dead = $derived(status == 'Dead' ? 1 : 0)  //sqlite cannot handle booleans
@@ -20,6 +21,8 @@
   let location = $state('')
   let occupation = $state('')
   let species = $state('')
+
+  const worldId: number = getWorldContext().activeWorld.id
 
   const handleAddCharacter = async (e) => {
     e.preventDefault()
@@ -35,7 +38,7 @@
       species: decapitalizeAll(species)
     }
 
-    const response = await window.api.createChar(character)
+    const response = await window.api.createChar(character, worldId)
     if (response.success) {
       sendNotif(notif, `${character.name} has been created`, 'positive')
       window.location.href = `#/character/${response.id}`

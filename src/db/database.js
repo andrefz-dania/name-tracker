@@ -147,8 +147,8 @@ class CharacterDb {
     console.log('Database setup complete')
   }
   // CHARACTER QUERIES ---
-  createChar(character) {
-    const insertQuery = `INSERT INTO characters (name, desc, dead, age, gender, location, occupation, species) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  createChar(character, worldId) {
+    const insertQuery = `INSERT INTO characters (name, desc, dead, age, gender, location, occupation, species, world_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     const stmt = this.db.prepare(insertQuery)
     const response = stmt.run(
       character.name,
@@ -158,7 +158,8 @@ class CharacterDb {
       character.gender,
       character.location,
       character.occupation,
-      character.species
+      character.species,
+      worldId
     )
     if (response.changes == 1) {
       console.log(`Character with ID ${response.lastInsertRowid} created`)
@@ -193,10 +194,10 @@ class CharacterDb {
     }
   }
 
-  deleteAllChars() {
-    const deleteAllQuery = `DELETE FROM characters`
+  deleteAllChars(worldId) {
+    const deleteAllQuery = `DELETE FROM characters WHERE world_id = ?`
     const stmt = this.db.prepare(deleteAllQuery)
-    const response = stmt.run()
+    const response = stmt.run(worldId)
 
     if (response.changes > 0) {
       console.log('Deleted ' + response.changes + ' characters')
@@ -216,17 +217,17 @@ class CharacterDb {
     }
   }
 
-  getCount() {
-    const countQuery = 'SELECT COUNT(*) as COUNT FROM characters'
+  getCount(worldId) {
+    const countQuery = 'SELECT COUNT(*) as COUNT FROM characters WHERE world_id=?'
     const stmt = this.db.prepare(countQuery)
-    const response = stmt.all()
+    const response = stmt.all(worldId)
     return response[0].COUNT
   }
 
-  readAllChars() {
-    const selectAllQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters ORDER BY name DESC`
+  readAllChars(worldId) {
+    const selectAllQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE world_id = ? ORDER BY name DESC`
     const stmt = this.db.prepare(selectAllQuery)
-    const response = stmt.all()
+    const response = stmt.all(worldId)
     return response
   }
 
@@ -237,10 +238,10 @@ class CharacterDb {
     return response
   }
 
-  readPinned() {
-    const selectQuery = `SELECT id, name, dead FROM characters WHERE pinned=1 ORDER BY name DESC`
+  readPinned(worldId) {
+    const selectQuery = `SELECT id, name, dead FROM characters WHERE pinned=1 AND world_id=? ORDER BY name DESC`
     const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all()
+    const response = stmt.all(worldId)
     return response
   }
 
@@ -329,7 +330,7 @@ class CharacterDb {
     }
   }
 
-  searchChars(query, column, reverse) {
+  searchChars(query, column, reverse, worldId) {
     const direction = reverse ? 'DESC' : 'ASC'
     function evaluateColumn(column) {
       if (
@@ -346,37 +347,37 @@ class CharacterDb {
       }
     }
     const protectedColumn = evaluateColumn(column)
-    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? ORDER BY ${protectedColumn} ${direction}`
+    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? AND world_id = ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all(`%${query}%`)
+    const response = stmt.all(`%${query}%`, worldId)
     console.log(
       `Found ${response.length} characters matching query: ${query} ordered by ${protectedColumn} ${direction}`
     )
     return response
   }
 
-  deepSearchChars(query) {
-    const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
-    const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
-    console.log(`Found ${response.length} characters matching deep query: ${query}`)
-    return response
-  }
+  // deepSearchChars(query) {
+  //   const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? OR desc LIKE ? OR location LIKE ? OR occupation LIKE ? OR species LIKE ?`
+  //   const stmt = this.db.prepare(selectQuery)
+  //   const response = stmt.all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`)
+  //   console.log(`Found ${response.length} characters matching deep query: ${query}`)
+  //   return response
+  // }
 
   // TAG QUERIES ---
-  createTag(tagName) {
-    const insertQuery = `INSERT INTO tags (tag_name) VALUES (?) RETURNING *`
+  createTag(tagName, worldId) {
+    const insertQuery = `INSERT INTO tags (tag_name, world_id) VALUES (?, ?) RETURNING *`
     const stmt = this.db.prepare(insertQuery)
-    const response = stmt.run(tagName)
+    const response = stmt.run(tagName, worldId)
     if (response.changes === 1) {
       return { success: true, newId: response.lastInsertRowid }
     } else return { success: false }
   }
 
-  getTags() {
-    const selectQuery = `SELECT * FROM tags ORDER BY tag_name`
+  getTags(worldId) {
+    const selectQuery = `SELECT * FROM tags WHERE world_id = ? ORDER BY tag_name`
     const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all()
+    const response = stmt.all(worldId)
     return response
   }
 

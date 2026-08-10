@@ -113,7 +113,7 @@ $effect(() => {
 <svelte:window onkeydown={navHotkeys}></svelte:window>
 
 <main class="flex flex-col gap-2 p-4 min-h-screen max-h-screen {themeClass} text-textcol bg-layer0 font-block">
-<CommandPalette></CommandPalette>
+<CommandPalette worldId={worldCtx.activeWorld.id}></CommandPalette>
 <div class="absolute w-full top-4 flex flex-col gap-2 items-center place-content-center">
  {#if $notif}
   <Notification id={'1'} message={$notif.message} type={$notif.type}></Notification>

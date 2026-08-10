@@ -10,6 +10,8 @@
   } from '../utils/runCommand'
   import { Heading1 } from './Headings.svelte'
 
+  let {worldId}: {worldId: number} = $props()
+
   let isOpen: boolean = $state(false)
   let selectedOption: number = $state(0)
   let commandBar
@@ -38,12 +40,12 @@
   }
 
   async function getTagSuggestions() {
-    tags = await window.api.getTagSuggestions(command)
+    tags = await window.api.getTagSuggestions(command, worldId)
     console.log($state.snapshot(tags))
   }
 
   async function getCharacterSuggestions() {
-    characters = await window.api.searchChars(command, 'name', false)
+    characters = await window.api.searchChars(command, 'name', false, worldId)
   }
 
   async function search() {

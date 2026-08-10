@@ -6,21 +6,21 @@ import { RecentChar, TagType, WorldType } from '../types/types'
 const api = {
 
   // characters
-  createChar: (character: CharacterData) => ipcRenderer.invoke('createChar', character),
+  createChar: (character: CharacterData, worldId: number) => ipcRenderer.invoke('createChar', character, worldId),
 
   deleteChar: (id: number) => ipcRenderer.invoke('deleteChar', id),
 
-  deleteAllChars: () => ipcRenderer.invoke('deleteAllChars'),
+  deleteAllChars: (worldId: number) => ipcRenderer.invoke('deleteAllChars', worldId),
 
-  getCount: () => ipcRenderer.invoke('getCount'),
+  getCount: (worldId: number) => ipcRenderer.invoke('getCount', worldId),
 
-  readAllChars: () => ipcRenderer.invoke('readAllChars'),
+  readAllChars: (worldId: number) => ipcRenderer.invoke('readAllChars', worldId),
 
   readOneChar: (id: number) => ipcRenderer.invoke('readOneChar', id),
 
   readList: (list: RecentChar[]) => ipcRenderer.invoke('readList', list),
 
-  readPinned: () => ipcRenderer.invoke('readPinned'),
+  readPinned: (worldId: number) => ipcRenderer.invoke('readPinned', worldId),
 
   loadImage: (id: number) => ipcRenderer.invoke('loadImage', id),
 
@@ -28,20 +28,20 @@ const api = {
 
   togglePinChar: (id: number, unpin:boolean) => ipcRenderer.invoke('togglePinChar', id, unpin),
 
-  searchChars: (term: string, column: string, reverse:boolean) => ipcRenderer.invoke('searchChars', term, column, reverse),
+  searchChars: (term: string, column: string, reverse:boolean, worldId: number) => ipcRenderer.invoke('searchChars', term, column, reverse, worldId),
 
   updateChar: (character: CharacterData) => ipcRenderer.invoke('updateChar', character),
 
   updateImage: (id: number) => ipcRenderer.invoke('updateImage', id, ),
 
-  exportCharacters: () => ipcRenderer.invoke('exportCharacters'),
+  exportCharacters: (worldId: number) => ipcRenderer.invoke('exportCharacters', worldId),
 
-  importCharacters: () => ipcRenderer.invoke('importCharacters'),
+  importCharacters: (worldId: number) => ipcRenderer.invoke('importCharacters', worldId),
 
   // tags
-  createTag: (tagName: string) => ipcRenderer.invoke('createTag', tagName),
+  createTag: (tagName: string, worldId: number) => ipcRenderer.invoke('createTag', tagName, worldId),
 
-  getTags: () => ipcRenderer.invoke('getTags'),
+  getTags: (worldId: number) => ipcRenderer.invoke('getTags', worldId),
 
   updateTag: (tag: TagType) => ipcRenderer.invoke('updateTag', tag),
 
@@ -51,9 +51,9 @@ const api = {
 
   updateCharacterTags: (characterId: number, tagIds: number[]) => ipcRenderer.invoke('updateCharacterTags', characterId, tagIds),
 
-  searchCharactersByTag: (query: string, column: string, reverse: boolean) => ipcRenderer.invoke('searchCharactersByTag', query, column, reverse),
+  searchCharactersByTag: (query: string, column: string, reverse: boolean, worldId: number) => ipcRenderer.invoke('searchCharactersByTag', query, column, reverse, worldId),
 
-  getTagSuggestions: (query: string) => ipcRenderer.invoke('getTagSuggestions', query),
+  getTagSuggestions: (query: string, worldId: number) => ipcRenderer.invoke('getTagSuggestions', query, worldId),
 
   // worlds
   getWorld: (id: number) => ipcRenderer.invoke('getWorld', id),

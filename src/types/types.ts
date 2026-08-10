@@ -27,15 +27,15 @@ export const blankCharacter: CharacterType = {
 export type ApiTypes = {
   // CHARACTERS
   // create
-  createChar(character: CharacterType): Promise<{ id: number; success: boolean }>
+  createChar(character: CharacterType, worldId: number): Promise<{ id: number; success: boolean }>
   
   //read
-  getCount(): Promise<number>
-  readAllChars(): Promise<CharacterType[]>
+  getCount(worldId: number): Promise<number>
+  readAllChars(worldId: number): Promise<CharacterType[]>
   readOneChar(id: number): Promise<CharacterType>
   readList(list: RecentChar[]): Promise<CharacterType[]>
-  readPinned(): Promise<CharacterType[]>
-  searchChars(term: string, column: string, reverse: boolean): Promise<CharacterType[]>
+  readPinned(worldId: number): Promise<CharacterType[]>
+  searchChars(term: string, column: string, reverse: boolean, worldId: number): Promise<CharacterType[]>
   loadImage(id: number): Promise<{ success: boolean; image?: Buffer }>
   
   //update
@@ -45,22 +45,22 @@ export type ApiTypes = {
   
   //delete
   deleteChar(id: number): Promise<{ id: number; success: boolean }>
-  deleteAllChars(): Promise<{ success: boolean; count: number }>
+  deleteAllChars(worldId: number): Promise<{ success: boolean; count: number }>
   removeImage(id: number): Promise<{ success: boolean }>
 
   //import & export
-  exportCharacters(): Promise<{ success: boolean }>
-  importCharacters(): Promise<{ success: boolean; count?: number }>
+  exportCharacters(worldId: number): Promise<{ success: boolean }>
+  importCharacters(worldId: number): Promise<{ success: boolean; count?: number }>
 
   // TAGS
   //create
-  createTag(tagName: string): Promise<{ success: boolean, newId: number }>
+  createTag(tagName: string, worldId: number): Promise<{ success: boolean, newId: number }>
 
   //read
-  getTags(): Promise<TagType[]>
+  getTags(worldId: number): Promise<TagType[]>
   getCharacterTags(characterId: number): Promise<TagType[]>
-  getTagSuggestions(query: string): Promise<TagType[]>
-  searchCharactersByTag(tagName: string,  column: string, reverse: boolean): Promise<CharacterType[]>
+  getTagSuggestions(query: string, worldId: number): Promise<TagType[]>
+  searchCharactersByTag(tagName: string,  column: string, reverse: boolean, worldId: number): Promise<CharacterType[]>
 
   //update
   updateTag(tag: TagType): Promise<{ success: boolean }>

@@ -27,6 +27,9 @@
   import AvatarEditable from '../components/AvatarEditable.svelte'
   import Tag from '../components/Tag.svelte'
   import TagAdder from '../components/TagAdder.svelte'
+  import { getWorldContext } from '../utils/worldContext.svelte'
+
+  const worldId: number = getWorldContext().activeWorld.id
 
   let character: CharacterType = $state(blankCharacter)
   let { id }: { id: number } = $props()
@@ -85,7 +88,7 @@
   }
   
   onMount(() => {
-    addRecent(id)
+    addRecent(id, worldId)
   })
 
   const togglePinned = async () => {

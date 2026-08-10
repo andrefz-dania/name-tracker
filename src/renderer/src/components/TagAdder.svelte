@@ -3,6 +3,7 @@
   import ButtonDecorated from './ButtonDecorated.svelte'
   import type { TagType } from '../../../types/types'
   import Tag from './Tag.svelte'
+  import { getWorldContext } from '../utils/worldContext.svelte'
 
   type Props = {
     tags: TagType[]
@@ -13,8 +14,10 @@
 
   let allTags: TagType[] = $state([])
 
+  const worldId = getWorldContext().activeWorld.id
+
   async function fetchTags() {
-    const fetched = await window.api.getTags()
+    const fetched = await window.api.getTags(worldId)
     allTags = fetched
   }
 

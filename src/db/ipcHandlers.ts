@@ -5,24 +5,24 @@ import { Jimp } from 'jimp'
 
 export default function setupHandlers(db) {
   // characters
-  ipcMain.handle('createChar', (_, character: CharacterType) => {
-    return db.createChar(character)
+  ipcMain.handle('createChar', (_, character: CharacterType, worldId: number) => {
+    return db.createChar(character, worldId)
   })
 
   ipcMain.handle('deleteChar', (_, id: number) => {
     return db.deleteChar(id)
   })
 
-  ipcMain.handle('deleteAllChars', () => {
-    return db.deleteAllChars()
+  ipcMain.handle('deleteAllChars', (_, worldId: number) => {
+    return db.deleteAllChars(worldId)
   })
 
-  ipcMain.handle('getCount', () => {
-    return db.getCount()
+  ipcMain.handle('getCount', (_, worldId: number) => {
+    return db.getCount(worldId)
   })
 
-  ipcMain.handle('readAllChars', () => {
-    return db.readAllChars()
+  ipcMain.handle('readAllChars', (_, worldId: number) => {
+    return db.readAllChars(worldId)
   })
 
   ipcMain.handle('readOneChar', (_, id: number) => {
@@ -33,8 +33,8 @@ export default function setupHandlers(db) {
     return db.readList(list)
   })
 
-  ipcMain.handle('readPinned', () => {
-    return db.readPinned()
+  ipcMain.handle('readPinned', (_, worldId: number) => {
+    return db.readPinned(worldId)
   })
 
   ipcMain.handle('loadImage', (_, id: number) => {
@@ -49,18 +49,14 @@ export default function setupHandlers(db) {
     return db.updateChar(character)
   })
 
-  ipcMain.handle('searchChars', (_, searchQuery: string, column: string, reverse: boolean) => {
-    return db.searchChars(searchQuery, column, reverse)
+  ipcMain.handle('searchChars', (_, searchQuery: string, column: string, reverse: boolean, worldId: number) => {
+    return db.searchChars(searchQuery, column, reverse, worldId)
   })
 
-  ipcMain.handle('deepSearchChars', (_, searchQuery: string) => {
-    return db.searchChars(searchQuery)
-  })
-
-  ipcMain.handle('exportCharacters', async () => {
+  ipcMain.handle('exportCharacters', async (_, worldId: number) => {
     console.log('Exporting characters to file...')
 
-    const characters = await db.readAllChars()
+    const characters = await db.readAllChars(worldId)
 
     // remove ID and Pinned fields, and account for valueless fields
     const data = characters.map((c) => ({
@@ -96,7 +92,7 @@ export default function setupHandlers(db) {
     }
   })
 
-  ipcMain.handle('importCharacters', async () => {
+  ipcMain.handle('importCharacters', async (_, worldId: number) => {
     const file = await dialog.showOpenDialog({
       title: 'Import Data',
       filters: [{ name: 'JSON', extensions: ['json'] }]
@@ -121,7 +117,7 @@ export default function setupHandlers(db) {
       }))
 
       characters.forEach((c) => {
-        db.createChar(c)
+        db.createChar(c, worldId)
       })
       return { success: true, count: characters.length }
     } catch (error) {
@@ -173,12 +169,12 @@ export default function setupHandlers(db) {
   })
 
   // tags
-  ipcMain.handle('getTags', async () => {
-    return db.getTags()
+  ipcMain.handle('getTags', async (_, worldId: number) => {
+    return db.getTags(worldId)
   })
 
-  ipcMain.handle('createTag', async (_, tag: TagType) => {
-    return db.createTag(tag)
+  ipcMain.handle('createTag', async (_, tag: TagType, worldId: number) => {
+    return db.createTag(tag, worldId)
   })
 
   ipcMain.handle('updateTag', async (_, tag: TagType) => {
@@ -201,8 +197,8 @@ export default function setupHandlers(db) {
     return db.searchCharactersByTag(tagName, column, reverse)
   })
 
-  ipcMain.handle('getTagSuggestions', async (_, query: string) => {
-    return db.getTagSuggestions(query)
+  ipcMain.handle('getTagSuggestions', async (_, query: string, worldId: number) => {
+    return db.getTagSuggestions(query, worldId)
   })
 
   // worlds

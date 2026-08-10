@@ -26,6 +26,7 @@
     type TagType
   } from '../../../types/types'
   import CharacterCardImage from './CharacterCardImage.svelte'
+  import { getWorldContext } from '../utils/worldContext.svelte'
 
   let { interfaceConfig }: { interfaceConfig: InterfaceConfig } = $props()
 
@@ -63,6 +64,10 @@
   let selectedSuggestion: number | null = $state(null)
 
   const debouncedSearch = $derived(debounce(search, 300))
+
+
+
+  const worldId: number = getWorldContext().activeWorld.id
 
   $effect(() => {
     // instantly re-fetch the full list when the field is cleared
@@ -109,12 +114,12 @@
   }
 
   async function getCharacters() {
-    characters = await window.api.readAllChars()
+    characters = await window.api.readAllChars(worldId)
   }
 
   async function getTagSuggestions() {
     const unhashedTerm = searchTerm.split('#')[1]
-    tagSuggestions = await window.api.getTagSuggestions(unhashedTerm)
+    tagSuggestions = await window.api.getTagSuggestions(unhashedTerm, worldId)
     selectedSuggestion = 0
   }
 
@@ -122,11 +127,11 @@
     if (searchInTags) {
       const unhashedTerm = searchTerm.split('#')[1]
       getTagSuggestions()
-      characters = await window.api.searchCharactersByTag(unhashedTerm, sortColumn, sortReverse)
+      characters = await window.api.searchCharactersByTag(unhashedTerm, sortColumn, sortReverse, worldId)
       console.log('searching for tag #' + unhashedTerm)
     } else {
       tagSuggestions = []
-      characters = await window.api.searchChars(searchTerm, sortColumn, sortReverse)
+      characters = await window.api.searchChars(searchTerm, sortColumn, sortReverse, worldId)
       console.log('searching for', searchTerm)
     }
 

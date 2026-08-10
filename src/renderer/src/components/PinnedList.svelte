@@ -2,11 +2,14 @@
   import { Pin } from '@lucide/svelte'
   import type { CharacterType } from '../../../types/types'
   import PinnedCharacter from './PinnedCharacter.svelte'
+  import { getWorldContext } from '../utils/worldContext.svelte'
 
   let pinnedCharacters: CharacterType[] | [] = $state([])
 
+  const worldId: number = getWorldContext().activeWorld.id
+
   async function getCharacters() {
-    pinnedCharacters = await window.api.readPinned()
+    pinnedCharacters = await window.api.readPinned(worldId)
   }
 
   getCharacters();

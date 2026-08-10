@@ -56,6 +56,8 @@
     }
   }
 
+  const worldId: number = getWorldContext().activeWorld.id
+
   // RESETS
   const restoreDefaults = () => {
     interfaceConfig = defaultInterfaceConfig
@@ -64,7 +66,7 @@
   }
 
   const handleDeleteAll = async () => {
-    const response = await window.api.deleteAllChars()
+    const response = await window.api.deleteAllChars(worldId)
     if (response.success) {
       sendNotif(notif, `Deleted ${response.count} characters`, 'positive')
     } else {
@@ -103,7 +105,7 @@
 
   const handleExport = async () => {
     sendNotif(notif, 'Exporting characters...', 'progress')
-    const response = await window.api.exportCharacters()
+    const response = await window.api.exportCharacters(worldId)
     if (response.success) {
       sendNotif(notif, `Export finished`, 'positive')
     } else {
@@ -113,7 +115,7 @@
 
   const handleImport = async () => {
     sendNotif(notif, 'Importing characters...', 'progress')
-    const response = await window.api.importCharacters()
+    const response = await window.api.importCharacters(worldId)
     if (response.success) {
       sendNotif(notif, `Imported ${response.count} characters`, 'positive')
     } else {
@@ -122,8 +124,6 @@
   }
 
   // WORLD
-  const worldContext = getWorldContext()
-  const worldId = worldContext.activeWorld.id
   let world: WorldType | null = $state(null)
   let newWorldName: string = $state('')
   let newWorldDesc: string = $state('')
@@ -161,14 +161,14 @@
   let newTagName: string = $state('')
 
   async function getTags() {
-    tags = await window.api.getTags()
+    tags = await window.api.getTags(worldId)
   }
   getWorldInfo()
   getTags()
 
   const createTag = async (e) => {
     e.preventDefault()
-    const response = await window.api.createTag(newTagName)
+    const response = await window.api.createTag(newTagName, worldId)
     if (response.success) {
       tags = [...tags, { id: response.newId, tag_name: newTagName }]
       newTagName = ''
