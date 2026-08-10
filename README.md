@@ -35,6 +35,8 @@ Follow the development instructions and run the build command for your OS - inst
 - Hotkeys (partial)
 - add images to each character
 - character tags and tag search
+- Create multiple worlds and switch between them
+- Each world has its own characters and tags
 
 **Sorting**
 - Search all characters
@@ -51,7 +53,7 @@ Follow the development instructions and run the build command for your OS - inst
 ---
 
 ### Planned
-- markdown editing
+- markdown text editing
 - deep search
 - quickly swap character status from the search list
 - persist scroll location
@@ -59,8 +61,6 @@ Follow the development instructions and run the build command for your OS - inst
 - character relationships
 - timeline / events for each character
 - custom time system
-- multiple worlds
-- distribution / installers
 - flathub package
 
 
