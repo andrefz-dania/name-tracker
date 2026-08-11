@@ -8,10 +8,10 @@ Name is subject to change.
 This is an Electron application made with Svelte and TypeScript. It is aimed at fantasy/scifi writers, tabletop gamemasters, and other similar creative worldbuilding. The goal is to create an application that lets you track and manage a large list of characters, while keeping everything local.
 
 ## Screenshots
-<img width="605" height="513" alt="carabace_search" src="https://github.com/user-attachments/assets/4dc937e7-1058-4daf-a048-ebb75e77c4d7" />
-<img width="605" height="513" alt="carabace_command" src="https://github.com/user-attachments/assets/e39a7566-2fc0-4eaa-9f22-5dafbd5931b7" />
-<img width="605" height="513" alt="carabace_char" src="https://github.com/user-attachments/assets/80878dde-eec0-415a-88ed-4afc98423a71" />
-<img width="605" height="513" alt="carabace_settings" src="https://github.com/user-attachments/assets/00224a15-d247-47ec-a670-073c12db1023" />
+<img width="300" height="255" alt="carabace_search" src="https://github.com/user-attachments/assets/4dc937e7-1058-4daf-a048-ebb75e77c4d7" />
+<img width="300" height="255" alt="carabace_command" src="https://github.com/user-attachments/assets/e39a7566-2fc0-4eaa-9f22-5dafbd5931b7" />
+<img width="300" height="255" alt="carabace_char" src="https://github.com/user-attachments/assets/80878dde-eec0-415a-88ed-4afc98423a71" />
+<img width="300" height="255" alt="carabace_settings" src="https://github.com/user-attachments/assets/00224a15-d247-47ec-a670-073c12db1023" />
 
 ---
 
