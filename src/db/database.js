@@ -1,6 +1,7 @@
 import { app } from 'electron'
 import path from 'node:path'
 import { is } from '@electron-toolkit/utils'
+import { evaluateColumn } from './helpers'
 const Database = require('better-sqlite3')
 
 const options = {}
@@ -146,6 +147,8 @@ class CharacterDb {
 
     console.log('Database setup complete')
   }
+
+  // OTHER FUNCTIONS
   // CHARACTER QUERIES ---
   createChar(character, worldId) {
     const insertQuery = `INSERT INTO characters (name, desc, dead, age, gender, location, occupation, species, world_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
@@ -332,20 +335,6 @@ class CharacterDb {
 
   searchChars(query, column, reverse, worldId) {
     const direction = reverse ? 'DESC' : 'ASC'
-    function evaluateColumn(column) {
-      if (
-        column == 'species' ||
-        column == 'gender' ||
-        column == 'location' ||
-        column == 'occupation'
-      ) {
-        return column
-      } else if (column == 'status') {
-        return 'dead'
-      } else {
-        return 'name'
-      }
-    }
     const protectedColumn = evaluateColumn(column)
     const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? AND world_id = ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
@@ -414,7 +403,7 @@ class CharacterDb {
       const deleteQuery = `DELETE FROM tag_map WHERE character_id=?`
       const deleteStmt = this.db.prepare(deleteQuery)
       const deleteResponse = deleteStmt.run(characterId)
-      console.log(deleteResponse)
+      deletedCount = deleteResponse.changes
     } catch (error) {
       errors = true
       console.error(`Failed to delete all tags for character ${characterId}:`, error.message)
@@ -450,20 +439,6 @@ class CharacterDb {
 
   searchCharactersByTag(tagName, column, reverse) {
     const direction = reverse ? 'DESC' : 'ASC'
-    function evaluateColumn(column) {
-      if (
-        column == 'species' ||
-        column == 'gender' ||
-        column == 'location' ||
-        column == 'occupation'
-      ) {
-        return column
-      } else if (column == 'status') {
-        return 'dead'
-      } else {
-        return 'name'
-      }
-    }
     const protectedColumn = evaluateColumn(column)
     const selectQuery = `SELECT c.id, c.name, c.species, c.gender, c.occupation, c.dead, c.location, c.desc FROM characters c JOIN tag_map tm ON c.id = tm.character_id JOIN tags t ON tm.tag_id = t.id WHERE t.tag_name = ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
@@ -555,7 +530,7 @@ class CharacterDb {
       // setup required queries
       const deleteStmt = this.db.prepare(`DELETE FROM worlds WHERE id=?`)
       const deleteCharactersStmt = this.db.prepare(`DELETE FROM characters WHERE world_id=?`)
-      const deleteTagMapStmt = this.db.prepare(`DELETE FROM tag_map WHERE id IN (SELECT id FROM tags WHERE world_id=?)`)
+      const deleteTagMapStmt = this.db.prepare(`DELETE FROM tag_map WHERE tag_id IN (SELECT id FROM tags WHERE world_id=?)`)
       const deleteTagsStmt = this.db.prepare(`DELETE FROM tags WHERE world_id=?`)
 
       // run queries in order, make sure dependent tables are wiped first
