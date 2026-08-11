@@ -87,7 +87,7 @@ class CharacterDb {
       const addWorldsToTagsSql = `ALTER TABLE tags ADD COLUMN world_id INTEGER`
       this.db.exec(addWorldsToTagsSql)
     } catch (error) {
-            if (error && error.code == 'SQLITE_ERROR') {
+      if (error && error.code == 'SQLITE_ERROR') {
         console.log('World_id column already exists on tags, skipping...')
       } else {
         console.error(error)
@@ -113,15 +113,17 @@ class CharacterDb {
       }
     }
 
-
-
     if (!hasWorlds) {
       // create a default world
       try {
         console.log('Creating default world...')
         const createWorldSql = `INSERT INTO worlds (id, name, description) VALUES (?, ?, ?)`
         const stmt = this.db.prepare(createWorldSql)
-        const response = stmt.run(0, 'My World', 'This is the default world created when this app is first run. Edit the name and description in the settings menu to make it yours!')
+        const response = stmt.run(
+          0,
+          'My World',
+          'This is the default world created when this app is first run. Edit the name and description in the settings menu to make it yours!'
+        )
       } catch (error) {
         console.error(error)
       }
@@ -398,30 +400,29 @@ class CharacterDb {
     let addedCount = 0
     let errors = false
 
-    // remove all tags for this character first
-    try {
+    const transaction = this.db.transaction(() => {
+      // remove all tags for this character first
       const deleteQuery = `DELETE FROM tag_map WHERE character_id=?`
       const deleteStmt = this.db.prepare(deleteQuery)
       const deleteResponse = deleteStmt.run(characterId)
       deletedCount = deleteResponse.changes
+
+      // then add each desired tag
+      const insertQuery = `INSERT INTO tag_map (character_id, tag_id) VALUES (?,?)`
+      const insertStmt = this.db.prepare(insertQuery)
+
+      tagIds.forEach((tagId) => {
+          insertStmt.run(characterId, tagId)
+          addedCount++
+        })
+      })
+
+    try {
+      transaction()
     } catch (error) {
+      console.error(`Failed to add tag ${tagIds} for character ${characterId}:`, err.message)
       errors = true
-      console.error(`Failed to delete all tags for character ${characterId}:`, error.message)
     }
-
-    // then add each desired tag
-    const insertQuery = `INSERT INTO tag_map (character_id, tag_id) VALUES (?,?)`
-    const insertStmt = this.db.prepare(insertQuery)
-
-    tagIds.forEach((tagId) => {
-      try {
-        insertStmt.run(characterId, tagId)
-        addedCount++
-      } catch (err) {
-        errors = true
-        console.error(`Failed to add tag ${tagId} for character ${characterId}:`, err.message)
-      }
-    })
 
     return {
       success: !errors,
@@ -450,7 +451,7 @@ class CharacterDb {
   getTagSuggestions(query, worldId) {
     const selectQuery = `SELECT * FROM tags WHERE tag_name LIKE ? AND world_id = ?`
     const stmt = this.db.prepare(selectQuery, worldId)
-    const response = stmt.all('%' + query + '%')
+    const response = stmt.all('%' + query + '%', worldId)
     return response
   }
 
@@ -459,14 +460,14 @@ class CharacterDb {
     const selectQuery = `SELECT * FROM worlds`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
-    return response;
+    return response
   }
 
   getWorld(id) {
     const selectQuery = `SELECT * FROM worlds WHERE id = ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.get(id)
-    return response;
+    return response
   }
 
   createWorld(world) {
@@ -497,7 +498,7 @@ class CharacterDb {
     }
   }
 
-    accessWorld(id) {
+  accessWorld(id) {
     const insertQuery = `UPDATE worlds SET last_accessed=? WHERE id=?`
     const timestamp = new Date().valueOf()
     const stmt = this.db.prepare(insertQuery)
@@ -522,37 +523,35 @@ class CharacterDb {
     const response = stmt.all()
 
     if (response.length < 2) {
-      return {success: false}
+      return { success: false }
     }
 
     const transaction = this.db.transaction((worldId) => {
-
       // setup required queries
       const deleteStmt = this.db.prepare(`DELETE FROM worlds WHERE id=?`)
       const deleteCharactersStmt = this.db.prepare(`DELETE FROM characters WHERE world_id=?`)
-      const deleteTagMapStmt = this.db.prepare(`DELETE FROM tag_map WHERE tag_id IN (SELECT id FROM tags WHERE world_id=?)`)
+      const deleteTagMapStmt = this.db.prepare(
+        `DELETE FROM tag_map WHERE tag_id IN (SELECT id FROM tags WHERE world_id=?)`
+      )
       const deleteTagsStmt = this.db.prepare(`DELETE FROM tags WHERE world_id=?`)
 
       // run queries in order, make sure dependent tables are wiped first
-      deleteTagMapStmt.run(worldId);
-      deleteTagsStmt.run(worldId);
-      deleteCharactersStmt.run(worldId);
-      deleteStmt.run(worldId);
-
+      deleteTagMapStmt.run(worldId)
+      deleteTagsStmt.run(worldId)
+      deleteCharactersStmt.run(worldId)
+      deleteStmt.run(worldId)
     })
 
     try {
       transaction(id)
       console.log('World deleted successfully')
-      return {success: true}
+      return { success: true }
     } catch (error) {
       console.log('World deletion failed, cancelling transaction.')
       console.error(error)
-      return {success: false}
+      return { success: false }
     }
   }
-
-
 
   close() {
     this.db.close()
