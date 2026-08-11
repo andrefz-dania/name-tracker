@@ -1,7 +1,7 @@
 import { app } from 'electron'
 import path from 'node:path'
 import { is } from '@electron-toolkit/utils'
-import { evaluateColumn } from './helpers'
+import { evaluateColumn, isNewerVersion } from './helpers'
 const Database = require('better-sqlite3')
 
 const options = {}
@@ -15,7 +15,39 @@ class CharacterDb {
     this.setup()
   }
   setup() {
-    const setupCharactersSql = `CREATE TABLE IF NOT EXISTS characters (
+    const APP_VERSION = app.getVersion()
+    let DB_VERSION = '0.0.0'
+    console.log('Configuring database...')
+    const versioningExists = this.db
+      .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?")
+      .get('dbinfo')
+
+    // setup versioning if it doesn't already exist
+    if (!versioningExists) {
+      const setupVersioningSql = `CREATE TABLE IF NOT EXISTS dbinfo (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        version TEXT
+        )`
+      this.db.exec(setupVersioningSql)
+    } else {
+      try {
+        DB_VERSION = this.db.prepare('SELECT version FROM dbinfo').get().version
+      } catch (error) {
+        console.log('No version found in info table.')
+        const addVersionSql = `INSERT INTO dbinfo (version) VALUES (?)`
+        const versioningUpdate = this.db.prepare(addVersionSql).run('0.0.0')
+        DB_VERSION = '0.0.0' //if no versioning is present, run all updates
+      }
+    }
+
+    console.log('App Version: ' + APP_VERSION)
+    console.log('Database version: ' + DB_VERSION)
+
+    // const updateVersionSql = `UPDATE dbinfo SET version = ?`
+    // const versioningUpdate = this.db.prepare(updateVersionSql).run(APP_VERSION)
+
+    if (isNewerVersion(APP_VERSION, DB_VERSION)) {
+      const setupCharactersSql = `CREATE TABLE IF NOT EXISTS characters (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         desc TEXT,
@@ -28,125 +60,131 @@ class CharacterDb {
         pinned BOOLEAN DEFAULT 0,
         image BLOB
         )`
-    console.log('Configuring database...')
-    this.db.exec(setupCharactersSql)
 
-    const setupTagsSql = `CREATE TABLE IF NOT EXISTS tags (
+      this.db.exec(setupCharactersSql)
+
+      const setupTagsSql = `CREATE TABLE IF NOT EXISTS tags (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
         tag_name TEXT NOT NULL)`
 
-    const setupCharacterTagsSql = `CREATE TABLE IF NOT EXISTS tag_map (
+      const setupCharacterTagsSql = `CREATE TABLE IF NOT EXISTS tag_map (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
      character_id INTEGER NOT NULL,
      tag_id INTEGER NOT NULL)`
 
-    console.log('setting up tagging...')
-    this.db.exec(setupTagsSql)
-    this.db.exec(setupCharacterTagsSql)
+      console.log('setting up tagging...')
+      this.db.exec(setupTagsSql)
+      this.db.exec(setupCharacterTagsSql)
 
-    // support legacy v0.0.1 to v0.3.0 installations
-    console.log('Performing legacy support checks...')
-    try {
-      const setupPinnedSql = `ALTER TABLE characters ADD COLUMN pinned BOOLEAN DEFAULT 0`
-      this.db.exec(setupPinnedSql)
-    } catch (error) {
-      console.log('Pinned column already exists, skipping...')
-    }
+      // support legacy v0.0.1 to v0.3.0 installations
+      console.log('Performing legacy support checks...')
+      try {
+        const setupPinnedSql = `ALTER TABLE characters ADD COLUMN pinned BOOLEAN DEFAULT 0`
+        this.db.exec(setupPinnedSql)
+      } catch (error) {
+        console.log('Pinned column already exists, skipping...')
+      }
 
-    try {
-      const setupImageSql = `ALTER TABLE characters ADD COLUMN image BLOB`
-      this.db.exec(setupImageSql)
-    } catch (error) {
-      console.log('Image column already exists, skipping...')
-    }
+      try {
+        const setupImageSql = `ALTER TABLE characters ADD COLUMN image BLOB`
+        this.db.exec(setupImageSql)
+      } catch (error) {
+        console.log('Image column already exists, skipping...')
+      }
 
-    console.log('migrating to 0.6 worlds system...')
-    try {
-      const createWorldstableSql = `CREATE TABLE IF NOT EXISTS worlds (
+      console.log('migrating to 0.6 worlds system...')
+      try {
+        const createWorldstableSql = `CREATE TABLE IF NOT EXISTS worlds (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
        name TEXT NOT NULL,
        description TEXT,
        last_accessed INTEGER)`
-      this.db.exec(createWorldstableSql)
-    } catch (error) {
-      console.error(error)
-    }
-
-    try {
-      const addWorldsToCharactersSql = `ALTER TABLE characters ADD COLUMN world_id INTEGER`
-      this.db.exec(addWorldsToCharactersSql)
-    } catch (error) {
-      if (error && error.code == 'SQLITE_ERROR') {
-        console.log('World_id column already exists on characters, skipping...')
-      } else {
-        console.error(error)
-      }
-    }
-
-    try {
-      const addWorldsToTagsSql = `ALTER TABLE tags ADD COLUMN world_id INTEGER`
-      this.db.exec(addWorldsToTagsSql)
-    } catch (error) {
-      if (error && error.code == 'SQLITE_ERROR') {
-        console.log('World_id column already exists on tags, skipping...')
-      } else {
-        console.error(error)
-      }
-    }
-
-    // check if there are any existing worlds
-    let hasWorlds = false
-
-    // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
-    // this.db.exec(tempDeleteWorldsTable)
-
-    try {
-      const checkWorldsQuery = this.db.prepare(`SELECT * FROM worlds`)
-      const existingWorlds = checkWorldsQuery.all()
-      if (existingWorlds.length > 0) {
-        console.log('Found existing worlds, skipping further migrations...')
-        hasWorlds = true
-      }
-    } catch (error) {
-      if (error && error.code) {
-        console.error(error)
-      }
-    }
-
-    if (!hasWorlds) {
-      // create a default world
-      try {
-        console.log('Creating default world...')
-        const createWorldSql = `INSERT INTO worlds (id, name, description) VALUES (?, ?, ?)`
-        const stmt = this.db.prepare(createWorldSql)
-        const response = stmt.run(
-          0,
-          'My World',
-          'This is the default world created when this app is first run. Edit the name and description in the settings menu to make it yours!'
-        )
+        this.db.exec(createWorldstableSql)
       } catch (error) {
         console.error(error)
       }
 
-      // backfill all existing characters with world ID
       try {
-        console.log('Migrating characters table...')
-        const addWorldIdSql = `UPDATE characters SET world_id = 0`
-        this.db.exec(addWorldIdSql)
+        const addWorldsToCharactersSql = `ALTER TABLE characters ADD COLUMN world_id INTEGER`
+        this.db.exec(addWorldsToCharactersSql)
       } catch (error) {
-        console.error(error)
+        if (error && error.code == 'SQLITE_ERROR') {
+          console.log('World_id column already exists on characters, skipping...')
+        } else {
+          console.error(error)
+        }
       }
 
-      // do the same for tags
       try {
-        console.log('Migrating tags table...')
-        const addWorldIdSql = `UPDATE tags SET world_id = 0`
-        this.db.exec(addWorldIdSql)
+        const addWorldsToTagsSql = `ALTER TABLE tags ADD COLUMN world_id INTEGER`
+        this.db.exec(addWorldsToTagsSql)
       } catch (error) {
-        console.error(error)
+        if (error && error.code == 'SQLITE_ERROR') {
+          console.log('World_id column already exists on tags, skipping...')
+        } else {
+          console.error(error)
+        }
       }
+
+      // check if there are any existing worlds
+      let hasWorlds = false
+
+      // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
+      // this.db.exec(tempDeleteWorldsTable)
+
+      try {
+        const checkWorldsQuery = this.db.prepare(`SELECT * FROM worlds`)
+        const existingWorlds = checkWorldsQuery.all()
+        if (existingWorlds.length > 0) {
+          console.log('Found existing worlds, skipping further migrations...')
+          hasWorlds = true
+        }
+      } catch (error) {
+        if (error && error.code) {
+          console.error(error)
+        }
+      }
+
+      if (!hasWorlds) {
+        // create a default world
+        try {
+          console.log('Creating default world...')
+          const createWorldSql = `INSERT INTO worlds (id, name, description) VALUES (?, ?, ?)`
+          const stmt = this.db.prepare(createWorldSql)
+          const response = stmt.run(
+            0,
+            'My World',
+            'This is the default world created when this app is first run. Edit the name and description in the settings menu to make it yours!'
+          )
+        } catch (error) {
+          console.error(error)
+        }
+
+        // backfill all existing characters with world ID
+        try {
+          console.log('Migrating characters table...')
+          const addWorldIdSql = `UPDATE characters SET world_id = 0`
+          this.db.exec(addWorldIdSql)
+        } catch (error) {
+          console.error(error)
+        }
+
+        // do the same for tags
+        try {
+          console.log('Migrating tags table...')
+          const addWorldIdSql = `UPDATE tags SET world_id = 0`
+          this.db.exec(addWorldIdSql)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+
+      // update database version to current once completed
+      this.db.prepare('UPDATE dbinfo SET version = ?').run(APP_VERSION);
+
+    } else {
+      console.log('Database does not require update')
     }
-
     console.log('Database setup complete')
   }
 
@@ -412,10 +450,10 @@ class CharacterDb {
       const insertStmt = this.db.prepare(insertQuery)
 
       tagIds.forEach((tagId) => {
-          insertStmt.run(characterId, tagId)
-          addedCount++
-        })
+        insertStmt.run(characterId, tagId)
+        addedCount++
       })
+    })
 
     try {
       transaction()
