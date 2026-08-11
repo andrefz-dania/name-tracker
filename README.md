@@ -1,5 +1,12 @@
 # CaraBace
 
+## Screenshots
+<img width="1210" height="1026" alt="carabace_main" src="https://github.com/user-attachments/assets/4be03730-2dea-4ccb-af10-a10e6fb3c703" />
+<img width="1210" height="1026" alt="carabace_search" src="https://github.com/user-attachments/assets/4dc937e7-1058-4daf-a048-ebb75e77c4d7" />
+<img width="1210" height="1026" alt="carabace_command" src="https://github.com/user-attachments/assets/e39a7566-2fc0-4eaa-9f22-5dafbd5931b7" />
+<img width="1210" height="1026" alt="carabace_char" src="https://github.com/user-attachments/assets/80878dde-eec0-415a-88ed-4afc98423a71" />
+<img width="1210" height="1026" alt="carabace_settings" src="https://github.com/user-attachments/assets/00224a15-d247-47ec-a670-073c12db1023" />
+
 ## About
 
 Name is subject to change.
