@@ -1,6 +1,7 @@
 import { app } from 'electron'
 import path from 'node:path'
 import { is } from '@electron-toolkit/utils'
+import { evaluateColumn, isNewerVersion } from './helpers'
 const Database = require('better-sqlite3')
 
 const options = {}
@@ -14,7 +15,39 @@ class CharacterDb {
     this.setup()
   }
   setup() {
-    const setupCharactersSql = `CREATE TABLE IF NOT EXISTS characters (
+    const APP_VERSION = app.getVersion()
+    let DB_VERSION = '0.0.0'
+    console.log('Configuring database...')
+    const versioningExists = this.db
+      .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?")
+      .get('dbinfo')
+
+    // setup versioning if it doesn't already exist
+    if (!versioningExists) {
+      const setupVersioningSql = `CREATE TABLE IF NOT EXISTS dbinfo (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        version TEXT
+        )`
+      this.db.exec(setupVersioningSql)
+    } else {
+      try {
+        DB_VERSION = this.db.prepare('SELECT version FROM dbinfo').get().version
+      } catch (error) {
+        console.log('No version found in info table.')
+        const addVersionSql = `INSERT INTO dbinfo (version) VALUES (?)`
+        const versioningUpdate = this.db.prepare(addVersionSql).run('0.0.0')
+        DB_VERSION = '0.0.0' //if no versioning is present, run all updates
+      }
+    }
+
+    console.log('App Version: ' + APP_VERSION)
+    console.log('Database version: ' + DB_VERSION)
+
+    // const updateVersionSql = `UPDATE dbinfo SET version = ?`
+    // const versioningUpdate = this.db.prepare(updateVersionSql).run(APP_VERSION)
+
+    if (isNewerVersion(APP_VERSION, DB_VERSION)) {
+      const setupCharactersSql = `CREATE TABLE IF NOT EXISTS characters (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         desc TEXT,
@@ -27,125 +60,135 @@ class CharacterDb {
         pinned BOOLEAN DEFAULT 0,
         image BLOB
         )`
-    console.log('Configuring database...')
-    this.db.exec(setupCharactersSql)
 
-    const setupTagsSql = `CREATE TABLE IF NOT EXISTS tags (
+      this.db.exec(setupCharactersSql)
+
+      const setupTagsSql = `CREATE TABLE IF NOT EXISTS tags (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
         tag_name TEXT NOT NULL)`
 
-    const setupCharacterTagsSql = `CREATE TABLE IF NOT EXISTS tag_map (
+      const setupCharacterTagsSql = `CREATE TABLE IF NOT EXISTS tag_map (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
      character_id INTEGER NOT NULL,
      tag_id INTEGER NOT NULL)`
 
-    console.log('setting up tagging...')
-    this.db.exec(setupTagsSql)
-    this.db.exec(setupCharacterTagsSql)
+      console.log('setting up tagging...')
+      this.db.exec(setupTagsSql)
+      this.db.exec(setupCharacterTagsSql)
 
-    // support legacy v0.0.1 to v0.3.0 installations
-    console.log('Performing legacy support checks...')
-    try {
-      const setupPinnedSql = `ALTER TABLE characters ADD COLUMN pinned BOOLEAN DEFAULT 0`
-      this.db.exec(setupPinnedSql)
-    } catch (error) {
-      console.log('Pinned column already exists, skipping...')
-    }
+      // support legacy v0.0.1 to v0.3.0 installations
+      console.log('Performing legacy support checks...')
+      try {
+        const setupPinnedSql = `ALTER TABLE characters ADD COLUMN pinned BOOLEAN DEFAULT 0`
+        this.db.exec(setupPinnedSql)
+      } catch (error) {
+        console.log('Pinned column already exists, skipping...')
+      }
 
-    try {
-      const setupImageSql = `ALTER TABLE characters ADD COLUMN image BLOB`
-      this.db.exec(setupImageSql)
-    } catch (error) {
-      console.log('Image column already exists, skipping...')
-    }
+      try {
+        const setupImageSql = `ALTER TABLE characters ADD COLUMN image BLOB`
+        this.db.exec(setupImageSql)
+      } catch (error) {
+        console.log('Image column already exists, skipping...')
+      }
 
-    console.log('migrating to 0.6 worlds system...')
-    try {
-      const createWorldstableSql = `CREATE TABLE IF NOT EXISTS worlds (
+      console.log('migrating to 0.6 worlds system...')
+      try {
+        const createWorldstableSql = `CREATE TABLE IF NOT EXISTS worlds (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
        name TEXT NOT NULL,
        description TEXT,
        last_accessed INTEGER)`
-      this.db.exec(createWorldstableSql)
-    } catch (error) {
-      console.error(error)
-    }
-
-    try {
-      const addWorldsToCharactersSql = `ALTER TABLE characters ADD COLUMN world_id INTEGER`
-      this.db.exec(addWorldsToCharactersSql)
-    } catch (error) {
-      if (error && error.code == 'SQLITE_ERROR') {
-        console.log('World_id column already exists on characters, skipping...')
-      } else {
-        console.error(error)
-      }
-    }
-
-    try {
-      const addWorldsToTagsSql = `ALTER TABLE tags ADD COLUMN world_id INTEGER`
-      this.db.exec(addWorldsToTagsSql)
-    } catch (error) {
-            if (error && error.code == 'SQLITE_ERROR') {
-        console.log('World_id column already exists on tags, skipping...')
-      } else {
-        console.error(error)
-      }
-    }
-
-    // check if there are any existing worlds
-    let hasWorlds = false
-
-    // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
-    // this.db.exec(tempDeleteWorldsTable)
-
-    try {
-      const checkWorldsQuery = this.db.prepare(`SELECT * FROM worlds`)
-      const existingWorlds = checkWorldsQuery.all()
-      if (existingWorlds.length > 0) {
-        console.log('Found existing worlds, skipping further migrations...')
-        hasWorlds = true
-      }
-    } catch (error) {
-      if (error && error.code) {
-        console.error(error)
-      }
-    }
-
-
-
-    if (!hasWorlds) {
-      // create a default world
-      try {
-        console.log('Creating default world...')
-        const createWorldSql = `INSERT INTO worlds (id, name, description) VALUES (?, ?, ?)`
-        const stmt = this.db.prepare(createWorldSql)
-        const response = stmt.run(0, 'My World', 'This is the default world created when this app is first run. Edit the name and description in the settings menu to make it yours!')
+        this.db.exec(createWorldstableSql)
       } catch (error) {
         console.error(error)
       }
 
-      // backfill all existing characters with world ID
       try {
-        console.log('Migrating characters table...')
-        const addWorldIdSql = `UPDATE characters SET world_id = 0`
-        this.db.exec(addWorldIdSql)
+        const addWorldsToCharactersSql = `ALTER TABLE characters ADD COLUMN world_id INTEGER`
+        this.db.exec(addWorldsToCharactersSql)
       } catch (error) {
-        console.error(error)
+        if (error && error.code == 'SQLITE_ERROR') {
+          console.log('World_id column already exists on characters, skipping...')
+        } else {
+          console.error(error)
+        }
       }
 
-      // do the same for tags
       try {
-        console.log('Migrating tags table...')
-        const addWorldIdSql = `UPDATE tags SET world_id = 0`
-        this.db.exec(addWorldIdSql)
+        const addWorldsToTagsSql = `ALTER TABLE tags ADD COLUMN world_id INTEGER`
+        this.db.exec(addWorldsToTagsSql)
       } catch (error) {
-        console.error(error)
+        if (error && error.code == 'SQLITE_ERROR') {
+          console.log('World_id column already exists on tags, skipping...')
+        } else {
+          console.error(error)
+        }
       }
+
+      // check if there are any existing worlds
+      let hasWorlds = false
+
+      // const tempDeleteWorldsTable = `DROP TABLE IF EXISTS worlds`
+      // this.db.exec(tempDeleteWorldsTable)
+
+      try {
+        const checkWorldsQuery = this.db.prepare(`SELECT * FROM worlds`)
+        const existingWorlds = checkWorldsQuery.all()
+        if (existingWorlds.length > 0) {
+          console.log('Found existing worlds, skipping further migrations...')
+          hasWorlds = true
+        }
+      } catch (error) {
+        if (error && error.code) {
+          console.error(error)
+        }
+      }
+
+      if (!hasWorlds) {
+        // create a default world
+        try {
+          console.log('Creating default world...')
+          const createWorldSql = `INSERT INTO worlds (id, name, description) VALUES (?, ?, ?)`
+          const stmt = this.db.prepare(createWorldSql)
+          const response = stmt.run(
+            0,
+            'My World',
+            'This is the default world created when this app is first run. Edit the name and description in the settings menu to make it yours!'
+          )
+        } catch (error) {
+          console.error(error)
+        }
+
+        // backfill all existing characters with world ID
+        try {
+          console.log('Migrating characters table...')
+          const addWorldIdSql = `UPDATE characters SET world_id = 0`
+          this.db.exec(addWorldIdSql)
+        } catch (error) {
+          console.error(error)
+        }
+
+        // do the same for tags
+        try {
+          console.log('Migrating tags table...')
+          const addWorldIdSql = `UPDATE tags SET world_id = 0`
+          this.db.exec(addWorldIdSql)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+
+      // update database version to current once completed
+      this.db.prepare('UPDATE dbinfo SET version = ?').run(APP_VERSION);
+
+    } else {
+      console.log('Database does not require update')
     }
-
     console.log('Database setup complete')
   }
+
+  // OTHER FUNCTIONS
   // CHARACTER QUERIES ---
   createChar(character, worldId) {
     const insertQuery = `INSERT INTO characters (name, desc, dead, age, gender, location, occupation, species, world_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
@@ -332,20 +375,6 @@ class CharacterDb {
 
   searchChars(query, column, reverse, worldId) {
     const direction = reverse ? 'DESC' : 'ASC'
-    function evaluateColumn(column) {
-      if (
-        column == 'species' ||
-        column == 'gender' ||
-        column == 'location' ||
-        column == 'occupation'
-      ) {
-        return column
-      } else if (column == 'status') {
-        return 'dead'
-      } else {
-        return 'name'
-      }
-    }
     const protectedColumn = evaluateColumn(column)
     const selectQuery = `SELECT id, name, species, gender, occupation, dead, location, desc FROM characters WHERE name LIKE ? AND world_id = ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
@@ -408,33 +437,30 @@ class CharacterDb {
     let deletedCount = 0
     let addedCount = 0
     let errors = false
-    if (!tagIds.length) {
-      return { success: true, deleted: 0, added: 0 }
-    }
 
-    // remove all tags for this character first
-    try {
+    const transaction = this.db.transaction(() => {
+      // remove all tags for this character first
       const deleteQuery = `DELETE FROM tag_map WHERE character_id=?`
       const deleteStmt = this.db.prepare(deleteQuery)
       const deleteResponse = deleteStmt.run(characterId)
-    } catch (error) {
-      errors = true
-      console.error(`Failed to delete all tags for character ${characterId}:`, error.message)
-    }
+      deletedCount = deleteResponse.changes
 
-    // then add each desired tag
-    const insertQuery = `INSERT INTO tag_map (character_id, tag_id) VALUES (?,?)`
-    const insertStmt = this.db.prepare(insertQuery)
+      // then add each desired tag
+      const insertQuery = `INSERT INTO tag_map (character_id, tag_id) VALUES (?,?)`
+      const insertStmt = this.db.prepare(insertQuery)
 
-    tagIds.forEach((tagId) => {
-      try {
+      tagIds.forEach((tagId) => {
         insertStmt.run(characterId, tagId)
         addedCount++
-      } catch (err) {
-        errors = true
-        console.error(`Failed to add tag ${tagId} for character ${characterId}:`, err.message)
-      }
+      })
     })
+
+    try {
+      transaction()
+    } catch (error) {
+      console.error(`Failed to add tag ${tagIds} for character ${characterId}:`, err.message)
+      errors = true
+    }
 
     return {
       success: !errors,
@@ -452,20 +478,6 @@ class CharacterDb {
 
   searchCharactersByTag(tagName, column, reverse) {
     const direction = reverse ? 'DESC' : 'ASC'
-    function evaluateColumn(column) {
-      if (
-        column == 'species' ||
-        column == 'gender' ||
-        column == 'location' ||
-        column == 'occupation'
-      ) {
-        return column
-      } else if (column == 'status') {
-        return 'dead'
-      } else {
-        return 'name'
-      }
-    }
     const protectedColumn = evaluateColumn(column)
     const selectQuery = `SELECT c.id, c.name, c.species, c.gender, c.occupation, c.dead, c.location, c.desc FROM characters c JOIN tag_map tm ON c.id = tm.character_id JOIN tags t ON tm.tag_id = t.id WHERE t.tag_name = ? ORDER BY ${protectedColumn} ${direction}`
     const stmt = this.db.prepare(selectQuery)
@@ -474,10 +486,10 @@ class CharacterDb {
     return response
   }
 
-  getTagSuggestions(query) {
-    const selectQuery = `SELECT * FROM tags WHERE tag_name LIKE ?`
-    const stmt = this.db.prepare(selectQuery)
-    const response = stmt.all('%' + query + '%')
+  getTagSuggestions(query, worldId) {
+    const selectQuery = `SELECT * FROM tags WHERE tag_name LIKE ? AND world_id = ?`
+    const stmt = this.db.prepare(selectQuery, worldId)
+    const response = stmt.all('%' + query + '%', worldId)
     return response
   }
 
@@ -486,14 +498,14 @@ class CharacterDb {
     const selectQuery = `SELECT * FROM worlds`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.all()
-    return response;
+    return response
   }
 
   getWorld(id) {
     const selectQuery = `SELECT * FROM worlds WHERE id = ?`
     const stmt = this.db.prepare(selectQuery)
     const response = stmt.get(id)
-    return response;
+    return response
   }
 
   createWorld(world) {
@@ -524,7 +536,7 @@ class CharacterDb {
     }
   }
 
-    accessWorld(id) {
+  accessWorld(id) {
     const insertQuery = `UPDATE worlds SET last_accessed=? WHERE id=?`
     const timestamp = new Date().valueOf()
     const stmt = this.db.prepare(insertQuery)
@@ -549,37 +561,35 @@ class CharacterDb {
     const response = stmt.all()
 
     if (response.length < 2) {
-      return {success: false}
+      return { success: false }
     }
 
-    const transaction = db.transaction((worldId) => {
-
+    const transaction = this.db.transaction((worldId) => {
       // setup required queries
-      const deleteStmt = db.prepare(`DELETE FROM worlds WHERE id=?`)
-      const deleteCharactersStmt = db.prepare(`DELETE FROM characters WHERE world_id=?`)
-      const deleteTagMapStmt = db.prepare(`DELETE FROM tag_map WHERE id IN (SELECT id FROM tags WHERE world_id=?)`)
-      const deleteTagsStmt = db.prepare(`DELETE FROM tags WHERE world_id=?`)
+      const deleteStmt = this.db.prepare(`DELETE FROM worlds WHERE id=?`)
+      const deleteCharactersStmt = this.db.prepare(`DELETE FROM characters WHERE world_id=?`)
+      const deleteTagMapStmt = this.db.prepare(
+        `DELETE FROM tag_map WHERE tag_id IN (SELECT id FROM tags WHERE world_id=?)`
+      )
+      const deleteTagsStmt = this.db.prepare(`DELETE FROM tags WHERE world_id=?`)
 
       // run queries in order, make sure dependent tables are wiped first
-      deleteTagMapStmt.run(worldId);
-      deleteTagsStmt.run(worldId);
-      deleteCharactersStmt.run(worldId);
-      deleteWorldsStmt.run(worldId);
-
+      deleteTagMapStmt.run(worldId)
+      deleteTagsStmt.run(worldId)
+      deleteCharactersStmt.run(worldId)
+      deleteStmt.run(worldId)
     })
 
     try {
       transaction(id)
       console.log('World deleted successfully')
-      return {success: true}
+      return { success: true }
     } catch (error) {
       console.log('World deletion failed, cancelling transaction.')
-      Console.error(error)
-      return {success: false}
+      console.error(error)
+      return { success: false }
     }
   }
-
-
 
   close() {
     this.db.close()
