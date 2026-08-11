@@ -408,15 +408,13 @@ class CharacterDb {
     let deletedCount = 0
     let addedCount = 0
     let errors = false
-    if (!tagIds.length) {
-      return { success: true, deleted: 0, added: 0 }
-    }
 
     // remove all tags for this character first
     try {
       const deleteQuery = `DELETE FROM tag_map WHERE character_id=?`
       const deleteStmt = this.db.prepare(deleteQuery)
       const deleteResponse = deleteStmt.run(characterId)
+      console.log(deleteResponse)
     } catch (error) {
       errors = true
       console.error(`Failed to delete all tags for character ${characterId}:`, error.message)
@@ -474,9 +472,9 @@ class CharacterDb {
     return response
   }
 
-  getTagSuggestions(query) {
-    const selectQuery = `SELECT * FROM tags WHERE tag_name LIKE ?`
-    const stmt = this.db.prepare(selectQuery)
+  getTagSuggestions(query, worldId) {
+    const selectQuery = `SELECT * FROM tags WHERE tag_name LIKE ? AND world_id = ?`
+    const stmt = this.db.prepare(selectQuery, worldId)
     const response = stmt.all('%' + query + '%')
     return response
   }
@@ -552,19 +550,19 @@ class CharacterDb {
       return {success: false}
     }
 
-    const transaction = db.transaction((worldId) => {
+    const transaction = this.db.transaction((worldId) => {
 
       // setup required queries
-      const deleteStmt = db.prepare(`DELETE FROM worlds WHERE id=?`)
-      const deleteCharactersStmt = db.prepare(`DELETE FROM characters WHERE world_id=?`)
-      const deleteTagMapStmt = db.prepare(`DELETE FROM tag_map WHERE id IN (SELECT id FROM tags WHERE world_id=?)`)
-      const deleteTagsStmt = db.prepare(`DELETE FROM tags WHERE world_id=?`)
+      const deleteStmt = this.db.prepare(`DELETE FROM worlds WHERE id=?`)
+      const deleteCharactersStmt = this.db.prepare(`DELETE FROM characters WHERE world_id=?`)
+      const deleteTagMapStmt = this.db.prepare(`DELETE FROM tag_map WHERE id IN (SELECT id FROM tags WHERE world_id=?)`)
+      const deleteTagsStmt = this.db.prepare(`DELETE FROM tags WHERE world_id=?`)
 
       // run queries in order, make sure dependent tables are wiped first
       deleteTagMapStmt.run(worldId);
       deleteTagsStmt.run(worldId);
       deleteCharactersStmt.run(worldId);
-      deleteWorldsStmt.run(worldId);
+      deleteStmt.run(worldId);
 
     })
 
@@ -574,7 +572,7 @@ class CharacterDb {
       return {success: true}
     } catch (error) {
       console.log('World deletion failed, cancelling transaction.')
-      Console.error(error)
+      console.error(error)
       return {success: false}
     }
   }
