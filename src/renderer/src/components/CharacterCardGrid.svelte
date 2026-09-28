@@ -24,8 +24,8 @@
   const link = $derived('#/character/' + character.id)
 </script>
 
-<a href={link} class="bg-layer1 rounded-md hover:bg-layer2">
-  <li class="flex flex-col-reverse p-2 place-content-between items-center">
+<a href={link} class="bg-transparent rounded-md hover:bg-layer1">
+  <li class="flex flex-col-reverse p-2 px-6 place-content-between items-center">
         <h3 class="font-bold wrap-break-word overflow-x-scroll -mb-6 p-2">
             {truncateString(character.name, 25)}
         </h3>
