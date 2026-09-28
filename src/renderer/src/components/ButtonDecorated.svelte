@@ -25,7 +25,7 @@
 
 {#if disabled}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-1 rounded-md p-2 px-2 w-full opacity-50"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-2 rounded-md p-2 px-2 w-full opacity-50 corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -34,7 +34,7 @@
   >
 {:else if style == 'positive'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-positive bg-positive-muted/50 rounded-md p-2 px-2 w-full hover:bg-positive-muted hover:text-positive-highlight hover:outline border-positive-highlight"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-positive bg-positive-muted/50 rounded-lg p-2 px-2 w-full hover:bg-positive-muted hover:text-positive-highlight hover:outline border-positive-highlight corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -43,7 +43,7 @@
   >
 {:else if style == 'outline'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-1 rounded-md p-2 px-2 w-full hover:bg-layer3/20 hover:outline-primary-highlight hover:text-primary-highlight"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-2 rounded-lg p-2 px-2 w-full hover:bg-layer3/20 hover:outline-primary-highlight hover:text-primary-highlight corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -52,7 +52,7 @@
   >
 {:else if style == 'destructive'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-destructive bg-destructive-muted/50 rounded-md p-2 px-2 w-full hover:bg-destructive-muted hover:text-destructive-highlight hover:outline border-destructive-highlight"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-destructive bg-destructive-muted/50 rounded-lg p-2 px-2 w-full hover:bg-destructive-muted hover:text-destructive-highlight hover:outline border-destructive-highlight corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -61,7 +61,7 @@
   >
 {:else if style == 'simple'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 bg-layer2 text-textcol p-2 rounded-md hover:bg-layer3"
+    class="cursor-pointer items-center flex place-content-center gap-2 bg-layer2 text-textcol p-2 rounded-lg hover:bg-layer3 corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -70,7 +70,7 @@
   >
 {:else if style == 'transparent'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-textcol p-2 rounded-md hover:bg-layer1"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-textcol p-2 rounded-lg hover:bg-layer1"
     {type}
     {command}
     {commandfor}
@@ -79,7 +79,7 @@
   >
   {:else if style == 'transparent-primary'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-primary p-2 rounded-md hover:bg-layer1 hover:text-primary-highlight"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-primary p-2 rounded-lg hover:bg-layer1 hover:text-primary-highlight"
     {type}
     {command}
     {commandfor}
@@ -88,7 +88,7 @@
   >
 {:else if style == 'normal-static'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-white bg-primary rounded-md p-2 px-2 w-full hover:bg-primary-muted"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-white bg-primary rounded-lg p-2 px-2 w-full hover:bg-primary-muted corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -97,7 +97,7 @@
   >
 {:else if style == 'menu'}
   <button
-    class="cursor-pointer text-xl font-bold items-center flex place-content-between gap-2 text-primary bg-layer1 rounded-xl p-4 px-4 w-full hover:text-primary-highlight hover:bg-layer2"
+    class="cursor-pointer text-xl font-bold items-center flex place-content-between gap-2 text-primary bg-layer1 rounded-xl p-4 px-4 w-full hover:text-primary-highlight hover:bg-layer2 corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -106,7 +106,7 @@
   >
   {:else}
   <button
-    class="cursor-pointer font-bold items-center flex place-content-center gap-2 text-white bg-primary rounded-md p-2 px-4 w-full hover:bg-primary-muted"
+    class="cursor-pointer font-bold items-center flex place-content-center gap-2 text-white bg-primary outline-2 outline-primary-highlight rounded-lg p-2 px-4 w-full hover:bg-primary-muted corner-scoop"
     {type}
     {command}
     {commandfor}

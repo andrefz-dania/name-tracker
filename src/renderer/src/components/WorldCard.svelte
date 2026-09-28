@@ -29,11 +29,15 @@
     </div> -->
     <button
       onclick={handleChangeWorld}
-      class="w-full bg-layer1 p-8 rounded-xl flex flex-col gap-4 items-center text-center cursor-pointer hover:bg-layer2 border border-transparent relative"
+      class="w-full bg-layer1/50 rounded-2xl border-primary corner-scoop cursor-pointer hover:bg-layer1 hover:border-primary-highlight border relative"
     >
+    <div class="flex flex-col gap-4 p-8 items-center text-center h-full rounded-[3rem] border border-layer3">
+
+    
       <Earth class="h-12 w-12 text-primary"></Earth>
       {@render Heading2(world.name)}
       <p class="opacity-50">{world.description}</p>
+      </div>
     </button>
   </div>
 {:else}
@@ -44,8 +48,10 @@
       </a>
     </div> -->
     <div
-      class="w-full bg-layer2 p-8 rounded-xl flex flex-col gap-4  items-center text-center cursor-pointer hover:bg-layer2 border border-primary relative"
+      class="w-full bg-layer2 rounded-2xl border-primary corner-scoop cursor-pointer hover:bg-layer3 hover:border-primary-highlight border relative"
     >
+        <div class="flex flex-col gap-4 p-8 items-center text-center h-full rounded-[3rem] border border-primary">
+
       <Earth class="h-12 w-12 text-primary"></Earth>
       {@render Heading2(world.name)}
       <p class="opacity-50">{world.description}</p>
@@ -55,6 +61,7 @@
       >
         Active
       </p>
+    </div>
     </div>
   </div>
 {/if}

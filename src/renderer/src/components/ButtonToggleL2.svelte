@@ -15,14 +15,14 @@
 
 {#if style == 'active'}
   <button
-    class="flex font-bold items-center gap-2 cursor-pointer bg-layer1 p-2 rounded-full w-full place-items-center place-content-center border border-primary-highlight text-primary-highlight"
+    class="flex font-bold items-center gap-2 cursor-pointer bg-layer1 p-2 rounded-full corner-bevel w-full place-items-center place-content-center border border-primary-highlight text-primary-highlight"
     {type}
     {onclick}
     {disabled}>{@render children()}</button
   >
 {:else}
   <button
-    class="flex font-bold items-center gap-2 cursor-pointer p-2 bg-layer1 rounded-full w-full place-items-center place-content-center border border-transparent text-primary"
+    class="flex font-bold items-center gap-2 cursor-pointer p-2 bg-layer1 rounded-full corner-bevel w-full place-items-center place-content-center border border-transparent text-primary"
     {type}
     {onclick}
     {disabled}>{@render children()}</button
