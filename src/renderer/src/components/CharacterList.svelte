@@ -27,6 +27,7 @@
   } from '../../../types/types'
   import CharacterCardImage from './CharacterCardImage.svelte'
   import { getWorldContext } from '../utils/worldContext.svelte'
+  import CharacterCardGrid from './CharacterCardGrid.svelte'
 
   let { interfaceConfig }: { interfaceConfig: InterfaceConfig } = $props()
 
@@ -311,12 +312,12 @@
     {/if}
     {@render ColumnLabel('status')}
   </div>
-  <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
+  <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll fade-in">
     {#each characters as char}
       <CharacterCardImage character={char} {refresh} {interfaceConfig} />
     {/each}
   </ul>
-{:else}
+{:else if interfaceConfig.listStyle == 'small'}
   <div class="grid pr-4 {gridColsCSS} w-full rounded-md place-items-between max-w-7xl mx-auto">
     <div class="w-full col-span-2">
       {@render ColumnLabel('name')}
@@ -335,9 +336,35 @@
     {/if}
     {@render ColumnLabel('status')}
   </div>
-  <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll">
+  <ul class="flex flex-col gap-2 w-full rounded-md max-w-7xl mx-auto h-full overflow-y-scroll fade-in">
     {#each characters as char}
       <CharacterCard character={char} {refresh} {interfaceConfig} />
+    {/each}
+  </ul>
+  {:else}
+    <div class="grid pr-4 {gridColsCSS} w-full rounded-md place-items-between max-w-7xl mx-auto">
+        <p class="text-primary p-2 font-bold">SORT BY:</p>
+    <div class="w-full">
+      {@render ColumnLabel('name')}
+    </div>
+
+    {#if interfaceConfig.speciesVisible}
+      {@render ColumnLabel('species')}
+    {/if}
+    {#if interfaceConfig.genderVisible}
+      {@render ColumnLabel('gender')}
+    {/if}
+    {#if interfaceConfig.occupationVisible}
+      {@render ColumnLabel('occupation')}
+    {/if}
+    {#if interfaceConfig.locationVisible}
+      {@render ColumnLabel('location')}
+    {/if}
+    {@render ColumnLabel('status')}
+  </div>
+  <ul class="flex gap-4 items-start flex-wrap w-full max-w-7xl mx-auto h-full overflow-y-scroll fade-in">
+    {#each characters as char}
+      <CharacterCardGrid character={char} {refresh} />
     {/each}
   </ul>
 {/if}

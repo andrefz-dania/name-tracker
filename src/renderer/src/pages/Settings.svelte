@@ -24,7 +24,10 @@
     Globe,
     CheckIcon,
     XIcon,
-    Earth
+    Earth,
+
+    LayoutGrid
+
   } from '@lucide/svelte'
   import Header from '../components/Header.svelte'
   import { Heading1 } from '../components/Headings.svelte'
@@ -75,11 +78,9 @@
   }
 
   // INTERFACE
-  const handleListStyleChange = () => {
-    if (interfaceConfig.listStyle == 'large') {
-      changeSetting('listStyle', 'small')
-    } else {
-      changeSetting('listStyle', 'large')
+  const handleListStyleChange = (newValue) => {
+    if (interfaceConfig.listStyle != newValue) {
+      changeSetting('listStyle', newValue)
     }
   }
 
@@ -257,12 +258,17 @@
           <div class="flex flex-row gap-4 p-4">
             <ButtonToggleL2
               style={interfaceConfig.listStyle == 'small' ? 'active' : 'inactive'}
-              onclick={handleListStyleChange}
+              onclick={()=>handleListStyleChange('small')}
               ><TableOfContents></TableOfContents>Compact</ButtonToggleL2
             >
             <ButtonToggleL2
-              style={interfaceConfig.listStyle == 'small' ? 'inactive' : 'active'}
-              onclick={handleListStyleChange}><Rows2></Rows2>Expanded</ButtonToggleL2
+              style={interfaceConfig.listStyle == 'large' ? 'active' : 'inactive'}
+              onclick={()=>handleListStyleChange('large')}><Rows2></Rows2>Expanded</ButtonToggleL2
+            >
+
+            <ButtonToggleL2
+              style={interfaceConfig.listStyle == 'grid' ? 'active' : 'inactive'}
+              onclick={()=>handleListStyleChange('grid')}><LayoutGrid></LayoutGrid>Grid</ButtonToggleL2
             >
           </div>
 

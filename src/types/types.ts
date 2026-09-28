@@ -88,7 +88,7 @@ export type RecentChar = {
 }
 
 export type InterfaceConfig = {
-  listStyle: 'small' | 'large'
+  listStyle: 'small' | 'large' | 'grid'
   interfaceStyle: 'light' | 'dark'
   descLength: number
   speciesVisible: boolean
