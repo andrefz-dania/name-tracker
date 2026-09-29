@@ -110,17 +110,18 @@
 
 <Navigation>
   <div>
-    <ButtonDecorated style="outline" disabled={!isUpdatable} onclick={discardChanges}
-      ><XIcon></XIcon>Discard changes</ButtonDecorated
-    >
-  </div>
-  <div>
     <ButtonDecorated
       style={isUpdatable ? 'normal-static' : 'outline'}
       disabled={!isUpdatable}
       onclick={saveCharacter}><Check></Check>Save changes</ButtonDecorated
     >
   </div>
+  <div>
+    <ButtonDecorated style="outline" disabled={!isUpdatable} onclick={discardChanges}
+      ><XIcon></XIcon>Discard changes</ButtonDecorated
+    >
+  </div>
+
 </Navigation>
 
 <Header>
