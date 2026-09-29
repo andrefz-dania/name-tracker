@@ -48,7 +48,7 @@
       </a>
     </div> -->
     <div
-      class="w-full bg-layer2 rounded-2xl border-primary corner-scoop cursor-pointer hover:bg-layer3 hover:border-primary-highlight border relative"
+      class="w-full bg-layer2 rounded-2xl border-primary corner-scoop cursor-pointer hover:bg-layer3 hover:border-primary-highlight border-2 relative"
     >
         <div class="flex flex-col gap-4 p-8 items-center text-center h-full rounded-[3rem] border border-primary">
 

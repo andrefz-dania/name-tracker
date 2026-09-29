@@ -28,6 +28,7 @@
   import Tag from '../components/Tag.svelte'
   import TagAdder from '../components/TagAdder.svelte'
   import { getWorldContext } from '../utils/worldContext.svelte'
+  import Container from '../components/Container.svelte'
 
   const worldId: number = getWorldContext().activeWorld.id
 
@@ -212,7 +213,8 @@
             {/if}
           </div>
         </div>
-        <div class="flex gap-2 bg-layer1 p-4 rounded-md">
+        <Container>
+        <div class="flex gap-2 place-content-between flex-row w-full">
           <div class="w-full text-center">
             <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
               <Hammer />Occupation
@@ -239,9 +241,11 @@
               placeholder="Unknown"
             ></EditableField>
           </div>
-        </div>
+          </div>
+        </Container>
+        
 
-        <div class="bg-layer1 p-4 px-8 flex gap-2 flex-col rounded-md">
+        <Container>
           <h2 class="font-bold flex gap-2 items-center place-content-center text-xl text-primary">
             <BookOpenText />Description
           </h2>
@@ -253,7 +257,7 @@
             id="desc"
             placeholder="No Description"
           ></EditableArea>
-        </div>
+        </Container>
       </section>
     </div>
   {/if}

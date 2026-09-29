@@ -25,7 +25,7 @@
 
 {#if disabled}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-2 rounded-md p-2 px-2 w-full opacity-50 corner-scoop"
+    class="cursor-pointer items-center flex place-content-center gap-2 bg-layer1/50 text-layer3 outline-layer3 outline-1 rounded-lg p-2 px-2 w-full corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -43,7 +43,7 @@
   >
 {:else if style == 'outline'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-2 rounded-lg p-2 px-2 w-full hover:bg-layer3/20 hover:outline-primary-highlight hover:text-primary-highlight corner-scoop"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-primary bg-transparent outline-primary outline-1 rounded-lg p-2 px-2 w-full hover:bg-layer3/20 hover:outline-primary-highlight hover:text-primary-highlight corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -88,7 +88,7 @@
   >
 {:else if style == 'normal-static'}
   <button
-    class="cursor-pointer items-center flex place-content-center gap-2 text-white bg-primary rounded-lg p-2 px-2 w-full hover:bg-primary-muted corner-scoop"
+    class="cursor-pointer items-center flex place-content-center gap-2 text-white bg-linear-to-r from-primary to-primary-muted outline-1 outline-primary-highlight rounded-lg p-2 px-2 w-full hover:from-primary-muted hover:via-primary hover:to-primary-muted hover:outline-textcol corner-scoop"
     {type}
     {command}
     {commandfor}
@@ -106,7 +106,7 @@
   >
   {:else}
   <button
-    class="cursor-pointer font-bold items-center flex place-content-center gap-2 text-white bg-primary outline-2 outline-primary-highlight rounded-lg p-2 px-4 w-full hover:bg-primary-muted corner-scoop"
+    class="cursor-pointer font-bold items-center flex place-content-center gap-2 text-white bg-linear-to-r from-primary to-primary-muted outline-1 outline-primary-highlight rounded-lg p-2 px-4 w-full hover:from-primary-muted hover:via-primary hover:to-primary-muted hover:outline-textcol corner-scoop"
     {type}
     {command}
     {commandfor}

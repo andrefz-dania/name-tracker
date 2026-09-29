@@ -43,6 +43,7 @@
   import EditableArea from '../components/EditableArea.svelte'
   import { INPUT_LONG_MAX } from '../input.config'
   import { getWorldContext } from '../utils/worldContext.svelte'
+  import Container from '../components/Container.svelte'
 
   let { interfaceConfig = $bindable() } = $props()
 
@@ -216,13 +217,18 @@
 <div class="max-w-6xl w-full mx-auto overflow-y-scroll">
   <div class="flex flex-row gap-2 w-full">
     <!-- sidebar -->
-    <section class="md:min-w-48 p-2 bg-layer1 rounded-xl flex flex-col h-min sticky top-0">
+    <section class="md:min-w-48 h-min sticky top-0">
+    <Container>
+    <div class="w-full text-left flex flex-col">
       <p class="font-bold text-sm text-primary p-2">CATEGORIES</p>
       {@render Category('interface')}
       {@render Category('hotkeys')}
       {@render Category('world')}
       {@render Category('reset')}
       <!-- {@render Category('debug')} -->
+       </div>
+    </Container>
+
     </section>
 
     <!-- main content -->

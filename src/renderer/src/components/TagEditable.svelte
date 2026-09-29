@@ -13,7 +13,7 @@
 </script>
 
 <div
-  class="px-2 py-1 rounded-full bg-primary/30 flex items-center text-primary-highlight h-min group"
+  class="px-2 py-1 rounded-full rounded-bl-none bg-primary/30 flex items-center text-primary-highlight h-min group"
 >
   <p>#{tag.tag_name}</p>
   <button

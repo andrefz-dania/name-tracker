@@ -24,7 +24,7 @@
 </script>
 
 <div
-  class="px-2 py-1 rounded-full bg-primary/30 flex items-center text-primary-highlight h-min group w-fit"
+  class="px-2 py-1 rounded-full rounded-bl-none bg-primary/30 flex items-center text-primary-highlight h-min group w-fit"
 >
   {#if navigable}
     <button type="button" onclick={goToTag} class="hover:cursor-pointer">
